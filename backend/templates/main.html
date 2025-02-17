@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Mind Clash</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% comment %} <link rel="stylesheet" type="text/css" href="styles.css"> {% endcomment %}
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% block content %}
+
+    {% endblock %}
+
+</body>
+
+</html>
