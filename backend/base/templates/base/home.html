@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style> 
+    .home-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80vh;
+        text-align: center;
+    }
+
+    .home-container p {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .home-button {
+        background-color: #ff4757;
+        color: white;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-decoration: none; /* Remove underline */
+        display: inline-block;
+        transition: 0.3s;
+    }
+
+    .home-button:hover {
+        background-color: #e84118;
+    }
+</style>
+
+<div class="home-container">
+
+    <p>Think you're smart? Even your WiFi has better connections than your neurons. 🤯</p>
+    
+    <a href="{% url 'login' %}" class="home-button">Let's Get Going! 🚀</a>
+</div>
+{% endblock %}
