@@ -1,9 +1,8 @@
-# Frontend
+# React + Vite
 
-This folder contains the frontend for **MindClash: Battle of Wits**, built using **React.js**. It provides the user interface for players to interact with the game.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### **Features**
-- Game lobby with player avatars and live chat.
-- Interactive quiz interface with real-time updates.
-- Scoreboard and leaderboard display.
-- Responsive design for desktop and mobile.
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
