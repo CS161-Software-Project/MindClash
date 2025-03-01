@@ -1,16 +1,37 @@
+import React, { useState, useEffect } from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import { Brain, Sparkles, Gamepad2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Test from './test';
-import React, { useState, useRef } from 'react';
+import Loader from '../pages/Loader';
+import AuthService from '../services/AuthService';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: '',
-    confirmPassword: '',
+    password1: '',
+    password2: '',
   });
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showStars, setShowStars] = useState(true);
+
+  // Handle WebGL context loss by disabling stars when necessary
+  useEffect(() => {
+    const handleContextLost = () => {
+      console.log("WebGL context lost, disabling stars");
+      setShowStars(false);
+    };
+    
+    window.addEventListener('webglcontextlost', handleContextLost);
+    
+    return () => {
+      window.removeEventListener('webglcontextlost', handleContextLost);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -19,18 +40,62 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
+    setError('');
+    
+    // Basic validation
+    if (formData.password1 !== formData.password2) {
+      setError('Passwords do not match');
+      return;
+    }
+    
+    if (formData.password1.length < 6) {
+      console.log(formData.password1.length)
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // Prepare data for API - remove confirmPassword as backend won't need it
+      const userData = {
+        username: formData.username,
+        email: formData.email,
+        password1: formData.password1
+      };
+      
+      console.log("About to register with:", userData);
+      
+      // Call registration service
+      const response = await AuthService.register(userData);
+      console.log("Registration successful:", response);
+      
+      // Add a delay to see console logs before redirecting
+      setTimeout(() => {
+        // If successful, redirect to dashboard or home
+        navigate('/');
+      }, 1000);
+    } catch (err) {
+      console.error("Submit error:", err);
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  if (loading) {
+    return <Loader text="Creating your account..." />;
+  }
+  
   return (
     <div className="min-h-screen bg-[#0B1026] relative overflow-hidden">
-      
-      {/* Stars canvas container - z-index set to be behind content */}
-      <div className="fixed inset-0" style={{ zIndex: 0 }}>
-        <Test />
-      </div>
+      {/* Stars canvas container - only show if WebGL is working */}
+      {showStars && (
+        <div className="fixed inset-0" style={{ zIndex: 0 }}>
+          <Test />
+        </div>
+      )}
 
       {/* Floating Icons with new animations */}
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
@@ -58,6 +123,12 @@ const Signup = () => {
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-xl animate-fadeIn border border-white/20">
             <h2 className="text-2xl font-bold text-white mb-6 text-center">Join the Battle</h2>
 
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-white">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-4">
                 <input
@@ -80,18 +151,18 @@ const Signup = () => {
                 />
                 <input
                   type="password"
-                  name="password"
+                  name="password1"
                   placeholder="Password"
-                  value={formData.password}
+                  value={formData.password1}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all"
                   required
                 />
                 <input
                   type="password"
-                  name="confirmPassword"
+                  name="password2"
                   placeholder="Confirm Password"
-                  value={formData.confirmPassword}
+                  value={formData.password2}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all"
                   required
