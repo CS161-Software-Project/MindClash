@@ -5,15 +5,16 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 # Define the request body schema for login
 login_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'username': openapi.Schema(type=openapi.TYPE_STRING, description='Username of the user'),
+        'email': openapi.Schema(type=openapi.TYPE_STRING, description='Email of the user', format='email'),
         'password': openapi.Schema(type=openapi.TYPE_STRING, description='Password of the user', format='password'),
     },
-    required=['username', 'password']
+    required=['email', 'password']
 )
 
 # API - http://127.0.0.1:8000/login/ (POST request)
@@ -22,20 +23,27 @@ login_schema = openapi.Schema(
 @api_view(['POST'])
 def loginPage(request):
     """
-    User login API.
+    User login API using Email instead of Username.
     """
     data = request.data
-    username = data.get('username', '').lower()
+    email = data.get('email', '').lower()
     password = data.get('password', '')
 
-    if not username or not password:
-        return Response({"error": "Username and password are required"}, status=400)
+    if not email or not password:
+        return Response({"error": "Email and password are required"}, status=400)
 
-    user = authenticate(request, username=username, password=password)
+    try:
+        # Retrieve user by email
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User with this email not found"}, status=400)
+
+    # Authenticate using the username linked to the email
+    user = authenticate(request, username=user.username, password=password)
 
     if user is not None:
         login(request, user)
-        token, created = Token.objects.get_or_create(user=user)  
+        token, created = Token.objects.get_or_create(user=user)
         return Response({"message": "Login successful", "user": user.username, "token": token.key}, status=200)
     else:
         return Response({"error": "Invalid credentials"}, status=400)
