@@ -40,6 +40,51 @@ const Signup = () => {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+    
+  //   // Basic validation
+  //   if (formData.password1 !== formData.password2) {
+  //     setError('Passwords do not match');
+  //     return;
+  //   }
+    
+  //   if (formData.password1.length < 6) {
+  //     console.log(formData.password1.length)
+  //     setError('Password must be at least 6 characters');
+  //     return;
+  //   }
+
+  //   try {
+  //     setLoading(true);
+  //     // Prepare data for API - remove confirmPassword as backend won't need it
+  //     const userData = {
+  //       username: formData.username,
+  //       email: formData.email,
+  //       password1: formData.password1,
+  //       password2:formData.password2
+  //     };
+      
+  //     console.log("About to register with:", userData);
+      
+  //     // Call registration service
+  //     const response = await AuthService.register(userData);
+  //     console.log("Registration successful:", response);
+      
+  //     // Add a delay to see console logs before redirecting
+  //     setTimeout(() => {
+  //       // If successful, redirect to dashboard or home
+  //       navigate('/');
+  //     }, 1000);
+  //   } catch (err) {
+  //     console.error("Submit error:", err);
+  //     setError(err.message || 'Registration failed. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -51,18 +96,18 @@ const Signup = () => {
     }
     
     if (formData.password1.length < 6) {
-      console.log(formData.password1.length)
       setError('Password must be at least 6 characters');
       return;
     }
-
+  
     try {
       setLoading(true);
-      // Prepare data for API - remove confirmPassword as backend won't need it
+      // Prepare data for API - include both password fields
       const userData = {
         username: formData.username,
         email: formData.email,
-        password1: formData.password1
+        password1: formData.password1,
+        password2: formData.password2
       };
       
       console.log("About to register with:", userData);
@@ -78,7 +123,71 @@ const Signup = () => {
       }, 1000);
     } catch (err) {
       console.error("Submit error:", err);
-      setError(err.message || 'Registration failed. Please try again.');
+      
+      // Initialize default error message
+      let errorMessage = 'Registration failed. Please try again.';
+      
+      try {
+        // Check if the error object has a message property that's a JSON string
+        if (err.message && typeof err.message === 'string') {
+          try {
+            // Attempt to parse the JSON string in the message
+            const parsedMessage = JSON.parse(err.message);
+            
+            // Check for specific field errors
+            if (parsedMessage.username) {
+              errorMessage = parsedMessage.username[0].message || 'Username error';
+            } else if (parsedMessage.email) {
+              errorMessage = parsedMessage.email[0].message || 'Email error';
+            } else if (parsedMessage.password1) {
+              errorMessage = parsedMessage.password1[0].message || 'Password error';
+            } else if (parsedMessage.password2) {
+              errorMessage = parsedMessage.password2[0].message || 'Password confirmation error';
+            } else if (parsedMessage.non_field_errors) {
+              errorMessage = parsedMessage.non_field_errors[0];
+            }
+          } catch (parseError) {
+            // If parsing fails, use the raw message
+            errorMessage = err.message;
+          }
+        } 
+        // If there's no message property but there's an error property
+        else if (err.error) {
+          errorMessage = err.error;
+          
+          // Check if there's a more detailed message
+          if (err.message) {
+            try {
+              // Try to parse the message if it's a JSON string
+              const detailedMessage = JSON.parse(err.message);
+              
+              // Look for field-specific errors
+              if (detailedMessage.username) {
+                errorMessage = detailedMessage.username[0].message || 'Username error';
+              } else if (detailedMessage.email) {
+                errorMessage = detailedMessage.email[0].message || 'Email error';
+              } else if (detailedMessage.password1) {
+                errorMessage = detailedMessage.password1[0].message || 'Password error';
+              } else if (detailedMessage.password2) {
+                errorMessage = detailedMessage.password2[0].message || 'Password confirmation error';
+              } else if (detailedMessage.non_field_errors) {
+                errorMessage = detailedMessage.non_field_errors[0];
+              }
+            } catch (parseError) {
+              // If parsing fails, use the error message as is
+              errorMessage = err.error;
+            }
+          }
+        }
+      } catch (e) {
+        // If any error occurs during the parsing process, use a generic message
+        console.error("Error parsing error message:", e);
+        errorMessage = 'Registration failed. Please try again.';
+      }
+      
+      // Log the extracted error message for debugging
+      console.log("Displaying error message:", errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

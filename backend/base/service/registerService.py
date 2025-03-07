@@ -47,4 +47,4 @@ def registerPage(request):
         return Response({"message": "Registration successful", "user": user.username, "token": token.key}, status=201)
     else:
         errors = form.errors.as_json()
-        return Response({"error": "Registration failed", "details": errors}, status=400)
+        return Response({"error": "Registration failed", "message": errors}, status=400)
