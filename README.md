@@ -331,6 +331,76 @@ If you encounter "Exec format error" with llamafile, ensure you've:
 2. Made the file executable with `chmod +x`
 3. Set the correct path in the LLAMAFILE_PATH environment variable
 
+## Important Note on GitHub Repository
+
+**ATTENTION:** The GitHub repository does not include certain files due to size limitations:
+
+1. **Missing llamafile Binaries**: The `llamafiles/llamafile` and `llamafiles/llamafile-mac` executables are NOT included in the repository due to their large size (approximately 1.7GB combined). These files exceed GitHub's file size limits (100MB per file).
+
+2. **Why They're Missing**: 
+   - We've added these files to `.gitignore` to prevent them from being tracked
+   - The entry `llamafiles/llamafile*` in our `.gitignore` file specifically excludes these large binaries
+   - This is standard practice for large binary files in Git repositories
+
+3. **What You Need to Do After Cloning**:
+   ```bash
+   # 1. Create the llamafiles directory
+   mkdir -p llamafiles
+   cd llamafiles
+   
+   # 2. Download the appropriate llamafile for your system
+   # For macOS:
+   curl -L -o llamafile-mac https://huggingface.co/cebtenzzre/llama2-7b-chat-gguf/resolve/main/llama-2-7b-chat.llamafile
+   chmod +x llamafile-mac
+   
+   # 3. Return to project root
+   cd ..
+   
+   # 4. When running the backend, set the environment variable
+   cd backend
+   source venv/bin/activate
+   export LLAMAFILE_PATH="/full/path/to/MindClash/llamafiles/llamafile-mac"
+   python manage.py runserver
+   ```
+
+4. **Alternative Option**: 
+   If you don't want to download the llamafile binaries (or have issues with them), the application will automatically fall back to using pre-defined templates for quiz generation. The core functionality will still work without llamafile.
+
+5. **For Developers**:
+   If you make changes to the llamafile integration, ensure you don't accidentally commit large binary files. Check that your `.gitignore` contains:
+   ```
+   # Exclude large binary files
+   llamafiles/llamafile*
+   ```
+
+## To Be Done
+
+The following features and improvements are planned for future development:
+
+1. **Categories API Endpoint**: 
+   - Implement `/api/quiz/categories/` endpoint (currently returns 404)
+   - Add predefined categories with icons for the frontend
+
+2. **Improve Llamafile Integration**:
+   - Add support for more llamafile models
+   - Implement caching for generated questions to improve performance
+   - Create a compatibility checker for different architectures
+
+3. **Enhanced UI/UX**:
+   - Implement user authentication and profiles
+   - Add leaderboards for competitive play
+   - Develop a real-time multiplayer mode
+
+4. **Backend Improvements**:
+   - Create robust error handling for the quiz generation service
+   - Add unit and integration tests for all components
+   - Implement rate limiting for API endpoints
+
+5. **Infrastructure**:
+   - Containerize the application using Docker
+   - Add CI/CD pipeline for automated testing and deployment
+   - Create a production-ready deployment guide
+
 ## Pushing to GitHub
 
 To push your changes to a GitHub repository:
