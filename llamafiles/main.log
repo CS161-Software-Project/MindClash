@@ -1,0 +1,707 @@
+Log start
+Cmd: ./llamafile-mac -m TinyLlama-1.1B-Chat-v1.0.Q4_K_M.gguf -c 2048 --temp 0.7 -p "What is the capital of France?"
+main: build = 1500 (a30b324)
+main: built with cosmocc (GCC) 11.2.0 for x86_64-linux-cosmo
+main: seed  = 1741926575
+main: llama backend init
+main: load the model and apply lora adapter, if any
+llama_model_loader: loaded meta data with 40 key-value pairs and 201 tensors from TinyLlama-1.1B-Chat-v1.0.Q4_K_M.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+llama_model_loader: - kv   0:                       general.architecture str              = llama
+llama_model_loader: - kv   1:                               general.type str              = model
+llama_model_loader: - kv   2:                         general.size_label str              = 1.1B
+llama_model_loader: - kv   3:                            general.license str              = apache-2.0
+llama_model_loader: - kv   4:                      general.dataset.count u32              = 4
+llama_model_loader: - kv   5:                     general.dataset.0.name str              = SlimPajama 627B
+llama_model_loader: - kv   6:             general.dataset.0.organization str              = Cerebras
+llama_model_loader: - kv   7:                 general.dataset.0.repo_url str              = https://huggingface.co/cerebras/SlimP...
+llama_model_loader: - kv   8:                     general.dataset.1.name str              = Starcoderdata
+llama_model_loader: - kv   9:             general.dataset.1.organization str              = Bigcode
+llama_model_loader: - kv  10:                 general.dataset.1.repo_url str              = https://huggingface.co/bigcode/starco...
+llama_model_loader: - kv  11:                     general.dataset.2.name str              = Ultrachat_200K
+llama_model_loader: - kv  12:             general.dataset.2.organization str              = HuggingFaceH4
+llama_model_loader: - kv  13:                 general.dataset.2.repo_url str              = https://huggingface.co/HuggingFaceH4/...
+llama_model_loader: - kv  14:                     general.dataset.3.name str              = Ultrafeedback_Binarized
+llama_model_loader: - kv  15:             general.dataset.3.organization str              = HuggingFaceH4
+llama_model_loader: - kv  16:                 general.dataset.3.repo_url str              = https://huggingface.co/HuggingFaceH4/...
+llama_model_loader: - kv  17:                          general.languages arr[str,1]       = ["en"]
+llama_model_loader: - kv  18:                          llama.block_count u32              = 22
+llama_model_loader: - kv  19:                       llama.context_length u32              = 2048
+llama_model_loader: - kv  20:                     llama.embedding_length u32              = 2048
+llama_model_loader: - kv  21:                  llama.feed_forward_length u32              = 5632
+llama_model_loader: - kv  22:                 llama.attention.head_count u32              = 32
+llama_model_loader: - kv  23:              llama.attention.head_count_kv u32              = 4
+llama_model_loader: - kv  24:                       llama.rope.freq_base f32              = 10000.000000
+llama_model_loader: - kv  25:     llama.attention.layer_norm_rms_epsilon f32              = 0.000010
+llama_model_loader: - kv  26:                          general.file_type u32              = 15
+llama_model_loader: - kv  27:                           llama.vocab_size u32              = 32000
+llama_model_loader: - kv  28:                 llama.rope.dimension_count u32              = 64
+llama_model_loader: - kv  29:                       tokenizer.ggml.model str              = llama
+llama_model_loader: - kv  30:                         tokenizer.ggml.pre str              = default
+llama_model_loader: - kv  31:                      tokenizer.ggml.tokens arr[str,32000]   = ["<unk>", "<s>", "</s>", "<0x00>", "<...
+llama_model_loader: - kv  32:                      tokenizer.ggml.scores arr[f32,32000]   = [-1000.000000, -1000.000000, -1000.00...
+llama_model_loader: - kv  33:                  tokenizer.ggml.token_type arr[i32,32000]   = [3, 3, 3, 6, 6, 6, 6, 6, 6, 6, 6, 6, ...
+llama_model_loader: - kv  34:                tokenizer.ggml.bos_token_id u32              = 1
+llama_model_loader: - kv  35:                tokenizer.ggml.eos_token_id u32              = 2
+llama_model_loader: - kv  36:            tokenizer.ggml.unknown_token_id u32              = 0
+llama_model_loader: - kv  37:            tokenizer.ggml.padding_token_id u32              = 2
+llama_model_loader: - kv  38:                    tokenizer.chat_template str              = {% for message in messages %}\n{% if m...
+llama_model_loader: - kv  39:               general.quantization_version u32              = 2
+llama_model_loader: - type  f32:   45 tensors
+llama_model_loader: - type q4_K:  135 tensors
+llama_model_loader: - type q6_K:   21 tensors
+llm_load_vocab: special tokens cache size = 3
+llm_load_vocab: token to piece cache size = 0.1684 MB
+llm_load_print_meta: format           = GGUF V3 (latest)
+llm_load_print_meta: arch             = llama
+llm_load_print_meta: vocab type       = SPM
+llm_load_print_meta: n_vocab          = 32000
+llm_load_print_meta: n_merges         = 0
+llm_load_print_meta: vocab_only       = 0
+llm_load_print_meta: n_ctx_train      = 2048
+llm_load_print_meta: n_embd           = 2048
+llm_load_print_meta: n_layer          = 22
+llm_load_print_meta: n_head           = 32
+llm_load_print_meta: n_head_kv        = 4
+llm_load_print_meta: n_rot            = 64
+llm_load_print_meta: n_swa            = 0
+llm_load_print_meta: n_embd_head_k    = 64
+llm_load_print_meta: n_embd_head_v    = 64
+llm_load_print_meta: n_gqa            = 8
+llm_load_print_meta: n_embd_k_gqa     = 256
+llm_load_print_meta: n_embd_v_gqa     = 256
+llm_load_print_meta: f_norm_eps       = 0.0e+00
+llm_load_print_meta: f_norm_rms_eps   = 1.0e-05
+llm_load_print_meta: f_clamp_kqv      = 0.0e+00
+llm_load_print_meta: f_max_alibi_bias = 0.0e+00
+llm_load_print_meta: f_logit_scale    = 0.0e+00
+llm_load_print_meta: n_ff             = 5632
+llm_load_print_meta: n_expert         = 0
+llm_load_print_meta: n_expert_used    = 0
+llm_load_print_meta: causal attn      = 1
+llm_load_print_meta: pooling type     = 0
+llm_load_print_meta: rope type        = 0
+llm_load_print_meta: rope scaling     = linear
+llm_load_print_meta: freq_base_train  = 10000.0
+llm_load_print_meta: freq_scale_train = 1
+llm_load_print_meta: n_ctx_orig_yarn  = 2048
+llm_load_print_meta: rope_finetuned   = unknown
+llm_load_print_meta: ssm_d_conv       = 0
+llm_load_print_meta: ssm_d_inner      = 0
+llm_load_print_meta: ssm_d_state      = 0
+llm_load_print_meta: ssm_dt_rank      = 0
+llm_load_print_meta: model type       = 1B
+llm_load_print_meta: model ftype      = Q4_K - Medium
+llm_load_print_meta: model params     = 1.10 B
+llm_load_print_meta: model size       = 636.18 MiB (4.85 BPW) 
+llm_load_print_meta: general.name     = n/a
+llm_load_print_meta: BOS token        = 1 '<s>'
+llm_load_print_meta: EOS token        = 2 '</s>'
+llm_load_print_meta: UNK token        = 0 '<unk>'
+llm_load_print_meta: PAD token        = 2 '</s>'
+llm_load_print_meta: LF token         = 13 '<0x0A>'
+llm_load_print_meta: max token length = 48
+llm_load_tensors: ggml ctx size =    0.22 MiB
+llm_load_tensors: offloading 22 repeating layers to GPU
+llm_load_tensors: offloading non-repeating layers to GPU
+llm_load_tensors: offloaded 23/23 layers to GPU
+llm_load_tensors:      Metal buffer size =   636.18 MiB
+llm_load_tensors:        CPU buffer size =    35.16 MiB
+....................................................................................
+llama_new_context_with_model: n_ctx      = 2048
+llama_new_context_with_model: n_batch    = 2048
+llama_new_context_with_model: n_ubatch   = 512
+llama_new_context_with_model: flash_attn = 0
+llama_new_context_with_model: freq_base  = 10000.0
+llama_new_context_with_model: freq_scale = 1
+llama_kv_cache_init:      Metal KV buffer size =    44.00 MiB
+llama_new_context_with_model: KV self size  =   44.00 MiB, K (f16):   22.00 MiB, V (f16):   22.00 MiB
+llama_new_context_with_model:        CPU  output buffer size =     0.12 MiB
+llama_new_context_with_model:      Metal compute buffer size =   148.00 MiB
+llama_new_context_with_model:        CPU compute buffer size =     8.01 MiB
+llama_new_context_with_model: graph nodes  = 710
+llama_new_context_with_model: graph splits = 2
+warming up the model with an empty run
+n_ctx: 2048
+
+system_info: n_threads = 4 (n_threads_batch = 4) / 4 | AVX = 0 | AVX_VNNI = 0 | AVX2 = 0 | AVX512 = 0 | AVX512_VBMI = 0 | AVX512_VNNI = 0 | AVX512_BF16 = 0 | FMA = 0 | NEON = 1 | SVE = 0 | ARM_FMA = 1 | F16C = 0 | FP16_VA = 0 | WASM_SIMD = 0 | BLAS = 0 | SSE3 = 0 | SSSE3 = 0 | VSX = 0 | MATMUL_INT8 = 0 | LLAMAFILE = 1 | 
+add_bos: 1
+tokenize the prompt
+prompt: "What is the capital of France?"
+tokens: [ '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973 ]
+recalculate the cached logits (check): embd_inp.empty() false, n_matching_session_tokens 0, embd_inp.size() 8, session_tokens.size() 0, embd_inp.size() 8
+sampling: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	top_k = 40, tfs_z = 1.000, top_p = 0.950, min_p = 0.050, typical_p = 1.000, temp = 0.700
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000
+sampling order: 
+CFG -> Penalties -> top_k -> tfs_z -> typical_p -> top_p -> min_p -> temperature 
+generate: n_ctx = 2048, n_batch = 2048, n_predict = -1, n_keep = 1
+
+
+embd_inp.size(): 8, n_consumed: 0
+eval: [ '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973 ]
+n_past = 8
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13 ]
+n_remain: -2
+eval: [ '':13 ]
+n_past = 9
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550 ]
+n_remain: -3
+eval: [ 'Answer':22550 ]
+n_past = 10
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -4
+eval: [ ':':29901 ]
+n_past = 11
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681 ]
+n_remain: -5
+eval: [ ' Paris':3681 ]
+n_past = 12
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13 ]
+n_remain: -6
+eval: [ '':13 ]
+n_past = 13
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906 ]
+n_remain: -7
+eval: [ '2':29906 ]
+n_past = 14
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900 ]
+n_remain: -8
+eval: [ '0':29900 ]
+n_past = 15
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889 ]
+n_remain: -9
+eval: [ '.':29889 ]
+n_past = 16
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724 ]
+n_remain: -10
+eval: [ ' What':1724 ]
+n_past = 17
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338 ]
+n_remain: -11
+eval: [ ' is':338 ]
+n_past = 18
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278 ]
+n_remain: -12
+eval: [ ' the':278 ]
+n_past = 19
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550 ]
+n_remain: -13
+eval: [ ' currency':27550 ]
+n_past = 20
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310 ]
+n_remain: -14
+eval: [ ' of':310 ]
+n_past = 21
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444 ]
+n_remain: -15
+eval: [ ' France':3444 ]
+n_past = 22
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973 ]
+n_remain: -16
+eval: [ '?':29973 ]
+n_past = 23
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13 ]
+n_remain: -17
+eval: [ '':13 ]
+n_past = 24
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550 ]
+n_remain: -18
+eval: [ 'Answer':22550 ]
+n_past = 25
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -19
+eval: [ ':':29901 ]
+n_past = 26
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176 ]
+n_remain: -20
+eval: [ ' French':5176 ]
+n_past = 27
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382 ]
+n_remain: -21
+eval: [ ' Franc':28382 ]
+n_past = 28
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13 ]
+n_remain: -22
+eval: [ '':13 ]
+n_past = 29
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906 ]
+n_remain: -23
+eval: [ '2':29906 ]
+n_past = 30
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896 ]
+n_remain: -24
+eval: [ '1':29896 ]
+n_past = 31
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889 ]
+n_remain: -25
+eval: [ '.':29889 ]
+n_past = 32
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449 ]
+n_remain: -26
+eval: [ ' Which':8449 ]
+n_past = 33
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272 ]
+n_remain: -27
+eval: [ ' city':4272 ]
+n_past = 34
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338 ]
+n_remain: -28
+eval: [ ' is':338 ]
+n_past = 35
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998 ]
+n_remain: -29
+eval: [ ' known':2998 ]
+n_past = 36
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408 ]
+n_remain: -30
+eval: [ ' as':408 ]
+n_past = 37
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278 ]
+n_remain: -31
+eval: [ ' the':278 ]
+n_past = 38
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376 ]
+n_remain: -32
+eval: [ ' "':376 ]
+n_past = 39
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885 ]
+n_remain: -33
+eval: [ 'City':16885 ]
+n_past = 40
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310 ]
+n_remain: -34
+eval: [ ' of':310 ]
+n_past = 41
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155 ]
+n_remain: -35
+eval: [ ' Love':8155 ]
+n_past = 42
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652 ]
+n_remain: -36
+eval: [ '"?':8652 ]
+n_past = 43
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13 ]
+n_remain: -37
+eval: [ '':13 ]
+n_past = 44
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550 ]
+n_remain: -38
+eval: [ 'Answer':22550 ]
+n_past = 45
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -39
+eval: [ ':':29901 ]
+n_past = 46
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681 ]
+n_remain: -40
+eval: [ ' Paris':3681 ]
+n_past = 47
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13 ]
+n_remain: -41
+eval: [ '':13 ]
+n_past = 48
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906 ]
+n_remain: -42
+eval: [ '2':29906 ]
+n_past = 49
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906 ]
+n_remain: -43
+eval: [ '2':29906 ]
+n_past = 50
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889 ]
+n_remain: -44
+eval: [ '.':29889 ]
+n_past = 51
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724 ]
+n_remain: -45
+eval: [ ' What':1724 ]
+n_past = 52
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338 ]
+n_remain: -46
+eval: [ ' is':338 ]
+n_past = 53
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278 ]
+n_remain: -47
+eval: [ ' the':278 ]
+n_past = 54
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797 ]
+n_remain: -48
+eval: [ ' national':4797 ]
+n_past = 55
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612 ]
+n_remain: -49
+eval: [ ' anth':24612 ]
+n_past = 56
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331 ]
+n_remain: -50
+eval: [ 'em':331 ]
+n_past = 57
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310 ]
+n_remain: -51
+eval: [ ' of':310 ]
+n_past = 58
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444 ]
+n_remain: -52
+eval: [ ' France':3444 ]
+n_past = 59
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973 ]
+n_remain: -53
+eval: [ '?':29973 ]
+n_past = 60
+last: [ '<unk>':0, '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13 ]
+n_remain: -54
+eval: [ '':13 ]
+n_past = 61
+last: [ '<unk>':0, '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550 ]
+n_remain: -55
+eval: [ 'Answer':22550 ]
+n_past = 62
+last: [ '<unk>':0, '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -56
+eval: [ ':':29901 ]
+n_past = 63
+last: [ '<s>':1, ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997 ]
+n_remain: -57
+eval: [ ' La':997 ]
+n_past = 64
+last: [ ' What':1724, ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626 ]
+n_remain: -58
+eval: [ ' Marse':29626 ]
+n_past = 65
+last: [ ' is':338, ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911 ]
+n_remain: -59
+eval: [ 'illa':2911 ]
+n_past = 66
+last: [ ' the':278, ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895 ]
+n_remain: -60
+eval: [ 'ise':895 ]
+n_past = 67
+last: [ ' capital':7483, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13 ]
+n_remain: -61
+eval: [ '':13 ]
+n_past = 68
+last: [ ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906 ]
+n_remain: -62
+eval: [ '2':29906 ]
+n_past = 69
+last: [ ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941 ]
+n_remain: -63
+eval: [ '3':29941 ]
+n_past = 70
+last: [ '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889 ]
+n_remain: -64
+eval: [ '.':29889 ]
+n_past = 71
+last: [ '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449 ]
+n_remain: -65
+eval: [ ' Which':8449 ]
+n_past = 72
+last: [ 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176 ]
+n_remain: -66
+eval: [ ' French':5176 ]
+n_past = 73
+last: [ ':':29901, ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227 ]
+n_remain: -67
+eval: [ ' writer':9227 ]
+n_past = 74
+last: [ ' Paris':3681, '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338 ]
+n_remain: -68
+eval: [ ' is':338 ]
+n_past = 75
+last: [ '':13, '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998 ]
+n_remain: -69
+eval: [ ' known':2998 ]
+n_past = 76
+last: [ '2':29906, '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363 ]
+n_remain: -70
+eval: [ ' for':363 ]
+n_past = 77
+last: [ '0':29900, '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670 ]
+n_remain: -71
+eval: [ ' his':670 ]
+n_past = 78
+last: [ '.':29889, ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420 ]
+n_remain: -72
+eval: [ ' nov':2420 ]
+n_past = 79
+last: [ ' What':1724, ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379 ]
+n_remain: -73
+eval: [ 'els':1379 ]
+n_past = 80
+last: [ ' is':338, ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048 ]
+n_remain: -74
+eval: [ ' about':1048 ]
+n_past = 81
+last: [ ' the':278, ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681 ]
+n_remain: -75
+eval: [ ' Paris':3681 ]
+n_past = 82
+last: [ ' currency':27550, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322 ]
+n_remain: -76
+eval: [ ' and':322 ]
+n_past = 83
+last: [ ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967 ]
+n_remain: -77
+eval: [ ' its':967 ]
+n_past = 84
+last: [ ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305 ]
+n_remain: -78
+eval: [ ' people':2305 ]
+n_past = 85
+last: [ '?':29973, '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973 ]
+n_remain: -79
+eval: [ '?':29973 ]
+n_past = 86
+last: [ '':13, 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13 ]
+n_remain: -80
+eval: [ '':13 ]
+n_past = 87
+last: [ 'Answer':22550, ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550 ]
+n_remain: -81
+eval: [ 'Answer':22550 ]
+n_past = 88
+last: [ ':':29901, ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -82
+eval: [ ':':29901 ]
+n_past = 89
+last: [ ' French':5176, ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633 ]
+n_remain: -83
+eval: [ ' Marcel':16633 ]
+n_past = 90
+last: [ ' Franc':28382, '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588 ]
+n_remain: -84
+eval: [ ' Pr':1588 ]
+n_past = 91
+last: [ '':13, '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291 ]
+n_remain: -85
+eval: [ 'oust':18291 ]
+n_past = 92
+last: [ '2':29906, '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13 ]
+n_remain: -86
+eval: [ '':13 ]
+n_past = 93
+last: [ '1':29896, '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906 ]
+n_remain: -87
+eval: [ '2':29906 ]
+n_past = 94
+last: [ '.':29889, ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946 ]
+n_remain: -88
+eval: [ '4':29946 ]
+n_past = 95
+last: [ ' Which':8449, ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889 ]
+n_remain: -89
+eval: [ '.':29889 ]
+n_past = 96
+last: [ ' city':4272, ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128 ]
+n_remain: -90
+eval: [ ' How':1128 ]
+n_past = 97
+last: [ ' is':338, ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784 ]
+n_remain: -91
+eval: [ ' many':1784 ]
+n_past = 98
+last: [ ' known':2998, ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841 ]
+n_remain: -92
+eval: [ ' days':3841 ]
+n_past = 99
+last: [ ' as':408, ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437 ]
+n_remain: -93
+eval: [ ' do':437 ]
+n_past = 100
+last: [ ' the':278, ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305 ]
+n_remain: -94
+eval: [ ' people':2305 ]
+n_past = 101
+last: [ ' "':376, 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491 ]
+n_remain: -95
+eval: [ ' usually':5491 ]
+n_past = 102
+last: [ 'City':16885, ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864 ]
+n_remain: -96
+eval: [ ' spend':18864 ]
+n_past = 103
+last: [ ' of':310, ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297 ]
+n_remain: -97
+eval: [ ' in':297 ]
+n_past = 104
+last: [ ' Love':8155, '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444 ]
+n_remain: -98
+eval: [ ' France':3444 ]
+n_past = 105
+last: [ '"?':8652, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645 ]
+n_remain: -99
+eval: [ ' during':2645 ]
+n_past = 106
+last: [ '':13, 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009 ]
+n_remain: -100
+eval: [ ' their':1009 ]
+n_past = 107
+last: [ 'Answer':22550, ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757 ]
+n_remain: -101
+eval: [ ' vac':11757 ]
+n_past = 108
+last: [ ':':29901, ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362 ]
+n_remain: -102
+eval: [ 'ation':362 ]
+n_past = 109
+last: [ ' Paris':3681, '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973 ]
+n_remain: -103
+eval: [ '?':29973 ]
+n_past = 110
+last: [ '':13, '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13 ]
+n_remain: -104
+eval: [ '':13 ]
+n_past = 111
+last: [ '2':29906, '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550 ]
+n_remain: -105
+eval: [ 'Answer':22550 ]
+n_past = 112
+last: [ '2':29906, '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -106
+eval: [ ':':29901 ]
+n_past = 113
+last: [ '.':29889, ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991 ]
+n_remain: -107
+eval: [ ' Usually':26991 ]
+n_past = 114
+last: [ ' What':1724, ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892 ]
+n_remain: -108
+eval: [ ',':29892 ]
+n_past = 115
+last: [ ' is':338, ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871 ]
+n_remain: -109
+eval: [ ' ':29871 ]
+n_past = 116
+last: [ ' the':278, ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945 ]
+n_remain: -110
+eval: [ '5':29945 ]
+n_past = 117
+last: [ ' national':4797, ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899 ]
+n_remain: -111
+eval: [ '-':29899 ]
+n_past = 118
+last: [ ' anth':24612, 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955 ]
+n_remain: -112
+eval: [ '7':29955 ]
+n_past = 119
+last: [ 'em':331, ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841 ]
+n_remain: -113
+eval: [ ' days':3841 ]
+n_past = 120
+last: [ ' of':310, ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13 ]
+n_remain: -114
+eval: [ '':13 ]
+n_past = 121
+last: [ ' France':3444, '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906 ]
+n_remain: -115
+eval: [ '2':29906 ]
+n_past = 122
+last: [ '?':29973, '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945 ]
+n_remain: -116
+eval: [ '5':29945 ]
+n_past = 123
+last: [ '':13, 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889 ]
+n_remain: -117
+eval: [ '.':29889 ]
+n_past = 124
+last: [ 'Answer':22550, ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449 ]
+n_remain: -118
+eval: [ ' Which':8449 ]
+n_past = 125
+last: [ ':':29901, ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176 ]
+n_remain: -119
+eval: [ ' French':5176 ]
+n_past = 126
+last: [ ' La':997, ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272 ]
+n_remain: -120
+eval: [ ' city':4272 ]
+n_past = 127
+last: [ ' Marse':29626, 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338 ]
+n_remain: -121
+eval: [ ' is':338 ]
+n_past = 128
+last: [ 'illa':2911, 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998 ]
+n_remain: -122
+eval: [ ' known':2998 ]
+n_past = 129
+last: [ 'ise':895, '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363 ]
+n_remain: -123
+eval: [ ' for':363 ]
+n_past = 130
+last: [ '':13, '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967 ]
+n_remain: -124
+eval: [ ' its':967 ]
+n_past = 131
+last: [ '2':29906, '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258 ]
+n_remain: -125
+eval: [ ' architecture':11258 ]
+n_past = 132
+last: [ '3':29941, '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322 ]
+n_remain: -126
+eval: [ ' and':322 ]
+n_past = 133
+last: [ '.':29889, ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756 ]
+n_remain: -127
+eval: [ ' has':756 ]
+n_past = 134
+last: [ ' Which':8449, ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263 ]
+n_remain: -128
+eval: [ ' a':263 ]
+n_past = 135
+last: [ ' French':5176, ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291 ]
+n_remain: -129
+eval: [ ' UN':8291 ]
+n_past = 136
+last: [ ' writer':9227, ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890 ]
+n_remain: -130
+eval: [ 'ES':2890 ]
+n_past = 137
+last: [ ' is':338, ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217 ]
+n_remain: -131
+eval: [ 'CO':3217 ]
+n_past = 138
+last: [ ' known':2998, ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787 ]
+n_remain: -132
+eval: [ ' World':2787 ]
+n_past = 139
+last: [ ' for':363, ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635 ]
+n_remain: -133
+eval: [ ' Heritage':25635 ]
+n_past = 140
+last: [ ' his':670, ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781 ]
+n_remain: -134
+eval: [ ' Site':10781 ]
+n_past = 141
+last: [ ' nov':2420, 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781, '?':29973 ]
+n_remain: -135
+eval: [ '?':29973 ]
+n_past = 142
+last: [ 'els':1379, ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781, '?':29973, '':13 ]
+n_remain: -136
+eval: [ '':13 ]
+n_past = 143
+last: [ ' about':1048, ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781, '?':29973, '':13, 'Answer':22550 ]
+n_remain: -137
+eval: [ 'Answer':22550 ]
+n_past = 144
+last: [ ' Paris':3681, ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781, '?':29973, '':13, 'Answer':22550, ':':29901 ]
+n_remain: -138
+eval: [ ':':29901 ]
+n_past = 145
+last: [ ' and':322, ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681 ]
+n_remain: -139
+eval: [ ' Paris':3681 ]
+n_past = 146
+last: [ ' its':967, ' people':2305, '?':29973, '':13, 'Answer':22550, ':':29901, ' Marcel':16633, ' Pr':1588, 'oust':18291, '':13, '2':29906, '4':29946, '.':29889, ' How':1128, ' many':1784, ' days':3841, ' do':437, ' people':2305, ' usually':5491, ' spend':18864, ' in':297, ' France':3444, ' during':2645, ' their':1009, ' vac':11757, 'ation':362, '?':29973, '':13, 'Answer':22550, ':':29901, ' Usually':26991, ',':29892, ' ':29871, '5':29945, '-':29899, '7':29955, ' days':3841, '':13, '2':29906, '5':29945, '.':29889, ' Which':8449, ' French':5176, ' city':4272, ' is':338, ' known':2998, ' for':363, ' its':967, ' architecture':11258, ' and':322, ' has':756, ' a':263, ' UN':8291, 'ES':2890, 'CO':3217, ' World':2787, ' Heritage':25635, ' Site':10781, '?':29973, '':13, 'Answer':22550, ':':29901, ' Paris':3681, '</s>':2 ]
+n_remain: -140
+found an EOG token
+ [end of text]
+
+llama_print_timings:        load time =     918.11 ms
+llama_print_timings:      sample time =       4.89 ms /   139 runs   (    0.04 ms per token, 28402.13 tokens per second)
+llama_print_timings: prompt eval time =      68.49 ms /     8 tokens (    8.56 ms per token,   116.80 tokens per second)
+llama_print_timings:        eval time =    3296.05 ms /   138 runs   (   23.88 ms per token,    41.87 tokens per second)
+llama_print_timings:       total time =    3381.09 ms /   146 tokens
+Log end
