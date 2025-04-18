@@ -2,10 +2,12 @@ import React, { useState} from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import { Brain, Sparkles, Gamepad2 } from 'lucide-react';
 import '../styles/Auth.css';
-import {Link} from 'react-router-dom'
+import {Link,useNavigate} from 'react-router-dom'
 import Test from './test';
+import AuthService from '../services/AuthService';
 
 const Login = () => {
+  const navigate = useNavigate();
 //   const navigate=useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -19,9 +21,19 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const res = await AuthService.login(formData);
+      console.log('Logged in user:', res.user);
+      navigate('/');
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Invalid Credentials or Something went wrong!');
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-[#0B1026] relative overflow-hidden">
@@ -82,7 +94,7 @@ const Login = () => {
                 type="submit"
                 className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200"
               >
-                Sign Up
+               Login
               </button>
 
               <div className="relative my-6">
@@ -110,58 +122,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes twinkle {
-          0%, 100% { opacity: 0; transform: scale(0.5); }
-          50% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-
-        .animate-float-slow {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-float-medium {
-          animation: float 5s ease-in-out infinite;
-        }
-
-        .animate-float-fast {
-          animation: float 4s ease-in-out infinite;
-        }
-
-        .animate-glow {
-          animation: glow 2s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-          0%, 100% { text-shadow: 0 0 20px rgba(129, 140, 248, 0.5); }
-          50% { text-shadow: 0 0 30px rgba(129, 140, 248, 0.8); }
-        }
-
-        .star {
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background: white;
-          border-radius: 50%;
-          animation: twinkle var(--duration, 3s) infinite;
-          opacity: 0;
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 };

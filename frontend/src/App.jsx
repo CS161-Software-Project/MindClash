@@ -3,9 +3,11 @@ import { useState } from 'react'
 import Signup from './components/Signup'
 import { BrowserRouter as Router, Routes, Route, BrowserRouter} from 'react-router-dom'
 import Login from './components/Login'
-import Home from './pages/Home'
-import Test from './components/test'
 import Loader from "./pages/Loader"
+import Avatar from './components/Avatar'
+import Home from './pages/home'
+import Profile from './pages/profile'
+import AIQuiz from './pages/AIQuiz'
 
 function App() {
   const [loading,setLoading] = useState(true);
@@ -26,7 +28,12 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/test' element={<Test />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/ai-quiz' element={<AIQuiz />} />
+        <Route 
+          path="/avatar" 
+          element={<Avatar />}
+        />
       </Routes>
     </Router>
   )
