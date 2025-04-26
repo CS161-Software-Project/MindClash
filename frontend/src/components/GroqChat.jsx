@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/GroqChat.css';
 
 const GroqChat = () => {
   const [prompt, setPrompt] = useState('');
@@ -66,74 +67,6 @@ const GroqChat = () => {
           </div>
         </div>
       )}
-      
-      <style jsx>{`
-        .groq-chat-container {
-          max-width: 800px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        
-        .form-group {
-          margin-bottom: 20px;
-        }
-        
-        label {
-          display: block;
-          margin-bottom: 8px;
-          font-weight: bold;
-        }
-        
-        .prompt-input {
-          width: 100%;
-          padding: 12px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          font-size: 16px;
-          font-family: inherit;
-        }
-        
-        .submit-button {
-          background-color: #007bff;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          padding: 12px 20px;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-        
-        .submit-button:hover:not(:disabled) {
-          background-color: #0069d9;
-        }
-        
-        .submit-button:disabled {
-          background-color: #cccccc;
-          cursor: not-allowed;
-        }
-        
-        .error-message {
-          margin-top: 20px;
-          padding: 12px;
-          background-color: #f8d7da;
-          color: #721c24;
-          border-radius: 4px;
-        }
-        
-        .response-container {
-          margin-top: 30px;
-          padding: 20px;
-          background-color: #f8f9fa;
-          border-radius: 4px;
-          border-left: 4px solid #007bff;
-        }
-        
-        .response-content {
-          white-space: pre-wrap;
-          line-height: 1.5;
-        }
-      `}</style>
     </div>
   );
 };

@@ -12,5 +12,6 @@ urlpatterns = [
     
     path('api/token-auth/', ObtainAuthToken.as_view(), name='token-auth'),  # Built-in token authentication
     
-    path('api/groq-chat/', views.groq_chat, name='groq-chat'),  # New endpoint for GROQ API
+    path('api/groq-chat/', views.groq_chat, name='groq-chat'),  # GROQ AI endpoint
+    path('api/generate-quiz/', views.generate_quiz, name='generate-quiz'),  # Quiz generation endpoint
 ]

@@ -24,6 +24,18 @@ groq_chat_schema = openapi.Schema(
     required=['prompt']
 )
 
+# Define the request body schema for quiz generation
+quiz_generation_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'topic': openapi.Schema(type=openapi.TYPE_STRING, description='Quiz topic'),
+        'difficulty': openapi.Schema(type=openapi.TYPE_STRING, description='Quiz difficulty level', default="medium"),
+        'count': openapi.Schema(type=openapi.TYPE_INTEGER, description='Number of questions', default=5),
+        'model': openapi.Schema(type=openapi.TYPE_STRING, description='GROQ model to use', default="meta-llama/llama-4-scout-17b-16e-instruct"),
+    },
+    required=['topic']
+)
+
 # API - http://127.0.0.1:8000/api/groq-chat/ (POST request)
 @swagger_auto_schema(
     method='post', 
@@ -74,6 +86,103 @@ def groq_chat(request):
                 "total_tokens": completion.usage.total_tokens
             }
         })
+        
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+# API - http://127.0.0.1:8000/api/generate-quiz/ (POST request)
+@swagger_auto_schema(
+    method='post', 
+    request_body=quiz_generation_schema, 
+    responses={200: "Quiz generated successfully", 400: "Invalid request", 500: "Quiz generation error"}
+)
+@api_view(['POST'])
+def generate_quiz(request):
+    """
+    Endpoint to generate a quiz using GROQ AI.
+    """
+    try:
+        data = request.data
+        topic = data.get('topic')
+        difficulty = data.get('difficulty', 'medium')
+        count = data.get('count', 5)
+        model = data.get('model', "meta-llama/llama-4-scout-17b-16e-instruct")
+        
+        if not topic:
+            return Response({"error": "Topic is required"}, status=400)
+        
+        # Create the prompt for quiz generation
+        prompt = f"""Generate a timed quiz of {count} multiple-choice questions on the topic "{topic}" with difficulty level {difficulty}.
+        
+        Format the response as a JSON object with the following structure:
+        {{
+          "title": "Quiz title",
+          "questions": [
+            {{
+              "question": "Question text",
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correctAnswer": "Correct option letter (A, B, C, or D)",
+              "explanation": "Brief explanation of the answer"
+            }},
+            ... more questions
+          ],
+          "recommendedTimeInMinutes": recommended time to complete this quiz
+        }}
+        
+        Make sure all questions are factually accurate and each has exactly 4 answer options.
+        """
+            
+        # Create GROQ completion
+        completion = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.7,
+            max_completion_tokens=2048,
+            top_p=1,
+            stream=False,
+            stop=None,
+        )
+        
+        # Extract response content
+        response_content = completion.choices[0].message.content
+        
+        # Try to extract JSON from the response
+        try:
+            # Look for JSON in code blocks or in the entire response
+            json_match = response_content.strip()
+            if "```json" in json_match:
+                json_match = json_match.split("```json")[1].split("```")[0].strip()
+            elif "```" in json_match:
+                json_match = json_match.split("```")[1].split("```")[0].strip()
+            
+            # Parse the JSON
+            quiz_data = json.loads(json_match)
+            
+            # Validate the quiz data structure
+            if "title" not in quiz_data or "questions" not in quiz_data:
+                raise ValueError("Invalid quiz data structure")
+                
+            # Return the quiz data
+            return Response({
+                "success": True,
+                "quiz": quiz_data,
+                "topic": topic,
+                "difficulty": difficulty,
+                "count": count
+            })
+            
+        except Exception as json_error:
+            # If JSON parsing failed, return the raw response
+            return Response({
+                "success": False,
+                "error": f"Failed to parse quiz data: {str(json_error)}",
+                "raw_response": response_content
+            }, status=400)
         
     except Exception as e:
         return Response({"error": str(e)}, status=500)
