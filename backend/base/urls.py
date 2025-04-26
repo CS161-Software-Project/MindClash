@@ -1,6 +1,7 @@
 from django.urls import path
 from .service import loginService, logoutService, registerService, homePage
 from rest_framework.authtoken.views import ObtainAuthToken
+from . import views
 
 urlpatterns = [
     path('', homePage.home, name='home'),
@@ -10,5 +11,6 @@ urlpatterns = [
     path("register/", registerService.registerPage, name="register"),
     
     path('api/token-auth/', ObtainAuthToken.as_view(), name='token-auth'),  # Built-in token authentication
-
+    
+    path('api/groq-chat/', views.groq_chat, name='groq-chat'),  # New endpoint for GROQ API
 ]
