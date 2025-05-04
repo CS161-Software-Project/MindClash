@@ -194,23 +194,23 @@ def test_groq_streaming():
     This is not exposed via API but can be called for testing.
     """
     try:
-        completion = client.chat.completions.create(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
-            messages=[
-                {
-                    "role": "user",
-                    "content": "Create a quiz of 5 questions on harry potter with difficulty level medium\n "
-                }
-            ],
-            temperature=1,
-            max_completion_tokens=1024,
-            top_p=1,
-            stream=True,
-            stop=None,
-        )
+completion = client.chat.completions.create(
+    model="meta-llama/llama-4-scout-17b-16e-instruct",
+    messages=[
+        {
+            "role": "user",
+            "content": "Create a quiz of 5 questions on harry potter with difficulty level medium\n "
+        }
+    ],
+    temperature=1,
+    max_completion_tokens=1024,
+    top_p=1,
+    stream=True,
+    stop=None,
+)
 
-        for chunk in completion:
-            print(chunk.choices[0].delta.content or "", end="")
+for chunk in completion:
+    print(chunk.choices[0].delta.content or "", end="")
             
     except Exception as e:
         print(f"Error: {str(e)}")

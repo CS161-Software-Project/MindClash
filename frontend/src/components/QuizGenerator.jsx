@@ -177,8 +177,8 @@ const QuizGenerator = () => {
               onChange={handleInputChange}
               className="form-control"
             />
-          </div>
-          
+      </div>
+
           <div className="form-group">
             <label htmlFor="difficulty">Difficulty Level:</label>
             <select
@@ -226,8 +226,8 @@ const QuizGenerator = () => {
           <div className="quiz-header">
             <h3>{quiz.title}</h3>
             <div className="timer">Time left: {formatTime(timeLeft)}</div>
-          </div>
-          
+      </div>
+
           <div className="question-navigation">
             <span>Question {currentQuestion + 1} of {quiz.questions.length}</span>
           </div>
@@ -248,7 +248,7 @@ const QuizGenerator = () => {
               ))}
             </div>
           </div>
-          
+
           <div className="navigation-buttons">
             <button 
               onClick={handlePrevQuestion} 
@@ -274,9 +274,9 @@ const QuizGenerator = () => {
               </button>
             )}
           </div>
-        </div>
-      )}
-      
+            </div>
+          )}
+
       {quizCompleted && (
         <div className="results-container">
           <h3>Quiz Results</h3>
