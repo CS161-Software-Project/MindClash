@@ -7,6 +7,8 @@ import rainSound from '../assets/rain.mp3';
 import '../styles/Home.css';
 import Test from '../components/test';
 import { motion } from 'framer-motion';
+import "@google/model-viewer";
+import axios from 'axios';
 
 const quizCategories = [
   {
@@ -196,6 +198,22 @@ const Home = () => {
     navigate('/ai-quiz');
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const res = await axios.get('http://localhost:8000/api/profile/', {
+          headers: { Authorization: `Token ${token}` }
+        });
+        const userData = JSON.parse(localStorage.getItem('user')) || {};
+        userData.profile = res.data.profile;
+        setUser(userData);
+      } catch (e) {}
+    };
+    fetchProfile();
+  }, []);
+
   return (
     <div className={`min-h-screen transition-colors duration-500 ${isDarkMode ? 'bg-[#0B1026]' : 'bg-[#f0f4ff]'} relative overflow-hidden`}>
       {/* Stars canvas - only shown in dark mode */}
@@ -309,11 +327,15 @@ const Home = () => {
                     className="w-8 h-8 rounded-full cursor-pointer overflow-hidden border-2 border-indigo-600"
                     title="Profile"
                   >
-                    <img
-                      src={user?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                    {user?.profile?.avatar_url ? (
+                      <model-viewer src={user.profile.avatar_url} alt="3D Avatar" camera-controls style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'transparent' }} />
+                    ) : (
+                      <img
+                        src={user?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   
                   {showProfileMenu && (

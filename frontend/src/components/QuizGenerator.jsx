@@ -1,369 +1,336 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaBrain, FaSpinner, FaLightbulb } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import '../styles/QuizGenerator.css';
 
 const QuizGenerator = () => {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [category, setCategory] = useState('general knowledge');
-  const [difficulty, setDifficulty] = useState('medium');
-  const [quizQuestion, setQuizQuestion] = useState(null);
-  const [selectedAnswer, setSelectedAnswer] = useState('');
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [serviceStatus, setServiceStatus] = useState('unknown');
-  const [hints, setHints] = useState([]);
-  const [showHints, setShowHints] = useState(false);
-  const [hintsLoading, setHintsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    topic: '',
+    count: 5,
+    difficulty: 'medium'
+  });
+  
+  const [quiz, setQuiz] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [quizActive, setQuizActive] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [score, setScore] = useState(0);
 
-  // Custom categories to match your app's theme
-  const categories = [
-    'general knowledge',
-    'harry potter',
-    'batman',
-    'cricket',
-    'science',
-    'history',
-    'geography',
-    'literature'
-  ];
-
-  const difficulties = ['easy', 'medium', 'hard'];
-
-  // Check the status of the LlamaFile service on component mount
+  // Handle timing
   useEffect(() => {
-    checkServiceStatus();
-  }, []);
-
-  const checkServiceStatus = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/llamafile/status/');
-      const data = await response.json();
-      setServiceStatus(data.status);
-    } catch (error) {
-      console.error('Error checking LlamaFile service status:', error);
-      setServiceStatus('error');
+    let timer;
+    if (quizActive && timeLeft > 0) {
+      timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    } else if (timeLeft === 0 && quizActive) {
+      handleQuizEnd();
     }
+    return () => clearTimeout(timer);
+  }, [timeLeft, quizActive]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === 'count' ? parseInt(value) : value
+    });
   };
 
-  const startService = async () => {
-    try {
-      setError(null);
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        setError('You must be logged in to start the LlamaFile service');
-        return;
-      }
-
-      const response = await fetch('http://localhost:8000/api/llamafile/start/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        checkServiceStatus();
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to start service');
-      }
-    } catch (error) {
-      console.error('Error starting LlamaFile service:', error);
-      setError('Network error when starting service');
-    }
-  };
-
-  const generateQuestion = async () => {
-    setIsGenerating(true);
-    setError(null);
-    setQuizQuestion(null);
-    setSelectedAnswer('');
-    setShowExplanation(false);
-    setHints([]);
-    setShowHints(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setQuiz(null);
+    setSelectedAnswers({});
+    setQuizCompleted(false);
     
     try {
-      const response = await fetch('http://localhost:8000/api/quiz/generate-question/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          category,
-          difficulty
-        })
+      const { topic, count, difficulty } = formData;
+      
+      // Use the dedicated backend endpoint for quiz generation
+      const result = await axios.post('http://localhost:8000/api/generate-quiz/', { 
+        topic,
+        count,
+        difficulty
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        if (data.question && data.options && data.correct_answer) {
-          setQuizQuestion(data);
-        } else if (data.raw_response) {
-          setError('The AI provided an invalid response format. Please try again.');
-          console.error('Invalid response:', data.raw_response);
-        }
+      if (result.data.success) {
+        const quizData = result.data.quiz;
+        setQuiz(quizData);
+        setCurrentQuestion(0);
+        
+        // Set up timer based on recommended time or default
+        const timeInSeconds = (quizData.recommendedTimeInMinutes || 
+          Math.max(1, Math.ceil(count / 2))) * 60;
+        setTimeLeft(timeInSeconds);
+        setQuizActive(true);
       } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to generate question');
+        throw new Error(result.data.error || 'Failed to generate quiz');
       }
-    } catch (error) {
-      console.error('Error generating question:', error);
-      setError('Network error when generating question');
+      
+    } catch (err) {
+      console.error('Error generating quiz:', err);
+      setError(err.message || 'Failed to generate quiz. Please try again.');
     } finally {
-      setIsGenerating(false);
+      setLoading(false);
     }
   };
 
-  const generateHints = async () => {
-    if (!quizQuestion) return;
+  const handleAnswerSelect = (questionIndex, optionIndex) => {
+    setSelectedAnswers({
+      ...selectedAnswers,
+      [questionIndex]: optionIndex
+    });
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestion < quiz.questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    }
+  };
+
+  const handlePrevQuestion = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
+  };
+
+  const getOptionLetter = (index) => {
+    return String.fromCharCode(65 + index); // A, B, C, D...
+  };
+
+  const handleQuizEnd = () => {
+    setQuizActive(false);
+    setQuizCompleted(true);
     
-    setHintsLoading(true);
-    try {
-      const response = await fetch('http://localhost:8000/api/quiz/generate-hints/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          question: quizQuestion.question,
-          options: quizQuestion.options,
-          correct_answer: quizQuestion.correct_answer
-        })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.hint1 && data.hint2) {
-          setHints([data.hint1, data.hint2]);
-          setShowHints(true);
-        } else {
-          setError('Could not generate hints');
+    // Calculate score
+    let correctCount = 0;
+    quiz.questions.forEach((question, index) => {
+      const selectedOption = selectedAnswers[index];
+      if (selectedOption !== undefined) {
+        const correctLetter = question.correctAnswer.replace(/[^A-D]/g, '');
+        const correctIndex = correctLetter.charCodeAt(0) - 65;
+        if (selectedOption === correctIndex) {
+          correctCount++;
         }
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to generate hints');
       }
-    } catch (error) {
-      console.error('Error generating hints:', error);
-      setError('Network error when generating hints');
-    } finally {
-      setHintsLoading(false);
-    }
+    });
+    
+    setScore(correctCount);
   };
 
-  const handleSelectAnswer = (answer) => {
-    setSelectedAnswer(answer);
-    setShowExplanation(true);
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  const isCorrectAnswer = () => {
-    return selectedAnswer === quizQuestion?.correct_answer;
+  const restartQuiz = () => {
+    setQuizActive(true);
+    setQuizCompleted(false);
+    setCurrentQuestion(0);
+    setSelectedAnswers({});
+    const timeInSeconds = (quiz.recommendedTimeInMinutes || 
+      Math.max(1, Math.ceil(formData.count / 2))) * 60;
+    setTimeLeft(timeInSeconds);
+  };
+
+  const newQuiz = () => {
+    setQuiz(null);
+    setQuizActive(false);
+    setQuizCompleted(false);
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="mb-8 text-center">
-        <motion.h2 
-          className="text-3xl font-bold mb-3 text-indigo-100"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <FaBrain className="inline-block mr-2 text-indigo-400" /> AI-Powered Quiz Generator
-        </motion.h2>
-        <p className="text-indigo-300">
-          Using LlamaFile to create custom quiz questions just for you
-        </p>
-
-        {/* Service Status Indicator */}
-        <div className="mt-4 flex justify-center items-center">
-          <div className={`px-4 py-2 rounded-full flex items-center ${
-            serviceStatus === 'running' 
-              ? 'bg-green-500/20 text-green-400' 
-              : serviceStatus === 'error' 
-                ? 'bg-red-500/20 text-red-400'
-                : 'bg-yellow-500/20 text-yellow-400'
-          }`}>
-            <div className={`w-3 h-3 rounded-full mr-2 ${
-              serviceStatus === 'running' 
-                ? 'bg-green-400' 
-                : serviceStatus === 'error'
-                  ? 'bg-red-400'
-                  : 'bg-yellow-400'
-            }`}></div>
-            LlamaFile Service: {serviceStatus === 'running' ? 'Online' : 'Offline'}
+    <div className="quiz-generator-container">
+      <h2>AI Quiz Generator</h2>
+      
+      {!quiz && (
+        <form onSubmit={handleSubmit} className="quiz-form">
+          <div className="form-group">
+            <label htmlFor="topic">Quiz Topic:</label>
+            <input
+              type="text"
+              id="topic"
+              name="topic"
+              value={formData.topic}
+              onChange={handleInputChange}
+              placeholder="e.g., JavaScript, World History, Science"
+              required
+              className="form-control"
+            />
           </div>
           
-          {serviceStatus !== 'running' && (
-            <motion.button
-              onClick={startService}
-              className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Start Service
-            </motion.button>
-          )}
-        </div>
+          <div className="form-group">
+            <label htmlFor="count">Number of Questions:</label>
+            <input
+              type="number"
+              id="count"
+              name="count"
+              min="1"
+              max="10"
+              value={formData.count}
+              onChange={handleInputChange}
+              className="form-control"
+            />
       </div>
 
+          <div className="form-group">
+            <label htmlFor="difficulty">Difficulty Level:</label>
+            <select
+              id="difficulty"
+              name="difficulty"
+              value={formData.difficulty}
+              onChange={handleInputChange}
+              className="form-control"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          
+          <div className="form-actions">
+            <button 
+              type="submit" 
+              className="generate-btn"
+              disabled={loading || !formData.topic.trim()}
+            >
+              {loading ? 'Generating Quiz...' : 'Generate Quiz'}
+            </button>
+            
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={() => navigate('/')}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+      
       {error && (
-        <div className="mb-6 p-4 bg-red-900/30 border border-red-700 rounded-lg text-red-200">
-          <p>Error: {error}</p>
+        <div className="error-message">
+          <p>{error}</p>
+          <button onClick={() => setError('')} className="dismiss-btn">Dismiss</button>
         </div>
       )}
-
-      <div className="glass-effect rounded-xl p-6 shadow-lg mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label className="block text-indigo-300 mb-2">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-white/10 text-white rounded-lg p-3 border border-indigo-600/30 focus:border-indigo-500 focus:outline-none"
-              disabled={isGenerating}
-            >
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-indigo-300 mb-2">Difficulty</label>
-            <select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
-              className="w-full bg-white/10 text-white rounded-lg p-3 border border-indigo-600/30 focus:border-indigo-500 focus:outline-none"
-              disabled={isGenerating}
-            >
-              {difficulties.map(diff => (
-                <option key={diff} value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <motion.button
-          onClick={generateQuestion}
-          disabled={isGenerating || serviceStatus !== 'running'}
-          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center
-            ${isGenerating || serviceStatus !== 'running'
-              ? 'bg-indigo-800/50 text-indigo-400 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40'
-            }`}
-          whileHover={{ scale: serviceStatus === 'running' ? 1.02 : 1 }}
-          whileTap={{ scale: serviceStatus === 'running' ? 0.98 : 1 }}
-        >
-          {isGenerating ? (
-            <>
-              <FaSpinner className="animate-spin mr-2" />
-              Generating Question...
-            </>
-          ) : (
-            'Generate New Question'
-          )}
-        </motion.button>
+      
+      {quiz && !quizCompleted && (
+        <div className="quiz-container">
+          <div className="quiz-header">
+            <h3>{quiz.title}</h3>
+            <div className="timer">Time left: {formatTime(timeLeft)}</div>
       </div>
 
-      {quizQuestion && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="glass-effect rounded-xl p-6 shadow-lg"
-        >
-          <h3 className="text-xl font-bold mb-6 text-white">{quizQuestion.question}</h3>
+          <div className="question-navigation">
+            <span>Question {currentQuestion + 1} of {quiz.questions.length}</span>
+          </div>
           
-          <div className="grid grid-cols-1 gap-3 mb-6">
-            {quizQuestion.options.map((option, index) => (
-              <motion.button
-                key={index}
-                onClick={() => handleSelectAnswer(option)}
-                disabled={showExplanation}
-                className={`p-4 rounded-lg text-left transition-all duration-300 ${
-                  selectedAnswer === option
-                    ? selectedAnswer === quizQuestion.correct_answer
-                      ? 'bg-green-600/30 border border-green-500'
-                      : 'bg-red-600/30 border border-red-500'
-                    : showExplanation && option === quizQuestion.correct_answer
-                      ? 'bg-green-600/30 border border-green-500'
-                      : 'bg-white/10 border border-white/20 hover:bg-white/20'
-                } ${showExplanation ? 'cursor-default' : 'cursor-pointer'}`}
-                whileHover={{ scale: showExplanation ? 1 : 1.02 }}
-                whileTap={{ scale: showExplanation ? 1 : 0.98 }}
-              >
-                {option}
-              </motion.button>
-            ))}
+          <div className="question-container">
+            <p className="question-text">{quiz.questions[currentQuestion].question}</p>
+            
+            <div className="options-container">
+              {quiz.questions[currentQuestion].options.map((option, optIndex) => (
+                <div 
+                  key={optIndex}
+                  className={`option ${selectedAnswers[currentQuestion] === optIndex ? 'selected' : ''}`}
+                  onClick={() => handleAnswerSelect(currentQuestion, optIndex)}
+                >
+                  <span className="option-letter">{getOptionLetter(optIndex)}</span>
+                  <span className="option-text">{option}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {!showExplanation && (
-            <div className="flex justify-between">
-              <motion.button
-                onClick={generateHints}
-                disabled={hintsLoading}
-                className={`py-2 px-4 rounded-lg font-medium transition-all duration-300 flex items-center
-                  ${hintsLoading
-                    ? 'bg-indigo-800/50 text-indigo-400 cursor-not-allowed'
-                    : 'bg-indigo-600/80 hover:bg-indigo-600 text-white'
-                  }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+          <div className="navigation-buttons">
+            <button 
+              onClick={handlePrevQuestion} 
+              disabled={currentQuestion === 0}
+              className="nav-btn"
+            >
+              Previous
+            </button>
+            
+            {currentQuestion < quiz.questions.length - 1 ? (
+              <button 
+                onClick={handleNextQuestion}
+                className="nav-btn"
               >
-                {hintsLoading ? (
-                  <>
-                    <FaSpinner className="animate-spin mr-2" />
-                    Loading Hints...
-                  </>
-                ) : (
-                  <>
-                    <FaLightbulb className="mr-2" />
-                    {showHints ? 'Hide Hints' : 'Need a Hint?'}
-                  </>
-                )}
-              </motion.button>
+                Next
+              </button>
+            ) : (
+              <button 
+                onClick={handleQuizEnd}
+                className="finish-btn"
+              >
+                Finish Quiz
+              </button>
+            )}
+          </div>
             </div>
           )}
 
-          {showHints && hints.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              transition={{ duration: 0.3 }}
-              className="mt-4 p-4 bg-indigo-900/50 rounded-lg border border-indigo-700"
-            >
-              <p className="font-medium text-yellow-300 mb-2">Hints:</p>
-              <ul className="list-disc list-inside space-y-2">
-                {hints.map((hint, index) => (
-                  <li key={index} className="text-yellow-200">
-                    <span className="text-yellow-100">{hint}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-
-          {showExplanation && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              transition={{ duration: 0.3 }}
-              className={`mt-4 p-4 rounded-lg ${
-                isCorrectAnswer()
-                  ? 'bg-green-900/30 border border-green-700'
-                  : 'bg-red-900/30 border border-red-700'
-              }`}
-            >
-              <p className="font-medium mb-2">
-                {isCorrectAnswer()
-                  ? '✅ Correct!'
-                  : `❌ Incorrect. The correct answer is: ${quizQuestion.correct_answer}`}
-              </p>
-              <p>{quizQuestion.explanation}</p>
-            </motion.div>
-          )}
-        </motion.div>
+      {quizCompleted && (
+        <div className="results-container">
+          <h3>Quiz Results</h3>
+          <p className="score-display">
+            Your Score: {score} / {quiz.questions.length} 
+            ({Math.round((score / quiz.questions.length) * 100)}%)
+          </p>
+          
+          <div className="results-details">
+            <h4>Review Answers:</h4>
+            {quiz.questions.map((question, qIndex) => {
+              const selectedOption = selectedAnswers[qIndex];
+              const correctLetter = question.correctAnswer.replace(/[^A-D]/g, '');
+              const correctIndex = correctLetter.charCodeAt(0) - 65;
+              const isCorrect = selectedOption === correctIndex;
+              
+              return (
+                <div key={qIndex} className={`result-item ${isCorrect ? 'correct-item' : 'incorrect-item'}`}>
+                  <p className="result-question">
+                    {qIndex + 1}. {question.question}
+                    {isCorrect ? ' ✅' : ' ❌'}
+                  </p>
+                  
+                  <div className="result-options">
+                    {question.options.map((option, optIndex) => (
+                      <div 
+                        key={optIndex}
+                        className={`result-option ${optIndex === correctIndex ? 'correct' : ''} 
+                          ${optIndex === selectedOption && optIndex !== correctIndex ? 'incorrect' : ''}
+                          ${optIndex === selectedOption ? 'selected' : ''}`}
+                      >
+                        <span className="option-letter">{getOptionLetter(optIndex)}</span>
+                        <span className="option-text">{option}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="explanation">
+                    <p>{question.explanation}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="result-actions">
+            <button onClick={restartQuiz} className="restart-btn">
+              Restart Quiz
+            </button>
+            <button onClick={newQuiz} className="new-quiz-btn">
+              Create New Quiz
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

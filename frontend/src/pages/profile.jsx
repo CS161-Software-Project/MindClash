@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import '../styles/Profile.css';
+import axios from 'axios';
+import '@google/model-viewer';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -23,20 +25,33 @@ const Profile = () => {
   const cameraRef = useRef(null);
   const particlesRef = useRef(null);
 
+  // Fetch latest profile from backend on mount
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    if (!userData) {
-      navigate('/login');
-      return;
-    }
-    setUser(userData);
-    setFormData({
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      age: userData.age || '',
-      bio: userData.bio || ''
-    });
-    setLoading(false);
+    const fetchProfile = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      try {
+        const res = await axios.get('http://localhost:8000/api/profile/', {
+          headers: { Authorization: `Token ${token}` }
+        });
+        const userData = JSON.parse(localStorage.getItem('user')) || {};
+        userData.profile = res.data.profile;
+        setUser(userData);
+        setFormData({
+          firstName: res.data.profile.first_name || '',
+          lastName: res.data.profile.last_name || '',
+          age: res.data.profile.age || '',
+          bio: res.data.profile.bio || ''
+        });
+        setLoading(false);
+      } catch (err) {
+        navigate('/login');
+      }
+    };
+    fetchProfile();
   }, [navigate]);
 
   // Track mouse position for parallax effects
@@ -224,11 +239,7 @@ const Profile = () => {
                 className="profile-image-container w-48 h-48 rounded-full overflow-hidden border-4 border-indigo-400 relative group animate-float animate-glow flex-shrink-0"
                 style={getParallaxStyle(10)}
               >
-                <img
-                  src={user?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                  alt="Profile"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+                <model-viewer src={user?.profile?.avatar_url} alt="3D Avatar" camera-controls style={{ width: '192px', height: '192px', borderRadius: '50%', background: 'transparent', cursor: 'pointer' }} onClick={() => navigate('/avatar')} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                   <span className="text-white text-sm font-medium">Change Photo</span>
                 </div>

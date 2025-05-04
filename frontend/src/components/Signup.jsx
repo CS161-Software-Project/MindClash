@@ -119,8 +119,7 @@ const Signup = () => {
       // Add a delay to see console logs before redirecting
       setTimeout(() => {
         // If successful, redirect to dashboard or home
-        navigate('/')
-        // navigate('/avatar')
+        navigate('/avatar');
       }, 1000);
     } catch (err) {
       console.error("Submit error:", err);
