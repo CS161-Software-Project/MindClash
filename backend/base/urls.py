@@ -14,4 +14,7 @@ urlpatterns = [
     
     path('api/groq-chat/', views.groq_chat, name='groq-chat'),  # GROQ AI endpoint
     path('api/generate-quiz/', views.generate_quiz, name='generate-quiz'),  # Quiz generation endpoint
+    
+    path('api/profile/', views.get_profile, name='get-profile'),  # Get user profile
+    path('api/profile/update/', views.update_profile, name='update-profile'),  # Update user profile
 ]

@@ -1,11 +1,14 @@
 from django.conf import settings
 from groq import Groq
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 import json
 import os
+from .models import UserProfile
 
 # Initialize GROQ client with API key from settings
 client = Groq(
@@ -34,6 +37,18 @@ quiz_generation_schema = openapi.Schema(
         'model': openapi.Schema(type=openapi.TYPE_STRING, description='GROQ model to use', default="meta-llama/llama-4-scout-17b-16e-instruct"),
     },
     required=['topic']
+)
+
+# Define request body schema for profile update
+profile_update_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'avatar_url': openapi.Schema(type=openapi.TYPE_STRING, description='URL of the user avatar'),
+        'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='First name of the user'),
+        'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='Last name of the user'),
+        'age': openapi.Schema(type=openapi.TYPE_INTEGER, description='Age of the user'),
+        'bio': openapi.Schema(type=openapi.TYPE_STRING, description='User bio'),
+    }
 )
 
 # API - http://127.0.0.1:8000/api/groq-chat/ (POST request)
@@ -194,23 +209,106 @@ def test_groq_streaming():
     This is not exposed via API but can be called for testing.
     """
     try:
-completion = client.chat.completions.create(
-    model="meta-llama/llama-4-scout-17b-16e-instruct",
-    messages=[
-        {
-            "role": "user",
-            "content": "Create a quiz of 5 questions on harry potter with difficulty level medium\n "
-        }
-    ],
-    temperature=1,
-    max_completion_tokens=1024,
-    top_p=1,
-    stream=True,
-    stop=None,
-)
+        completion = client.chat.completions.create(
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            messages=[
+                {
+                    "role": "user",
+                    "content": "Create a quiz of 5 questions on harry potter with difficulty level medium\n "
+                }
+            ],
+            temperature=1,
+            max_completion_tokens=1024,
+            top_p=1,
+            stream=True,
+            stop=None,
+        )
 
-for chunk in completion:
-    print(chunk.choices[0].delta.content or "", end="")
+        for chunk in completion:
+            print(chunk.choices[0].delta.content or "", end="")
             
     except Exception as e:
         print(f"Error: {str(e)}")
+
+@swagger_auto_schema(
+    method='post',
+    request_body=profile_update_schema,
+    responses={200: "Profile updated successfully", 400: "Invalid request"}
+)
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    """
+    Update user profile information including avatar URL
+    """
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+        data = request.data
+        
+        # Update fields if provided in request
+        if 'avatar_url' in data:
+            profile.avatar_url = data['avatar_url']
+        if 'first_name' in data:
+            profile.first_name = data['first_name']
+        if 'last_name' in data:
+            profile.last_name = data['last_name']
+        if 'age' in data:
+            profile.age = data['age']
+        if 'bio' in data:
+            profile.bio = data['bio']
+            
+        profile.save()
+        
+        return Response({
+            "success": True,
+            "message": "Profile updated successfully",
+            "profile": {
+                "username": request.user.username,
+                "email": request.user.email,
+                "avatar_url": profile.avatar_url,
+                "first_name": profile.first_name,
+                "last_name": profile.last_name,
+                "age": profile.age,
+                "bio": profile.bio
+            }
+        })
+        
+    except UserProfile.DoesNotExist:
+        return Response({
+            "error": "User profile not found"
+        }, status=400)
+    except Exception as e:
+        return Response({
+            "error": str(e)
+        }, status=400)
+
+@swagger_auto_schema(
+    method='get',
+    responses={200: "Profile retrieved successfully", 404: "Profile not found"}
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_profile(request):
+    """
+    Get user profile information
+    """
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+        return Response({
+            "success": True,
+            "profile": {
+                "username": request.user.username,
+                "email": request.user.email,
+                "avatar_url": profile.avatar_url,
+                "first_name": profile.first_name,
+                "last_name": profile.last_name,
+                "age": profile.age,
+                "bio": profile.bio
+            }
+        })
+    except UserProfile.DoesNotExist:
+        return Response({
+            "error": "User profile not found"
+        }, status=404)

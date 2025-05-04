@@ -6,6 +6,7 @@ from drf_yasg import openapi
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+from ..models import UserProfile
 
 # Define the request body schema for login
 login_schema = openapi.Schema(
@@ -44,6 +45,24 @@ def loginPage(request):
     if user is not None:
         login(request, user)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"message": "Login successful", "user": user.username, "token": token.key}, status=200)
+        
+        # Get or create user profile
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        
+        return Response({
+            "message": "Login successful",
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "profile": {
+                    "avatar_url": profile.avatar_url,
+                    "first_name": profile.first_name,
+                    "last_name": profile.last_name,
+                    "age": profile.age,
+                    "bio": profile.bio
+                }
+            },
+            "token": token.key
+        }, status=200)
     else:
         return Response({"error": "Invalid credentials"}, status=400)

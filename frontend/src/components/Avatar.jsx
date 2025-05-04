@@ -1,16 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AvatarCreator } from '@readyplayerme/react-avatar-creator';
+import axios from 'axios';
 
 const AvatarPage = () => {
+  const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Handle successful avatar creation
-  const handleAvatarExported = (url) => {
+  const handleAvatarExported = async (event) => {
+    const url = event?.data?.url || event; // fallback if event is just the url
     setAvatarUrl(url);
-    setLoading(false);
-    console.log('Avatar created successfully:', url);
+    setLoading(true);
+    setError(null);
+  
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('Authentication token not found');
+  
+      const response = await axios.post(
+        'http://localhost:8000/api/profile/update/',
+        { avatar_url: url },
+        {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      navigate('/');
+    } catch (err) {
+      // ...error handling
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle any errors during avatar creation
@@ -27,10 +52,10 @@ const AvatarPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Create Your 3D Avatar</h1>
+    <div className="flex flex-col items-center p-4 min-h-screen bg-[#1a1a2e]">
+      <h1 className="text-3xl font-bold mb-6 text-white">Create Your 3D Avatar</h1>
       
-      <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="w-full max-w-4xl bg-[#2a2a3c] rounded-lg shadow-lg overflow-hidden border border-indigo-500/20">
         {/* Avatar Creator Component */}
         <div className="h-96 md:h-[600px]">
           <AvatarCreator
@@ -45,22 +70,22 @@ const AvatarPage = () => {
 
       {/* Loading indicator */}
       {loading && (
-        <div className="mt-4 text-blue-600">
-          Loading avatar creator...
+        <div className="mt-4 text-indigo-400">
+          {avatarUrl ? 'Saving your avatar...' : 'Loading avatar creator...'}
         </div>
       )}
 
       {/* Error message */}
       {error && (
-        <div className="mt-4 text-red-600">
+        <div className="mt-4 p-4 bg-red-900/20 border border-red-500/20 rounded-lg text-red-400">
           Error: {error}
         </div>
       )}
 
       {/* Display the created avatar */}
-      {avatarUrl && (
+      {avatarUrl && !loading && (
         <div className="mt-8 text-center">
-          <h2 className="text-xl font-semibold mb-4">Your Created Avatar</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">Your Created Avatar</h2>
           <img 
             src={avatarUrl} 
             alt="Your 3D Avatar" 
@@ -71,7 +96,7 @@ const AvatarPage = () => {
               href={avatarUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-indigo-400 hover:text-indigo-300 hover:underline"
             >
               View full avatar
             </a>
