@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaMoon, FaSun, FaVolumeUp, FaVolumeMute, FaUser, FaChartLine, FaSignOutAlt, FaRobot } from 'react-icons/fa';
+import { FaMoon, FaSun, FaMusic, FaUser, FaChartLine, FaSignOutAlt, FaRobot } from 'react-icons/fa';
 import { Brain, Sparkles, Gamepad2 } from 'lucide-react';
-import sunnySound from '../assets/sunny.mp3';
-import rainSound from '../assets/rain.mp3';
 import '../styles/Home.css';
 import Test from '../components/test';
 import { motion } from 'framer-motion';
@@ -33,17 +31,53 @@ const quizCategories = [
 
 const Home = () => {
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
-  const [volume, setVolume] = useState(0.5);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(0);
+  const [showMusicMenu, setShowMusicMenu] = useState(false);
+  const audioRef = useRef(null);
   const [showStars, setShowStars] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const sunnyAudioRef = useRef(null);
-  const rainAudioRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [user, setUser] = useState(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
+
+  const musicTracks = [
+    {
+      name: "Ambient Study",
+      url: "https://assets.mixkit.co/music/preview/mixkit-ambient-study-music-1-1.mp3"
+    },
+    {
+      name: "Focus Flow",
+      url: "https://assets.mixkit.co/music/preview/mixkit-focus-study-music-1-1.mp3"
+    },
+    {
+      name: "Brain Boost",
+      url: "https://assets.mixkit.co/music/preview/mixkit-energetic-study-music-1-1.mp3"
+    }
+  ];
+
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isMusicPlaying) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isMusicPlaying, currentTrack]);
+
+  const toggleMusic = () => {
+    setIsMusicPlaying(!isMusicPlaying);
+  };
+
+  const changeTrack = (index) => {
+    setCurrentTrack(index);
+    if (isMusicPlaying) {
+      audioRef.current.play();
+    }
+  };
 
   //getting a token and user data from the local storage if it exists 
   useEffect(() => {
@@ -83,65 +117,11 @@ const Home = () => {
     };
   }, []);
 
-  // Audio management
-  useEffect(() => {
-    // Initialize audio
-    if (!sunnyAudioRef.current) {
-      sunnyAudioRef.current = new Audio(sunnySound);
-      sunnyAudioRef.current.loop = true;
-    }
-    
-    if (!rainAudioRef.current) {
-      rainAudioRef.current = new Audio(rainSound);
-      rainAudioRef.current.loop = true;
-    }
-    
-    // Set volume
-    const currentVolume = isMuted ? 0 : volume;
-    if (sunnyAudioRef.current) sunnyAudioRef.current.volume = currentVolume;
-    if (rainAudioRef.current) rainAudioRef.current.volume = currentVolume;
-    
-    // Play correct audio based on theme
-    const playCorrectAudio = async () => {
-      try {
-        if (isMuted) {
-          if (sunnyAudioRef.current) sunnyAudioRef.current.pause();
-          if (rainAudioRef.current) rainAudioRef.current.pause();
-          return;
-        }
-        
-        if (isDarkMode) {
-          if (sunnyAudioRef.current) sunnyAudioRef.current.pause();
-          if (rainAudioRef.current) await rainAudioRef.current.play();
-        } else {
-          if (rainAudioRef.current) rainAudioRef.current.pause();
-          if (sunnyAudioRef.current) await sunnyAudioRef.current.play();
-        }
-      } catch (error) {
-        console.error("Audio playback error:", error);
-      }
-    };
-    
-    playCorrectAudio();
-    
-
-
-    // Cleanup
-    return () => {
-      if (sunnyAudioRef.current) sunnyAudioRef.current.pause();
-      if (rainAudioRef.current) rainAudioRef.current.pause();
-    };
-  }, [volume, isDarkMode, isMuted]);
-
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
     // Apply body class for global styling
     document.body.classList.toggle('light-mode', !isDarkMode);
     document.body.classList.toggle('dark-mode', isDarkMode);
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
   };
 
   const handleLoginClick = () => {
@@ -216,6 +196,14 @@ const Home = () => {
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${isDarkMode ? 'bg-[#0B1026]' : 'bg-[#f0f4ff]'} relative overflow-hidden`}>
+      {/* Audio element */}
+      <audio
+        ref={audioRef}
+        src={musicTracks[currentTrack].url}
+        loop
+        onEnded={() => setCurrentTrack((prev) => (prev + 1) % musicTracks.length)}
+      />
+
       {/* Stars canvas - only shown in dark mode */}
       {showStars && isDarkMode && (
         <div className="fixed inset-0" style={{ zIndex: 0 }}>
@@ -250,7 +238,7 @@ const Home = () => {
       {/* Main Content */}
       <div className="relative min-h-screen flex flex-col" style={{ zIndex: 2 }}>
         {/* Navbar */}
-        <nav className={`flex items-center justify-between py-4 px-6 backdrop-blur-lg border-b transition-colors duration-300 ${
+        <nav className={`flex items-center justify-between py-6 px-8 backdrop-blur-lg border-b transition-colors duration-300 ${
           isDarkMode ? 'bg-white/10 border-indigo-500/20' : 'bg-white/70 border-gray-200'
         }`}>
           <div className="flex items-center">
@@ -260,7 +248,7 @@ const Home = () => {
               className="cursor-pointer group"
             >
               <motion.h1 
-                className={`text-3xl font-bold relative ${
+                className={`text-4xl font-bold relative ${
                   isDarkMode 
                     ? 'text-indigo-200 hover:text-indigo-100' 
                     : 'text-indigo-800 hover:text-indigo-600'
@@ -278,36 +266,46 @@ const Home = () => {
                   initial={{ scale: 0.8, opacity: 0 }}
                   whileHover={{ scale: 1.2, opacity: 1 }}
                 />
-                <motion.div 
-                  className={`absolute -bottom-1 left-0 w-full h-0.5 transform transition-all duration-300 origin-left ${
-                    isDarkMode 
-                      ? 'bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400' 
-                      : 'bg-gradient-to-r from-indigo-500 to-purple-500'
-                  }`}
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                />
               </motion.h1>
             </Link>
           </div>
           
-          <ul className="flex items-center space-x-6">
+          <ul className="flex items-center space-x-8">
             <li>
-              <Link to="/leaderboard" className={`hover:text-indigo-300 transition-colors ${
+              <Link to="/leaderboard" className={`hover:text-indigo-300 transition-colors text-lg ${
                 isDarkMode ? 'text-indigo-200' : 'text-indigo-800'
               }`}>
                 Leaderboard
               </Link>
             </li>
-            <li>
+            <li className="relative">
               <button 
-                onClick={toggleMute} 
+                onClick={() => setShowMusicMenu(!showMusicMenu)} 
                 className={`hover:text-indigo-300 transition-colors ${
                   isDarkMode ? 'text-indigo-200' : 'text-indigo-800'
                 }`}
               >
-                {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
+                <FaMusic size={24} className={isMusicPlaying ? 'animate-pulse' : ''} />
               </button>
+              {showMusicMenu && (
+                <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg ${
+                  isDarkMode ? 'bg-white/10' : 'bg-white'
+                }`}>
+                  <div className="py-1">
+                    {musicTracks.map((track, index) => (
+                      <button
+                        key={index}
+                        onClick={() => changeTrack(index)}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          isDarkMode ? 'text-white hover:bg-white/20' : 'text-gray-700 hover:bg-gray-100'
+                        } ${currentTrack === index ? 'bg-indigo-500/20' : ''}`}
+                      >
+                        {track.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </li>
             <li>
               <button 
@@ -316,7 +314,7 @@ const Home = () => {
                   isDarkMode ? 'text-indigo-200' : 'text-indigo-800'
                 }`}
               >
-                {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+                {isDarkMode ? <FaSun size={24} /> : <FaMoon size={24} />}
               </button>
             </li>
             <li>
@@ -324,16 +322,28 @@ const Home = () => {
                 <div className="relative" ref={profileMenuRef}>
                   <div
                     onClick={handleProfileClick}
-                    className="w-8 h-8 rounded-full cursor-pointer overflow-hidden border-2 border-indigo-600"
+                    className="w-16 h-16 rounded-full cursor-pointer overflow-hidden border-2 border-indigo-600 hover:border-indigo-400 transition-all duration-300"
                     title="Profile"
                   >
                     {user?.profile?.avatar_url ? (
-                      <model-viewer src={user.profile.avatar_url} alt="3D Avatar" camera-controls style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'transparent' }} />
+                      <model-viewer 
+                        src={user.profile.avatar_url} 
+                        alt="3D Avatar" 
+                        camera-controls 
+                        style={{ 
+                          width: '64px', 
+                          height: '64px', 
+                          borderRadius: '50%', 
+                          background: 'transparent',
+                          transform: 'scale(1.2)',
+                          transition: 'transform 0.3s ease'
+                        }} 
+                      />
                     ) : (
                       <img
                         src={user?.profileImage || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                         alt="Profile"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                       />
                     )}
                   </div>
@@ -368,7 +378,7 @@ const Home = () => {
               ) : (
                 <button
                   onClick={handleLoginClick}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200"
+                  className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 text-lg"
                 >
                   Login
                 </button>
