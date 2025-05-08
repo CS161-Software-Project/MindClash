@@ -6,6 +6,7 @@ from drf_yasg import openapi
 from django.contrib.auth import login
 from django.views.decorators.csrf import csrf_exempt
 from ..forms import CustomUserCreationForm
+from ..models import UserProfile
 
 # Define request body schema for registration
 register_schema = openapi.Schema(
@@ -41,10 +42,27 @@ def registerPage(request):
         # Generate Token for the User
         token, created = Token.objects.get_or_create(user=user)
         
+        # Get or create user profile
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        
         # Log in the user after registration
         login(request, user)
 
-        return Response({"message": "Registration successful", "user": user.username, "token": token.key}, status=201)
+        return Response({
+            "message": "Registration successful", 
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "profile": {
+                    "avatar_url": profile.avatar_url,
+                    "first_name": profile.first_name,
+                    "last_name": profile.last_name,
+                    "age": profile.age,
+                    "bio": profile.bio
+                }
+            },
+            "token": token.key
+        }, status=201)
     else:
         errors = form.errors.as_json()
         return Response({"error": "Registration failed", "message": errors}, status=400)

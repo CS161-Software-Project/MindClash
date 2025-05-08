@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Signup from './components/Signup'
-import { BrowserRouter as Router, Routes, Route, BrowserRouter} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './components/Login'
 import Loader from "./pages/Loader"
 import Avatar from './components/Avatar'
 import Home from './pages/home'
 import Profile from './pages/profile'
 import AIQuiz from './pages/AIQuiz'
+import GroqChat from './components/GroqChat'
+import QuizGenerator from './components/QuizGenerator'
+import GroqTester from './components/GroqTester'
 
 function App() {
   const [loading,setLoading] = useState(true);
@@ -34,6 +36,9 @@ function App() {
           path="/avatar" 
           element={<Avatar />}
         />
+        <Route path="/groq-chat" element={<GroqChat />} />
+        <Route path="/quiz-generator" element={<QuizGenerator />} />
+        <Route path="/test-groq" element={<GroqTester />} />
       </Routes>
     </Router>
   )

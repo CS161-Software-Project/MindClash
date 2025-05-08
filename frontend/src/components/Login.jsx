@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import { Brain, Sparkles, Gamepad2 } from 'lucide-react';
 import '../styles/Auth.css';
