@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './components/Login'
 import Loader from "./pages/Loader"
 import Avatar from './components/Avatar'
-import Home from './pages/home'
+import Home from './pages/Home'
 import Profile from './pages/profile'
 import AIQuiz from './pages/AIQuiz'
 import GroqChat from './components/GroqChat'

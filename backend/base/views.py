@@ -240,47 +240,64 @@ def test_groq_streaming():
 @permission_classes([IsAuthenticated])
 def update_profile(request):
     """
-    Update user profile information including avatar URL
+    Update user profile information.
     """
     try:
-        profile = UserProfile.objects.get(user=request.user)
-        data = request.data
+        user = request.user
+        profile = UserProfile.objects.get(user=user)
         
-        # Update fields if provided in request
-        if 'avatar_url' in data:
-            profile.avatar_url = data['avatar_url']
-        if 'first_name' in data:
-            profile.first_name = data['first_name']
-        if 'last_name' in data:
-            profile.last_name = data['last_name']
-        if 'age' in data:
-            profile.age = data['age']
-        if 'bio' in data:
-            profile.bio = data['bio']
+        # Update profile fields
+        if 'first_name' in request.data:
+            profile.first_name = request.data['first_name']
+        if 'last_name' in request.data:
+            profile.last_name = request.data['last_name']
+        if 'bio' in request.data:
+            profile.bio = request.data['bio']
+        if 'avatar_url' in request.data:
+            profile.avatar_url = request.data['avatar_url']
             
         profile.save()
         
+        # Update user's first and last name if provided
+        if 'first_name' in request.data:
+            user.first_name = request.data['first_name']
+        if 'last_name' in request.data:
+            user.last_name = request.data['last_name']
+
+        # Handle password update
+        if 'currentPassword' in request.data and 'newPassword' in request.data:
+            if not user.check_password(request.data['currentPassword']):
+                return Response({
+                    'success': False,
+                    'message': 'Current password is incorrect'
+                }, status=400)
+            
+            user.set_password(request.data['newPassword'])
+            user.save()
+            
+        user.save()
+        
         return Response({
-            "success": True,
-            "message": "Profile updated successfully",
-            "profile": {
-                "username": request.user.username,
-                "email": request.user.email,
-                "avatar_url": profile.avatar_url,
-                "first_name": profile.first_name,
-                "last_name": profile.last_name,
-                "age": profile.age,
-                "bio": profile.bio
+            'success': True,
+            'message': 'Profile updated successfully',
+            'profile': {
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'bio': profile.bio,
+                'avatar_url': profile.avatar_url,
+                'username': user.username
             }
         })
         
     except UserProfile.DoesNotExist:
         return Response({
-            "error": "User profile not found"
-        }, status=400)
+            'success': False,
+            'message': 'Profile not found'
+        }, status=404)
     except Exception as e:
         return Response({
-            "error": str(e)
+            'success': False,
+            'message': str(e)
         }, status=400)
 
 @swagger_auto_schema(
@@ -292,23 +309,30 @@ def update_profile(request):
 @permission_classes([IsAuthenticated])
 def get_profile(request):
     """
-    Get user profile information
+    Get user profile information.
     """
     try:
-        profile = UserProfile.objects.get(user=request.user)
+        user = request.user
+        profile = UserProfile.objects.get(user=user)
+        
         return Response({
-            "success": True,
-            "profile": {
-                "username": request.user.username,
-                "email": request.user.email,
-                "avatar_url": profile.avatar_url,
-                "first_name": profile.first_name,
-                "last_name": profile.last_name,
-                "age": profile.age,
-                "bio": profile.bio
+            'success': True,
+            'profile': {
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'bio': profile.bio,
+                'avatar_url': profile.avatar_url,
+                'username': user.username
             }
         })
+        
     except UserProfile.DoesNotExist:
         return Response({
-            "error": "User profile not found"
+            'success': False,
+            'message': 'Profile not found'
         }, status=404)
+    except Exception as e:
+        return Response({
+            'success': False,
+            'message': str(e)
+        }, status=400)
