@@ -198,6 +198,14 @@ const Home = () => {
     navigate('/ai-quiz');
   };
 
+  const createGame = () => {
+    navigate('/create-game');
+  };
+
+  const joinGame = () => {
+    navigate('/join-game');
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem('authToken');
@@ -423,18 +431,24 @@ const Home = () => {
           </motion.p>
           
           <div className="flex flex-wrap space-x-0 space-y-4 md:space-y-0 md:space-x-4 mb-16">
-            <button className={`px-8 py-3 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
-              isDarkMode 
-              ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30' 
-              : 'bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-500/20'
-            }`}>
+            <button 
+              className={`px-8 py-3 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
+                isDarkMode 
+                ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30' 
+                : 'bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-500/20'
+              }`}
+              onClick={joinGame}
+            >
               Join Game
             </button>
-            <button className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
-              isDarkMode 
-              ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20' 
-              : 'bg-white/60 hover:bg-white/80 text-indigo-700 border border-indigo-200'
-            }`}>
+            <button 
+              className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
+                isDarkMode 
+                ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20' 
+                : 'bg-white/60 hover:bg-white/80 text-indigo-700 border border-indigo-200'
+              }`}
+              onClick={createGame}
+            >
               Create Game
             </button>
             <button 
