@@ -54,10 +54,11 @@
 
 /* Glass morphism effects */
 .glass-effect {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 /* Light mode adjustments */
@@ -88,7 +89,7 @@
 /* Input focus effects */
 input:focus, textarea:focus {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Profile image container */
@@ -150,21 +151,19 @@ nav model-viewer {
 /* Success notification */
 .success-notification {
   position: fixed;
-  top: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(74, 222, 128, 0.9);
+  top: 20px;
+  right: 20px;
+  padding: 1rem 2rem;
+  background: rgba(16, 185, 129, 0.9);
   color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 0.5rem;
+  transform: translateX(120%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
 }
 
 .success-notification.active {
-  top: 20px;
+  transform: translateX(0);
 }
 
 /* Stats cards */
@@ -286,4 +285,140 @@ nav model-viewer {
   height: 100%;
   transform: scale(1.2) translateY(-10%);
   transition: transform 0.3s ease;
+}
+
+/* Input field animations */
+input, textarea {
+  transition: all 0.3s ease;
+}
+
+/* Button hover effects */
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+button:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Password fields animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.password-fields {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+/* Profile image hover effect */
+.profile-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.profile-image-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-image-container:hover::before {
+  opacity: 1;
+}
+
+/* Form field animations */
+.form-field {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.form-field label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  color: rgba(156, 163, 175, 1);
+}
+
+.form-field input:focus + label,
+.form-field input:not(:placeholder-shown) + label {
+  top: 0;
+  left: 0.5rem;
+  font-size: 0.875rem;
+  padding: 0 0.25rem;
+  background: currentColor;
+  color: rgba(99, 102, 241, 1);
+}
+
+/* Error message animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.error-message {
+  animation: shake 0.5s ease-in-out;
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Loading state animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Dark mode transitions */
+.dark-mode .glass-effect {
+  background: rgba(17, 24, 39, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .glass-effect {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .form-field label {
+    font-size: 0.875rem;
+  }
 }
