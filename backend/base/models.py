@@ -57,6 +57,7 @@ class Player(models.Model):
     score = models.IntegerField(default=0)
     has_answered = models.BooleanField(default=False)
     avatar_url = models.URLField(default="https://api.dicebear.com/7.x/avataaars/svg?seed=default")
+    selected_answer = models.CharField(max_length=255, null=True, blank=True)
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

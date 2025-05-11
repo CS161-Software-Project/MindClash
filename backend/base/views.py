@@ -448,10 +448,15 @@ def submit_answer(request):
         question = room.quiz_data[index]
         correct = question["answer"]
 
+        # Update score if answer is correct
         if selected_option == correct:
-            player.score += 100
+            # Get current score and add 100
+            current_score = player.score or 0
+            player.score = current_score + 100
+            print(f"Correct answer! Updated score for {player.user.username} from {current_score} to {player.score}")
 
         player.has_answered = True
+        player.selected_answer = selected_option
         player.save()
 
         # Check if all players have answered
@@ -462,12 +467,32 @@ def submit_answer(request):
             room.finished = True
             room.save()
 
+        # Get updated player list with current scores
+        players = Player.objects.filter(game_room=room)
+        players_list = [{
+            "id": p.id,
+            "username": p.user.username,
+            "score": p.score or 0,  # Ensure score is never null
+            "has_answered": p.has_answered
+        } for p in players]
+
+        # Get answer distribution
+        distribution = []
+        for option in question["options"]:
+            count = players.filter(selected_answer=option).count()
+            distribution.append({
+                "answer": option,
+                "count": count
+            })
+
         return Response({
-            "correct_answer": correct,
             "all_answered": all_answered,
             "finished": room.finished,
-            "score": player.score,
-            "player_id": player.id
+            "score": player.score or 0,  # Ensure score is never null
+            "player_id": player.id,
+            "players": players_list,
+            "distribution": distribution,
+            "correct_answer": correct if all_answered else None
         })
     except (GameRoom.DoesNotExist, Player.DoesNotExist):
         return Response({"error": "Invalid game or player"}, status=404)
@@ -536,9 +561,9 @@ def next_question(request):
                 "current_question": None
             })
 
-        # Reset all players' answered status
-        Player.objects.filter(game_room=room).update(has_answered=False)
-        print("Reset all players' answered status")  # Log reset
+        # Reset only has_answered and selected_answer, preserve scores
+        Player.objects.filter(game_room=room).update(has_answered=False, selected_answer=None)
+        print("Reset all players' answered status and selected answers")  # Log reset
         
         # Get the next question
         next_question = room.quiz_data[room.current_question_index]
@@ -548,7 +573,7 @@ def next_question(request):
         room.save()
         print("Room state saved")  # Log save
 
-        # Get updated player list
+        # Get updated player list with preserved scores
         players = Player.objects.filter(game_room=room)
         players_list = [{
             "id": p.id,
@@ -673,3 +698,34 @@ def get_game_room(request, pin):
         return Response({"error": "Room not found"}, status=404)
     except Player.DoesNotExist:
         return Response({"error": "Player not found in game"}, status=404)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def answer_distribution(request, pin):
+    try:
+        room = GameRoom.objects.get(pin=pin)
+        players = Player.objects.filter(game_room=room)
+        
+        # Get current question
+        current_question = room.quiz_data[room.current_question_index]
+        options = current_question["options"]
+        
+        # Count answers for each option
+        distribution = []
+        for option in options:
+            count = players.filter(selected_answer=option).count()
+            distribution.append({
+                "answer": option,
+                "count": count
+            })
+        
+        # Only send correct answer if ALL players have answered
+        all_answered = all(p.has_answered for p in players)
+        
+        return Response({
+            "distribution": distribution,
+            "correct_answer": current_question["answer"] if all_answered else None,
+            "all_answered": all_answered
+        })
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Room not found"}, status=404)

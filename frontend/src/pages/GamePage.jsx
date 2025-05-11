@@ -17,17 +17,31 @@ const GamePage = () => {
   const [isCreator, setIsCreator] = useState(false);
   const [lastQuestionIndex, setLastQuestionIndex] = useState(null);
   const [waitingForPlayers, setWaitingForPlayers] = useState(false);
+  const [showAnswerResults, setShowAnswerResults] = useState(false);
+  const [answerResults, setAnswerResults] = useState(null);
+  const [answerResultsTimer, setAnswerResultsTimer] = useState(null);
+  const [playerScores, setPlayerScores] = useState({});
   
   // Use refs to track state that shouldn't trigger re-renders
   const isPolling = useRef(false);
   const pollTimeout = useRef(null);
   const lastUpdateTime = useRef(Date.now());
 
+  const updatePlayerScores = useCallback((players) => {
+    const newScores = {};
+    players.forEach(player => {
+      newScores[player.id] = {
+        username: player.username,
+        score: player.score,
+        hasAnswered: player.has_answered
+      };
+    });
+    setPlayerScores(newScores);
+  }, []);
+
   const fetchGameState = useCallback(async (force = false) => {
-    // Prevent concurrent polling
     if (isPolling.current) return;
     
-    // Don't poll if we've updated in the last 2 seconds (unless forced)
     const now = Date.now();
     if (!force && now - lastUpdateTime.current < 2000) return;
 
@@ -41,7 +55,11 @@ const GamePage = () => {
         params: { force: force ? Date.now() : undefined }
       });
 
-      // Only update if the question index has changed
+      // Update player scores whenever we get new game state
+      if (response.data.players) {
+        updatePlayerScores(response.data.players);
+      }
+
       if (response.data.current_question_index !== lastQuestionIndex) {
         setLastQuestionIndex(response.data.current_question_index);
         setCurrentQuestion(response.data.current_question);
@@ -50,26 +68,21 @@ const GamePage = () => {
         setWaitingForPlayers(false);
       }
 
-      // Always update room data to ensure score is current
       setRoomData(response.data);
       setIsCreator(response.data.creator === response.data.current_user_id);
 
-      // Check if this is the last question
       const isLastQuestion = response.data.current_question_index === response.data.question_count - 1;
 
-      // If game is finished and all players have answered, navigate to results page
       if (response.data.finished && response.data.all_answered) {
         navigate(`/results/${pin}`);
         return;
       }
 
-      // For the last question, only show waiting page if player has answered AND others haven't
       if (isLastQuestion && response.data.has_answered && !response.data.all_answered) {
         setWaitingForPlayers(true);
         setShowLeaderboard(false);
       }
 
-      // Only show leaderboard if all players have answered and it's not already showing
       if (response.data.all_answered && !showLeaderboard && !isLastQuestion) {
         const leaderboardResponse = await axios.get(`${API_URL}/leaderboard/${pin}/`, {
           headers: { Authorization: `Token ${token}` }
@@ -87,7 +100,7 @@ const GamePage = () => {
     } finally {
       isPolling.current = false;
     }
-  }, [pin, navigate, lastQuestionIndex, showLeaderboard]);
+  }, [pin, navigate, lastQuestionIndex, showLeaderboard, updatePlayerScores]);
 
   useEffect(() => {
     let isMounted = true;
@@ -156,41 +169,63 @@ const GamePage = () => {
         { headers: { Authorization: `Token ${token}` } }
       );
 
-      // Update the player's score immediately from the response
-      if (response.data.score !== undefined) {
-        // Update both roomData and local state
-        setRoomData(prevData => ({
-          ...prevData,
-          score: response.data.score
-        }));
-        
-        // Also update the score in the leaderboard data if it exists
-        setLeaderboardData(prevData => 
-          prevData.map(player => 
-            player.id === response.data.player_id 
-              ? { ...player, score: response.data.score }
-              : player
-          )
-        );
-      }
+      // Update room data with new score and distribution
+      setRoomData(prevData => ({
+        ...prevData,
+        score: response.data.score,
+        players: response.data.players
+      }));
 
-      // Check if this is the last question
       const isLastQuestion = roomData.current_question_index === roomData.question_count - 1;
 
       if (isLastQuestion) {
         if (response.data.all_answered) {
-          // If all players have answered the last question, navigate to results
           navigate(`/results/${pin}`);
         }
       } else if (response.data.all_answered) {
-        // For non-last questions, show leaderboard when all have answered
-        await fetchLeaderboard();
+        // Show answer results with distribution from the response
+        setAnswerResults({
+          distribution: response.data.distribution,
+          correctAnswer: response.data.correct_answer,
+          score: response.data.score,
+          allAnswered: response.data.all_answered
+        });
+        setShowAnswerResults(true);
+
+        // Move to leaderboard after 10 seconds
+        const timer = setTimeout(async () => {
+          const leaderboardResponse = await axios.get(`${API_URL}/leaderboard/${pin}/`, {
+            headers: { Authorization: `Token ${token}` }
+          });
+          setShowAnswerResults(false);
+          setLeaderboardData(leaderboardResponse.data.leaderboard);
+          setShowLeaderboard(true);
+        }, 10000);
+        setAnswerResultsTimer(timer);
+      } else {
+        // Show waiting message with distribution but no correct answer
+        setAnswerResults({
+          distribution: response.data.distribution,
+          correctAnswer: null,
+          score: response.data.score,
+          allAnswered: false
+        });
+        setShowAnswerResults(true);
       }
     } catch (error) {
       console.error('Error submitting answer:', error);
       toast.error('Failed to submit answer');
     }
   };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (answerResultsTimer) {
+        clearTimeout(answerResultsTimer);
+      }
+    };
+  }, [answerResultsTimer]);
 
   const fetchLeaderboard = async () => {
     try {
@@ -209,16 +244,13 @@ const GamePage = () => {
     try {
       const token = localStorage.getItem('token');
       
-      // Check if we can move to next question
       const response = await axios.get(`${API_URL}/game-room/${pin}/`, {
         headers: { Authorization: `Token ${token}` }
       });
 
-      // For the last question, we need to ensure all players have answered
       const isLastQuestion = response.data.current_question_index === response.data.question_count - 1;
       
       if (isLastQuestion) {
-        // Double check the game state to ensure all players have answered
         const verifyResponse = await axios.get(`${API_URL}/game-room/${pin}/`, {
           headers: { Authorization: `Token ${token}` }
         });
@@ -244,20 +276,18 @@ const GamePage = () => {
         return;
       }
 
-      // Reset states for next question
+      // Update player scores with new data
+      if (nextResponse.data.players) {
+        updatePlayerScores(nextResponse.data.players);
+      }
+
       setShowLeaderboard(false);
       setSelectedAnswer(null);
-      
-      // Update current question immediately
       setCurrentQuestion(nextResponse.data.current_question);
       setLastQuestionIndex(nextResponse.data.current_question_index);
-      
-      // Update room data
       setRoomData(nextResponse.data);
 
-      // Force an immediate game state update
       await fetchGameState(true);
-
     } catch (error) {
       console.error('Error moving to next question:', error);
       toast.error('Failed to move to next question');
@@ -277,6 +307,47 @@ const GamePage = () => {
           <p className="text-gray-600">Please wait while other players finish answering...</p>
           <div className="mt-6">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          </div>
+        </div>
+      ) : showAnswerResults ? (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-4">Question Results</h2>
+          <div className="space-y-4">
+            {answerResults.distribution.map((option, index) => (
+              <div 
+                key={index}
+                className={`p-4 rounded-lg ${
+                  answerResults.allAnswered && option.answer === answerResults.correctAnswer 
+                    ? 'bg-green-100 border-2 border-green-500' 
+                    : 'bg-gray-100'
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">{option.answer}</span>
+                  <span className="text-gray-600">{option.count} players</span>
+                </div>
+                {answerResults.allAnswered && option.answer === answerResults.correctAnswer && (
+                  <div className="mt-2 text-green-600 font-semibold">
+                    Correct Answer!
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 text-center">
+            <p className="text-lg font-semibold">
+              Your Score: {answerResults.score}
+            </p>
+            {!answerResults.allAnswered && (
+              <p className="text-gray-600 mt-2">
+                Waiting for other players to answer...
+              </p>
+            )}
+            {answerResults.allAnswered && (
+              <p className="text-gray-600 mt-2">
+                Moving to leaderboard in a few seconds...
+              </p>
+            )}
           </div>
         </div>
       ) : showLeaderboard ? (
@@ -328,9 +399,7 @@ const GamePage = () => {
                     disabled={selectedAnswer !== null}
                     className={`p-4 text-left rounded-lg transition-colors ${
                       selectedAnswer === option
-                        ? option === currentQuestion.answer
-                          ? 'bg-green-500 text-white'
-                          : 'bg-red-500 text-white'
+                        ? 'bg-blue-500 text-white'
                         : 'bg-gray-100 hover:bg-gray-200'
                     }`}
                   >

@@ -14,9 +14,9 @@ const LobbyPage = () => {
   useEffect(() => {
     let pollInterval = null;
 
-    const fetchUserAndRoom = async () => {
+  const fetchUserAndRoom = async () => {
       try {
-        const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
         if (!token) {
           navigate('/login');
           return;
@@ -24,14 +24,14 @@ const LobbyPage = () => {
 
         // Get current user
         const userRes = await fetch('http://localhost:8000/api/current_user/', {
-          headers: { Authorization: `Token ${token}` },
-        });
-        const userData = await userRes.json();
+      headers: { Authorization: `Token ${token}` },
+    });
+    const userData = await userRes.json();
 
         // Get room data
         const roomRes = await fetch(`http://localhost:8000/api/game-room/${pin}/`, {
-          headers: { Authorization: `Token ${token}` },
-        });
+      headers: { Authorization: `Token ${token}` },
+    });
         
         if (!roomRes.ok) {
           if (roomRes.status === 404) {
@@ -42,7 +42,7 @@ const LobbyPage = () => {
           throw new Error('Failed to fetch room data');
         }
 
-        const roomData = await roomRes.json();
+    const roomData = await roomRes.json();
         setRoom(roomData);
         setPlayers(roomData.players || []);
         setIsCreator(userData.id === roomData.creator);
@@ -89,10 +89,10 @@ const LobbyPage = () => {
         console.error('Error fetching user or room data:', err);
         setError('Failed to fetch room data');
         setIsLoading(false);
-      }
-    };
+    }
+  };
 
-    fetchUserAndRoom();
+  fetchUserAndRoom();
 
     // Cleanup function
     return () => {
@@ -169,10 +169,17 @@ const LobbyPage = () => {
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2">Players ({players.length})</h3>
             <div className="grid grid-cols-2 gap-4">
-              {players.map(player => (
-                <div key={player.id} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
-                  <img src={player.avatar_url} alt={player.username} className="w-8 h-8 rounded-full" />
-                  <span>{player.username}</span>
+              {players.map((player) => (
+                <div key={player.id} className="flex items-center space-x-4 p-4 bg-white rounded-lg shadow">
+                  <img 
+                    src={player.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=default"} 
+                    alt={player.username} 
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div>
+                    <h3 className="font-semibold">{player.username}</h3>
+                    <p className="text-sm text-gray-500">Score: {player.score}</p>
+                  </div>
                 </div>
               ))}
             </div>
