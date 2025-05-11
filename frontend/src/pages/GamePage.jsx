@@ -50,6 +50,7 @@ const GamePage = () => {
         setWaitingForPlayers(false);
       }
 
+      // Always update room data to ensure score is current
       setRoomData(response.data);
       setIsCreator(response.data.creator === response.data.current_user_id);
 
@@ -62,8 +63,8 @@ const GamePage = () => {
         return;
       }
 
-      // For the last question, show waiting page if player has answered but others haven't
-      if (isLastQuestion && selectedAnswer && !response.data.all_answered) {
+      // For the last question, only show waiting page if player has answered AND others haven't
+      if (isLastQuestion && response.data.has_answered && !response.data.all_answered) {
         setWaitingForPlayers(true);
         setShowLeaderboard(false);
       }
@@ -86,7 +87,7 @@ const GamePage = () => {
     } finally {
       isPolling.current = false;
     }
-  }, [pin, navigate, lastQuestionIndex, showLeaderboard, selectedAnswer]);
+  }, [pin, navigate, lastQuestionIndex, showLeaderboard]);
 
   useEffect(() => {
     let isMounted = true;
@@ -155,17 +156,31 @@ const GamePage = () => {
         { headers: { Authorization: `Token ${token}` } }
       );
 
+      // Update the player's score immediately from the response
+      if (response.data.score !== undefined) {
+        // Update both roomData and local state
+        setRoomData(prevData => ({
+          ...prevData,
+          score: response.data.score
+        }));
+        
+        // Also update the score in the leaderboard data if it exists
+        setLeaderboardData(prevData => 
+          prevData.map(player => 
+            player.id === response.data.player_id 
+              ? { ...player, score: response.data.score }
+              : player
+          )
+        );
+      }
+
       // Check if this is the last question
       const isLastQuestion = roomData.current_question_index === roomData.question_count - 1;
 
       if (isLastQuestion) {
-        // Show waiting page for last question only if all players have answered
         if (response.data.all_answered) {
-          // If all players have answered, navigate to results
+          // If all players have answered the last question, navigate to results
           navigate(`/results/${pin}`);
-        } else {
-          // Otherwise show waiting page
-          setWaitingForPlayers(true);
         }
       } else if (response.data.all_answered) {
         // For non-last questions, show leaderboard when all have answered
@@ -258,7 +273,7 @@ const GamePage = () => {
       {waitingForPlayers ? (
         <div className="bg-white rounded-lg shadow-lg p-6 text-center">
           <h2 className="text-2xl font-bold mb-4">Waiting for Other Players</h2>
-          <p className="text-gray-600 mb-4">You've answered the final question!</p>
+          <p className="text-gray-600 mb-4">You&apos;ve answered the final question!</p>
           <p className="text-gray-600">Please wait while other players finish answering...</p>
           <div className="mt-6">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
@@ -294,10 +309,13 @@ const GamePage = () => {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="mb-4">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-600">
               Question {roomData.current_question_index + 1} of {roomData.question_count}
             </h2>
+            <div className="text-lg font-bold text-blue-600">
+              Score: {roomData.score || 0}
+            </div>
           </div>
           {currentQuestion && (
             <>

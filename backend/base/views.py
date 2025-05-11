@@ -466,7 +466,8 @@ def submit_answer(request):
             "correct_answer": correct,
             "all_answered": all_answered,
             "finished": room.finished,
-            "score": player.score
+            "score": player.score,
+            "player_id": player.id
         })
     except (GameRoom.DoesNotExist, Player.DoesNotExist):
         return Response({"error": "Invalid game or player"}, status=404)

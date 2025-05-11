@@ -37,11 +37,11 @@ class GameRoomConsumer(AsyncWebsocketConsumer):
                         "username": self.user.username
                     }
                 }
-            )
+        )
 
     async def receive(self, text_data):
         try:
-            data = json.loads(text_data)
+        data = json.loads(text_data)
             message_type = data.get("type")
 
             if message_type == "auth":
@@ -100,13 +100,13 @@ class GameRoomConsumer(AsyncWebsocketConsumer):
                     )
             else:
                 # Broadcast other messages
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {
-                        "type": "broadcast_message",
-                        "data": data
-                    }
-                )
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "broadcast_message",
+                "data": data
+            }
+        )
         except json.JSONDecodeError:
             await self.send(text_data=json.dumps({
                 "type": "error",
