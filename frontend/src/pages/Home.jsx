@@ -5,7 +5,6 @@
   import '../styles/Home.css';
   import Test from '../components/test';
   import { motion } from 'framer-motion';
-  import "@google/model-viewer";
   import axios from 'axios';
   import avatarImage from '../assets/avatar.png'; // Import the avatar image
 
@@ -335,6 +334,7 @@
                       ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30' 
                       : 'bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-500/20'
                     }`}
+                    onClick={()=> navigate('/join')}
                   >
                     Join Game
                   </motion.button>
@@ -346,6 +346,7 @@
                       ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20' 
                       : 'bg-white/60 hover:bg-white/80 text-indigo-700 border border-indigo-200'
                     }`}
+                    onClick={()=>navigate('/create')}
                   >
                     Create Game
                   </motion.button>

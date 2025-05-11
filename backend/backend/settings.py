@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,21 @@ SWAGGER_SETTINGS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your frontend React/Vue URL
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Add CORS headers for WebSocket
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
@@ -117,6 +133,16 @@ DATABASES = {
     }
 }
 
+# Set ASGI application
+ASGI_APPLICATION = "backend.asgi.application"
+
+# Configure channels layer (e.g., in-memory or Redis)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -159,6 +185,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GROQ_API_KEY = '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'
+GROQ_API_KEY = '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'
 GROQ_API_URL = 'https://api.groq.com/v1'
 

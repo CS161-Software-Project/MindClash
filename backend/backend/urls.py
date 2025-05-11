@@ -8,6 +8,9 @@ urlpatterns = [
     # Swagger API endpoint
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     
-    # Routing the urls to base urls
-    path('', include('base.urls')),
+    # User-facing pages (no prefix)
+    path('', include('base.public_urls')),
+
+    # API-only endpoints
+    path('', include('base.api_urls')),
 ]

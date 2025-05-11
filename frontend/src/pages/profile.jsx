@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import '../styles/Profile.css';
 import axios from 'axios';
-import '@google/model-viewer';
 import { FaMoon, FaSun, FaMusic, FaUser, FaChartLine, FaSignOutAlt, FaRobot, FaEdit } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
