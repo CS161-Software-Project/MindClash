@@ -159,6 +159,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GROQ_API_KEY = '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'
 GROQ_API_URL = 'https://api.groq.com/v1'
 
