@@ -66,6 +66,7 @@ const GamePage = () => {
         setShowLeaderboard(false);
         setSelectedAnswer(null);
         setWaitingForPlayers(false);
+        setShowAnswerResults(false);
       }
 
       setRoomData(response.data);
@@ -78,18 +79,31 @@ const GamePage = () => {
         return;
       }
 
-      if (isLastQuestion && response.data.has_answered && !response.data.all_answered) {
-        setWaitingForPlayers(true);
-        setShowLeaderboard(false);
-      }
-
-      if (response.data.all_answered && !showLeaderboard && !isLastQuestion) {
-        const leaderboardResponse = await axios.get(`${API_URL}/leaderboard/${pin}/`, {
+      // If all players have answered and we're waiting, show results
+      if (response.data.all_answered && waitingForPlayers && !showAnswerResults && !isLastQuestion) {
+        const answerDistribution = await axios.get(`${API_URL}/answer_distribution/${pin}/`, {
           headers: { Authorization: `Token ${token}` }
         });
-        setLeaderboardData(leaderboardResponse.data.leaderboard);
-        setShowLeaderboard(true);
+
+        setAnswerResults({
+          distribution: answerDistribution.data.distribution,
+          correctAnswer: answerDistribution.data.correct_answer,
+          score: response.data.score,
+          allAnswered: true
+        });
+        setShowAnswerResults(true);
         setWaitingForPlayers(false);
+
+        // Move to leaderboard after 10 seconds
+        const timer = setTimeout(async () => {
+          const leaderboardResponse = await axios.get(`${API_URL}/leaderboard/${pin}/`, {
+            headers: { Authorization: `Token ${token}` }
+          });
+          setShowAnswerResults(false);
+          setLeaderboardData(leaderboardResponse.data.leaderboard);
+          setShowLeaderboard(true);
+        }, 10000);
+        setAnswerResultsTimer(timer);
       }
 
       return response.data;
@@ -100,7 +114,7 @@ const GamePage = () => {
     } finally {
       isPolling.current = false;
     }
-  }, [pin, navigate, lastQuestionIndex, showLeaderboard, updatePlayerScores]);
+  }, [pin, navigate, lastQuestionIndex, updatePlayerScores, waitingForPlayers, showAnswerResults]);
 
   useEffect(() => {
     let isMounted = true;
@@ -163,13 +177,14 @@ const GamePage = () => {
       const token = localStorage.getItem('token');
       setSelectedAnswer(answer);
       
+      // Submit answer
       const response = await axios.post(
         `${API_URL}/submit_answer/`,
         { pin, answer },
         { headers: { Authorization: `Token ${token}` } }
       );
 
-      // Update room data with new score and distribution
+      // Update room data with new score
       setRoomData(prevData => ({
         ...prevData,
         score: response.data.score,
@@ -181,36 +196,41 @@ const GamePage = () => {
       if (isLastQuestion) {
         if (response.data.all_answered) {
           navigate(`/results/${pin}`);
+        } else {
+          setWaitingForPlayers(true);
         }
-      } else if (response.data.all_answered) {
-        // Show answer results with distribution from the response
-        setAnswerResults({
-          distribution: response.data.distribution,
-          correctAnswer: response.data.correct_answer,
-          score: response.data.score,
-          allAnswered: response.data.all_answered
-        });
-        setShowAnswerResults(true);
-
-        // Move to leaderboard after 10 seconds
-        const timer = setTimeout(async () => {
-          const leaderboardResponse = await axios.get(`${API_URL}/leaderboard/${pin}/`, {
+      } else {
+        if (response.data.all_answered) {
+          // Get answer distribution when all players have answered
+          const answerDistribution = await axios.get(`${API_URL}/answer_distribution/${pin}/`, {
             headers: { Authorization: `Token ${token}` }
           });
+
+          // Show results review
+          setAnswerResults({
+            distribution: answerDistribution.data.distribution,
+            correctAnswer: answerDistribution.data.correct_answer,
+            score: response.data.score,
+            allAnswered: true
+          });
+          setShowAnswerResults(true);
+          setWaitingForPlayers(false);
+
+          // Move to leaderboard after 10 seconds
+          const timer = setTimeout(async () => {
+            const leaderboardResponse = await axios.get(`${API_URL}/leaderboard/${pin}/`, {
+              headers: { Authorization: `Token ${token}` }
+            });
+            setShowAnswerResults(false);
+            setLeaderboardData(leaderboardResponse.data.leaderboard);
+            setShowLeaderboard(true);
+          }, 10000);
+          setAnswerResultsTimer(timer);
+        } else {
+          // Just show waiting message while others answer
+          setWaitingForPlayers(true);
           setShowAnswerResults(false);
-          setLeaderboardData(leaderboardResponse.data.leaderboard);
-          setShowLeaderboard(true);
-        }, 10000);
-        setAnswerResultsTimer(timer);
-      } else {
-        // Show waiting message with distribution but no correct answer
-        setAnswerResults({
-          distribution: response.data.distribution,
-          correctAnswer: null,
-          score: response.data.score,
-          allAnswered: false
-        });
-        setShowAnswerResults(true);
+        }
       }
     } catch (error) {
       console.error('Error submitting answer:', error);
@@ -303,7 +323,7 @@ const GamePage = () => {
       {waitingForPlayers ? (
         <div className="bg-white rounded-lg shadow-lg p-6 text-center">
           <h2 className="text-2xl font-bold mb-4">Waiting for Other Players</h2>
-          <p className="text-gray-600 mb-4">You&apos;ve answered the final question!</p>
+          <p className="text-gray-600 mb-4">You&apos;ve answered the question!</p>
           <p className="text-gray-600">Please wait while other players finish answering...</p>
           <div className="mt-6">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
@@ -317,7 +337,7 @@ const GamePage = () => {
               <div 
                 key={index}
                 className={`p-4 rounded-lg ${
-                  answerResults.allAnswered && option.answer === answerResults.correctAnswer 
+                  option.answer === answerResults.correctAnswer 
                     ? 'bg-green-100 border-2 border-green-500' 
                     : 'bg-gray-100'
                 }`}
@@ -326,7 +346,7 @@ const GamePage = () => {
                   <span className="font-semibold">{option.answer}</span>
                   <span className="text-gray-600">{option.count} players</span>
                 </div>
-                {answerResults.allAnswered && option.answer === answerResults.correctAnswer && (
+                {option.answer === answerResults.correctAnswer && (
                   <div className="mt-2 text-green-600 font-semibold">
                     Correct Answer!
                   </div>
@@ -338,16 +358,9 @@ const GamePage = () => {
             <p className="text-lg font-semibold">
               Your Score: {answerResults.score}
             </p>
-            {!answerResults.allAnswered && (
-              <p className="text-gray-600 mt-2">
-                Waiting for other players to answer...
-              </p>
-            )}
-            {answerResults.allAnswered && (
-              <p className="text-gray-600 mt-2">
-                Moving to leaderboard in a few seconds...
-              </p>
-            )}
+            <p className="text-gray-600 mt-2">
+              Moving to leaderboard in a few seconds...
+            </p>
           </div>
         </div>
       ) : showLeaderboard ? (

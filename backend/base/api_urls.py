@@ -31,4 +31,6 @@ urlpatterns = [
 
     # Authenticated user info
     path('api/current_user/', views.current_user, name='current-user'),
+    
+    path('api/answer_distribution/<str:pin>/', views.answer_distribution, name='answer_distribution'),
 ]
