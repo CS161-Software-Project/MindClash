@@ -59,19 +59,16 @@ class WebSocketService {
                 }
                 
                 // Ensure we have basic game state
-                if (!gameData.status || !gameData.host) {
+                if (!gameData.status || !gameData.host_id) {
                     console.error('Missing required game state data:', gameData);
                     return;
                 }
                 
-                // Transform player data to use consistent format
+                // Transform player data to use user IDs
                 if (gameData.players) {
                     gameData.players = gameData.players.map(player => ({
                         ...player,
-                        username: player.username, // Ensure username is always present
-                        score: player.score || 0,
-                        is_ready: !!player.is_ready,
-                        has_answered: !!player.has_answered
+                        user_id: player.user_id || player.id // Use user_id if available, fallback to id
                     }));
                 }
                 

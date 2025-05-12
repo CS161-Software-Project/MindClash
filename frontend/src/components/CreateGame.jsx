@@ -23,13 +23,6 @@
                 const response = await GameService.createGame(data);
                 
                 if (response.success) {
-                    // Set user data in localStorage
-                    const userData = {
-                        username: 'luffy', // This should be the actual username
-                        id: 'luffy' // Using username as ID for now
-                    };
-                    localStorage.setItem('user', JSON.stringify(userData));
-                    
                     setGameCode(response.game_code);
                 } else {
                     setError(response.error || 'Failed to create game');

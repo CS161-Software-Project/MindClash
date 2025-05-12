@@ -74,9 +74,30 @@ class Player(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
     current_answer = models.IntegerField(null=True, blank=True)
     answer_time = models.FloatField(null=True, blank=True)  # Time taken to answer in seconds
+    best_streak = models.IntegerField(default=0)  # Best streak in this game
+    current_streak = models.IntegerField(default=0)  # Current streak
+    total_questions = models.IntegerField(default=0)  # Total questions answered
+    correct_answers = models.IntegerField(default=0)  # Total correct answers
+    average_time = models.FloatField(default=0.0)  # Average time to answer
 
     class Meta:
         unique_together = ['user', 'game']
 
     def __str__(self):
         return f"{self.user.username} in game {self.game.code}"
+
+    def update_stats(self, is_correct, answer_time):
+        """Update player statistics based on answer"""
+        self.total_questions += 1
+        if is_correct:
+            self.correct_answers += 1
+            self.current_streak += 1
+            self.best_streak = max(self.best_streak, self.current_streak)
+        else:
+            self.current_streak = 0
+        
+        # Update average time
+        if self.total_questions > 0:
+            self.average_time = ((self.average_time * (self.total_questions - 1)) + answer_time) / self.total_questions
+        
+        self.save()

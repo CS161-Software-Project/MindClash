@@ -31,7 +31,7 @@ const GameRoom = () => {
         if (userData) {
             try {
                 const parsedUser = JSON.parse(userData);
-                if (parsedUser && parsedUser.username) {
+                if (parsedUser && parsedUser.id) {
                     setUser(parsedUser);
                 }
             } catch (error) {
@@ -42,11 +42,11 @@ const GameRoom = () => {
 
     // Determine if current user is the host of the game
     useEffect(() => {
-        if (user && gameState && user.username && gameState.host) {
-            // console.log('Checking host status:', user.username, gameState.host);
-            setIsHost(user.username === gameState.host);
+        if (user && gameState && user.id && gameState.host_id) {
+            console.log('Checking host status:', user.id, gameState.host_id);
+            setIsHost(user.id === gameState.host_id);
         } else {
-            // console.log('Missing data for host check:', { user, gameState });
+            console.log('Missing data for host check:', { user, gameState });
             setIsHost(false);
         }
     }, [user, gameState]);
