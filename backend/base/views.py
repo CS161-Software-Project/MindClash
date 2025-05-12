@@ -672,9 +672,13 @@ def get_game_room(request, pin):
         
         # Get current question data
         current_question = None
-        if room.started and not room.finished and room.quiz_data:
+        if room.started and room.quiz_data:
             try:
-                current_question = room.quiz_data[room.current_question_index]
+                if room.finished:
+                    # Show the last question when game is finished
+                    current_question = room.quiz_data[room.question_count - 1]
+                else:
+                    current_question = room.quiz_data[room.current_question_index]
             except (IndexError, TypeError):
                 current_question = None
         
@@ -723,9 +727,12 @@ def answer_distribution(request, pin):
         # Only send correct answer if ALL players have answered
         all_answered = all(p.has_answered for p in players)
         
+        # Get the correct answer text
+        correct_answer_text = options[current_question["answer"]] if all_answered else None
+        
         return Response({
             "distribution": distribution,
-            "correct_answer": current_question["answer"] if all_answered else None,
+            "correct_answer": correct_answer_text,  # Send the actual answer text
             "all_answered": all_answered
         })
     except GameRoom.DoesNotExist:
