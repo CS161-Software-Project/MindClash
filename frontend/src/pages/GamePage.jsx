@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { API_URL } from '../config';
+import Chat from '../components/Chat';
 
 const GamePage = () => {
   const { pin } = useParams();
@@ -374,123 +375,128 @@ const GamePage = () => {
   if (!roomData) return <div className="text-center p-8">Game not found</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      {waitingForPlayers ? (
-        <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold mb-4">Waiting for Other Players</h2>
-          <p className="text-gray-600 mb-4">You&apos;ve answered the question!</p>
-          <p className="text-gray-600">Please wait while other players finish answering...</p>
-          <div className="mt-6">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+    <div className="min-h-screen bg-gray-100">
+      <div className="container mx-auto p-4">
+        {waitingForPlayers ? (
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+            <h2 className="text-2xl font-bold mb-4">Waiting for Other Players</h2>
+            <p className="text-gray-600 mb-4">You&apos;ve answered the question!</p>
+            <p className="text-gray-600">Please wait while other players finish answering...</p>
+            <div className="mt-6">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+            </div>
           </div>
-        </div>
-      ) : showAnswerResults ? (
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Question Results</h2>
-          <div className="space-y-4">
-            {answerResults.distribution.map((option, index) => (
-              <div 
-                key={index}
-                className={`p-4 rounded-lg ${
-                  option.answer === answerResults.correctAnswer 
-                    ? 'bg-green-100 border-2 border-green-500' 
-                    : option.answer === answerResults.userAnswer
-                    ? 'bg-blue-100 border-2 border-blue-500'
-                    : 'bg-gray-100'
-                }`}
+        ) : showAnswerResults ? (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-4">Question Results</h2>
+            <div className="space-y-4">
+              {answerResults.distribution.map((option, index) => (
+                <div 
+                  key={index}
+                  className={`p-4 rounded-lg ${
+                    option.answer === answerResults.correctAnswer 
+                      ? 'bg-green-100 border-2 border-green-500' 
+                      : option.answer === answerResults.userAnswer
+                      ? 'bg-blue-100 border-2 border-blue-500'
+                      : 'bg-gray-100'
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold">{option.answer}</span>
+                    <span className="text-gray-600">{option.count} players</span>
+                  </div>
+                  {option.answer === answerResults.correctAnswer && (
+                    <div className="mt-2 text-green-600 font-semibold">
+                      Correct Answer!
+                    </div>
+                  )}
+                  {option.answer === answerResults.userAnswer && option.answer !== answerResults.correctAnswer && (
+                    <div className="mt-2 text-blue-600 font-semibold">
+                      Your Answer
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 text-center">
+              <p className="text-lg font-semibold">
+                Your Score: {answerResults.score || 0}
+              </p>
+              <p className="text-gray-600 mt-2">
+                Moving to leaderboard in a few seconds...
+              </p>
+            </div>
+          </div>
+        ) : showLeaderboard ? (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-4">Leaderboard</h2>
+            <div className="space-y-4">
+              {leaderboardData.map((player) => (
+                <div key={player.id} className="flex items-center justify-between p-4 bg-gray-50 rounded">
+                  <div className="flex items-center space-x-4">
+                    <img src={player.avatar_url} alt={player.username} className="w-10 h-10 rounded-full" />
+                    <span className="font-semibold">{player.username}</span>
+                  </div>
+                  <span className="text-lg font-bold">{player.score}</span>
+                </div>
+              ))}
+            </div>
+            {isCreator && !roomData.finished && (
+              <button
+                onClick={handleNextQuestion}
+                className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
               >
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">{option.answer}</span>
-                  <span className="text-gray-600">{option.count} players</span>
+                Next Question
+              </button>
+            )}
+            {!isCreator && !roomData.finished && (
+              <div className="mt-6 text-center text-gray-600">
+                Waiting for host to continue...
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-600">
+                Question {roomData.current_question_index + 1} of {roomData.question_count}
+              </h2>
+              <div className="text-lg font-bold text-blue-600">
+                Score: {roomData.score || 0}
+              </div>
+            </div>
+            {currentQuestion && (
+              <>
+                <h3 className="text-2xl font-bold mb-6">{currentQuestion.question}</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  {currentQuestion.options.map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleAnswer(option)}
+                      disabled={selectedAnswer !== null}
+                      className={`p-4 text-left rounded-lg transition-colors ${
+                        selectedAnswer === option
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-100 hover:bg-gray-200'
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
                 </div>
-                {option.answer === answerResults.correctAnswer && (
-                  <div className="mt-2 text-green-600 font-semibold">
-                    Correct Answer!
-                  </div>
-                )}
-                {option.answer === answerResults.userAnswer && option.answer !== answerResults.correctAnswer && (
-                  <div className="mt-2 text-blue-600 font-semibold">
-                    Your Answer
-                  </div>
-                )}
+              </>
+            )}
+            {selectedAnswer && !waitingForPlayers && (
+              <div className="mt-6 text-center text-gray-600">
+                Waiting for other players...
               </div>
-            ))}
+            )}
           </div>
-          <div className="mt-6 text-center">
-            <p className="text-lg font-semibold">
-              Your Score: {answerResults.score || 0}
-            </p>
-            <p className="text-gray-600 mt-2">
-              Moving to leaderboard in a few seconds...
-            </p>
-          </div>
-        </div>
-      ) : showLeaderboard ? (
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Leaderboard</h2>
-          <div className="space-y-4">
-            {leaderboardData.map((player) => (
-              <div key={player.id} className="flex items-center justify-between p-4 bg-gray-50 rounded">
-                <div className="flex items-center space-x-4">
-                  <img src={player.avatar_url} alt={player.username} className="w-10 h-10 rounded-full" />
-                  <span className="font-semibold">{player.username}</span>
-                </div>
-                <span className="text-lg font-bold">{player.score}</span>
-              </div>
-            ))}
-          </div>
-          {isCreator && !roomData.finished && (
-            <button
-              onClick={handleNextQuestion}
-              className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-              Next Question
-            </button>
-          )}
-          {!isCreator && !roomData.finished && (
-            <div className="mt-6 text-center text-gray-600">
-              Waiting for host to continue...
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-600">
-              Question {roomData.current_question_index + 1} of {roomData.question_count}
-            </h2>
-            <div className="text-lg font-bold text-blue-600">
-              Score: {roomData.score || 0}
-            </div>
-          </div>
-          {currentQuestion && (
-            <>
-              <h3 className="text-2xl font-bold mb-6">{currentQuestion.question}</h3>
-              <div className="grid grid-cols-1 gap-4">
-                {currentQuestion.options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswer(option)}
-                    disabled={selectedAnswer !== null}
-                    className={`p-4 text-left rounded-lg transition-colors ${
-                      selectedAnswer === option
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200'
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-          {selectedAnswer && !waitingForPlayers && (
-            <div className="mt-6 text-center text-gray-600">
-              Waiting for other players...
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
+      
+      {/* Add Chat component */}
+      <Chat pin={pin} currentUser={roomData?.current_user_id} />
     </div>
   );
 };
