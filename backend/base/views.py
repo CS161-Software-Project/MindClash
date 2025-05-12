@@ -559,7 +559,7 @@ def next_question(request):
             return Response({
                 "message": "Game finished",
                 "finished": True,
-                "current_question": None
+                "current_question": room.quiz_data[room.current_question_index - 1]  # Show the last question
             })
 
         # Reset only has_answered and selected_answer, preserve scores
