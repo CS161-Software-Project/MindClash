@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'base.apps.BaseConfig',
     'drf_yasg',
     'rest_framework',
@@ -159,6 +160,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GROQ_API_KEY = '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'
+# Channels configuration
+ASGI_APPLICATION = 'backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
+GROQ_API_KEY = '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'
 GROQ_API_URL = 'https://api.groq.com/v1'
 
