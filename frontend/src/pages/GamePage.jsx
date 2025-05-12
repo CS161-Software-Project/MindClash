@@ -55,6 +55,14 @@ const GamePage = () => {
         params: { force: force ? Date.now() : undefined }
       });
 
+      console.log('Game State Response:', {
+        score: response.data.score,
+        current_answer: response.data.current_answer,
+        has_answered: response.data.has_answered,
+        all_answered: response.data.all_answered,
+        players: response.data.players
+      });
+
       // Update player scores whenever we get new game state
       if (response.data.players) {
         updatePlayerScores(response.data.players);
@@ -85,14 +93,36 @@ const GamePage = () => {
           headers: { Authorization: `Token ${token}` }
         });
 
+        console.log('Answer Distribution Response (from fetchGameState):', {
+          distribution: answerDistribution.data.distribution,
+          correct_answer: answerDistribution.data.correct_answer,
+          score: response.data.score
+        });
+
+        // Get user's answer from selectedAnswer state
+        const userAnswer = selectedAnswer;
+
+        console.log('User Answer from State:', userAnswer);
+
+        // Calculate score based on correct answer
+        const isCorrect = userAnswer === answerDistribution.data.correct_answer;
+        const newScore = isCorrect ? (response.data.score || 0) + 100 : response.data.score || 0;
+
         setAnswerResults({
           distribution: answerDistribution.data.distribution,
           correctAnswer: answerDistribution.data.correct_answer,
-          score: response.data.score,
-          allAnswered: true
+          score: newScore,
+          allAnswered: true,
+          userAnswer: userAnswer // Store user's answer from state
         });
         setShowAnswerResults(true);
         setWaitingForPlayers(false);
+
+        // Update room data with new score
+        setRoomData(prevData => ({
+          ...prevData,
+          score: newScore
+        }));
 
         // Move to leaderboard after 10 seconds
         const timer = setTimeout(async () => {
@@ -114,7 +144,7 @@ const GamePage = () => {
     } finally {
       isPolling.current = false;
     }
-  }, [pin, navigate, lastQuestionIndex, updatePlayerScores, waitingForPlayers, showAnswerResults]);
+  }, [pin, navigate, lastQuestionIndex, updatePlayerScores, waitingForPlayers, showAnswerResults, selectedAnswer]);
 
   useEffect(() => {
     let isMounted = true;
@@ -184,11 +214,19 @@ const GamePage = () => {
         { headers: { Authorization: `Token ${token}` } }
       );
 
+      console.log('Submit Answer Response:', {
+        score: response.data.score,
+        all_answered: response.data.all_answered,
+        players: response.data.players,
+        current_answer: response.data.current_answer
+      });
+
       // Update room data with new score
       setRoomData(prevData => ({
         ...prevData,
         score: response.data.score,
-        players: response.data.players
+        players: response.data.players,
+        current_answer: answer // Store the answer
       }));
 
       const isLastQuestion = roomData.current_question_index === roomData.question_count - 1;
@@ -206,15 +244,32 @@ const GamePage = () => {
             headers: { Authorization: `Token ${token}` }
           });
 
+          console.log('Answer Distribution Response:', {
+            distribution: answerDistribution.data.distribution,
+            correct_answer: answerDistribution.data.correct_answer,
+            score: response.data.score
+          });
+
+          // Calculate score based on correct answer
+          const isCorrect = answer === answerDistribution.data.correct_answer;
+          const newScore = isCorrect ? (response.data.score || 0) + 100 : response.data.score || 0;
+
           // Show results review
           setAnswerResults({
             distribution: answerDistribution.data.distribution,
             correctAnswer: answerDistribution.data.correct_answer,
-            score: response.data.score,
-            allAnswered: true
+            score: newScore,
+            allAnswered: true,
+            userAnswer: answer // Store user's answer
           });
           setShowAnswerResults(true);
           setWaitingForPlayers(false);
+
+          // Update room data with new score
+          setRoomData(prevData => ({
+            ...prevData,
+            score: newScore
+          }));
 
           // Move to leaderboard after 10 seconds
           const timer = setTimeout(async () => {
@@ -339,6 +394,8 @@ const GamePage = () => {
                 className={`p-4 rounded-lg ${
                   option.answer === answerResults.correctAnswer 
                     ? 'bg-green-100 border-2 border-green-500' 
+                    : option.answer === answerResults.userAnswer
+                    ? 'bg-blue-100 border-2 border-blue-500'
                     : 'bg-gray-100'
                 }`}
               >
@@ -351,12 +408,17 @@ const GamePage = () => {
                     Correct Answer!
                   </div>
                 )}
+                {option.answer === answerResults.userAnswer && option.answer !== answerResults.correctAnswer && (
+                  <div className="mt-2 text-blue-600 font-semibold">
+                    Your Answer
+                  </div>
+                )}
               </div>
             ))}
           </div>
           <div className="mt-6 text-center">
             <p className="text-lg font-semibold">
-              Your Score: {answerResults.score}
+              Your Score: {answerResults.score || 0}
             </p>
             <p className="text-gray-600 mt-2">
               Moving to leaderboard in a few seconds...

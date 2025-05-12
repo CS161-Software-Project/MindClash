@@ -446,7 +446,7 @@ def submit_answer(request):
 
         index = room.current_question_index
         question = room.quiz_data[index]
-        correct = question["answer"]
+        correct = question["options"][question["answer"]]  # Get the actual answer text
 
         # Update score if answer is correct
         if selected_option == correct:
@@ -492,7 +492,8 @@ def submit_answer(request):
             "player_id": player.id,
             "players": players_list,
             "distribution": distribution,
-            "correct_answer": correct if all_answered else None
+            "correct_answer": correct if all_answered else None,
+            "current_answer": selected_option  # Send back the selected answer
         })
     except (GameRoom.DoesNotExist, Player.DoesNotExist):
         return Response({"error": "Invalid game or player"}, status=404)
