@@ -109,7 +109,7 @@ class WebSocketService {
                 if (prevQuestion !== undefined && 
                     currentQuestion !== undefined && 
                     prevQuestion !== currentQuestion) {
-                    console.log('Question change detected:', prevQuestion, '->', currentQuestion);
+                    // console.log('Question change detected:', prevQuestion, '->', currentQuestion);
                     this.notifyListeners('nextQuestion', gameData);
                 }
                 

@@ -7,363 +7,205 @@ import WebSocketService from '../services/WebSocketService';
 const GameRoom = () => {
     const { gameCode } = useParams();
     const navigate = useNavigate();
-    
-    const [user, setUser] = useState(null);
-    const [gameState, setGameState] = useState(null);
-    const [currentQuestion, setCurrentQuestion] = useState(null);
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [timeLeft, setTimeLeft] = useState(0);
-    const [totalTime, setTotalTime] = useState(30); // Default time per question
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [isHost, setIsHost] = useState(false);
-    const [allPlayersAnswered, setAllPlayersAnswered] = useState(false);
-    const [scoreAnimation, setScoreAnimation] = useState(false);
-    const [answerResult, setAnswerResult] = useState(null); // 'correct', 'incorrect', or null
-    const [showResults, setShowResults] = useState(false);
-    
-    const timerRef = useRef(null);
-    const startTimeRef = useRef(null);
 
-    // Initialize user data from localStorage
-    useEffect(() => {
-        const loadUser = () => {
-            try {
-                // Check for user data in multiple locations
-                let userData = 
-                    sessionStorage.getItem('user') ||
-                    localStorage.getItem('user') || 
-                    localStorage.getItem('userData');
-                console.log('Raw user data from localStorage:', userData);
-                
-                if (userData) {
-                    const parsedUser = JSON.parse(userData);
-                    console.log('Parsed user data:', parsedUser);
-                    
-                    // Make sure we have the required fields
-                    if (parsedUser && (parsedUser.id || parsedUser.username)) {
-                        // Ensure username is set and in the expected format
-                        if (!parsedUser.username && parsedUser.email) {
-                            parsedUser.username = parsedUser.email.split('@')[0];
-                        }
-                        
-                        console.log('Setting user:', parsedUser);
-                        setUser(parsedUser);
-                        return true;
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            }
-            return false;
-        };
+  const [user, setUser] = useState(null);
+  const [gameState, setGameState] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [totalTime, setTotalTime] = useState(30);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [isHost, setIsHost] = useState(false);
+  const [allPlayersAnswered, setAllPlayersAnswered] = useState(false);
+  const [scoreAnimation, setScoreAnimation] = useState(false);
+  const [answerResult, setAnswerResult] = useState(null);
+  const [showResults, setShowResults] = useState(false);
 
-        // Try to load user immediately
-        if (!loadUser()) {
-            console.warn('No valid user data found in localStorage. Available keys:', 
-                Object.keys(localStorage));
-            
-            // Try to get user from auth token if available
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                console.log('Found auth token, trying to fetch user data...');
-                // You might want to add a function to fetch user data using the token
-                // For now, we'll just log a message
-                console.log('Token found but no user data. You might need to implement a user profile fetch.');
-            }
-        }
-    }, []);
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
 
-    // Determine if current user is the host of the game
-    useEffect(() => {
-        if (user && gameState && user.username) {
-            // console.log('Checking host status:', {
-            //     currentUser: user.username,
-            //     gameHost: gameState.host,
-            //     userObject: user,
-            //     gameState: gameState
-            // });
-            // Case-insensitive comparison to handle any casing issues
-            const isUserHost = user.username.toLowerCase() === gameState.host?.toLowerCase();
-            console.log('Is user host?', isUserHost);
-            setIsHost(isUserHost);
-        } else {
-            console.log('Missing data for host check:', { 
-                hasUser: !!user, 
-                hasGameState: !!gameState, 
-                hasUsername: user?.username,
-                user: user,
-                gameState: gameState
-            });
-            setIsHost(false);
-        }
-    }, [user, gameState]);
-    
-    // Initialize game and WebSocket connection
-    useEffect(() => {
-        if (!gameCode) return;
-        
-        const initGame = async () => {
-            try {
-                setLoading(true);
-                
-                // Get initial game state
-                const response = await GameService.getGameStatus(gameCode);
-                
-                if (response.success) {
-                    const game = response.game;
-                    setGameState(game);
-                    
-                    // If game is in progress, get current question
-                    if (game.status === 'in_progress' && game.current_question_data) {
-                        setCurrentQuestion(game.current_question_data);
-                        const timePerQuestion = game.quiz_data?.timePerQuestion || 30;
-                        setTotalTime(timePerQuestion);
-                        setTimeLeft(timePerQuestion); // Start timer at full time
-                    }
-                } else {
-                    setError(response.error || 'Failed to get game state');
-                }
-                
-                // Start polling for game updates
-                WebSocketService.connect(gameCode)
-                    .on('gameStateUpdate', handleGameStateUpdate)
-                    .on('gameStarted', handleGameStarted)
-                    .on('nextQuestion', handleNextQuestion)
-                    .on('answerSubmitted', handleAnswerSubmitted);
-                
-            } catch (err) {
-                setError(err.error || 'Failed to connect to game');
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        initGame();
-        
-        // Cleanup
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-            WebSocketService.disconnect();
-        };
-    }, [gameCode, user]);
+  useEffect(() => {
+    const loadUser = () => {
+      try {
+        let userData =
+          sessionStorage.getItem('user') ||
+          localStorage.getItem('user') ||
+          localStorage.getItem('userData');
 
-    // Game state update handler
-    const handleGameStateUpdate = (data) => {
-        // Make sure data is what we expect
-        const game = data && (data.game || data);
-        
-        if (!game) {
-            console.error('Invalid game data received:', data);
-            return;
+        if (userData) {
+          const parsedUser = JSON.parse(userData);
+          if (!parsedUser.username && parsedUser.email) {
+            parsedUser.username = parsedUser.email.split('@')[0];
+          }
+          setUser(parsedUser);
+          return true;
         }
-        
-        // console.log('Game state update received:', game);
-        setGameState(game);
-        
-        // Check if all players have answered
-        if (game.status === 'in_progress') {
-            const allAnswered = game.players && game.players.every(player => player.has_answered);
-            setAllPlayersAnswered(allAnswered);
-        }
-    };
-    
-    const handleGameStarted = (data) => {
-        // Make sure data is what we expect
-        const game = data && (data.game || data);
-        
-        if (!game) {
-            console.error('Invalid game data received:', data);
-            return;
-        }
-        
-        setGameState(game);
-        setCurrentQuestion(game.current_question_data);
-        const timePerQuestion = game.quiz_data?.timePerQuestion || 30;
-        setTotalTime(timePerQuestion);
-        setTimeLeft(timePerQuestion);
-        startTimeRef.current = Date.now();
-        startTimer();
-    };
-    
-    const handleNextQuestion = (data) => {
-        // Make sure data is what we expect
-        const game = data && (data.game || data);
-        
-        if (!game) {
-            console.error('Invalid game data received:', data);
-            return;
-        }
-        
-        setGameState(game);
-        setCurrentQuestion(game.current_question_data);
-        setSelectedAnswer(null);
-        setAnswerResult(null);
-        setShowResults(false);
-        
-        const timePerQuestion = game.quiz_data?.timePerQuestion || 30;
-        setTotalTime(timePerQuestion);
-        setTimeLeft(timePerQuestion);
-        startTimeRef.current = Date.now();
-        startTimer();
-        
-        // Reset state for next question
-        setAllPlayersAnswered(false);
-    };
-    
-    const handleAnswerSubmitted = (data) => {
-        // Update UI when someone answers
-        const updatedPlayers = gameState.players.map(player => {
-            if (player.username === data.player) {
-                return { ...player, has_answered: true };
-            }
-            return player;
-        });
-        
-        setGameState(prev => ({
-            ...prev,
-            players: updatedPlayers
-        }));
-        
-        // Check if all players have answered
-        const allAnswered = updatedPlayers.every(player => player.has_answered);
-        setAllPlayersAnswered(allAnswered);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+      return false;
     };
 
-    // Timer logic
-    const startTimer = () => {
-        // Clear any existing timer
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    if (user && gameState && user.username) {
+      const isUserHost = user.username.toLowerCase() === gameState.host?.toLowerCase();
+      setIsHost(isUserHost);
+    }
+  }, [user, gameState]);
+
+  useEffect(() => {
+    if (!gameCode) return;
+
+    const initGame = async () => {
+      try {
+        setLoading(true);
+        const response = await GameService.getGameStatus(gameCode);
+        if (response.success) {
+          const game = response.game;
+          setGameState(game);
+          if (game.status === 'in_progress' && game.current_question_data) {
+            setCurrentQuestion(game.current_question_data);
+            const timePerQuestion = game.quiz_data?.timePerQuestion || 30;
+            setTotalTime(timePerQuestion);
+            setTimeLeft(timePerQuestion);
+          }
         }
-        
-        startTimeRef.current = Date.now();
-        
-        timerRef.current = setInterval(() => {
-            const elapsed = (Date.now() - startTimeRef.current) / 1000;
-            const remaining = Math.max(0, totalTime - elapsed);
-            
-            setTimeLeft(remaining);
-            
-            if (remaining <= 0) {
-                clearInterval(timerRef.current);
-                handleTimeUp();
-            }
-        }, 100); // Update more frequently for smoother countdown
-    };
-    
-    const handleTimeUp = () => {
-        // Auto-submit if no answer selected
-        if (selectedAnswer === null && gameState?.status === 'in_progress') {
-            handleSubmitAnswer(-1); // -1 indicates no answer
-        }
+
+        WebSocketService.connect(gameCode)
+          .on('gameStateUpdate', handleGameStateUpdate)
+          .on('gameStarted', handleGameStarted)
+          .on('nextQuestion', handleNextQuestion)
+          .on('answerSubmitted', handleAnswerSubmitted);
+      } catch (err) {
+        setError(err.error || 'Failed to connect to game');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // User interactions
-    const handleAnswerSelect = (answerIndex) => {
-        if (selectedAnswer !== null || gameState?.status !== 'in_progress') return;
-        
-        setSelectedAnswer(answerIndex);
-        handleSubmitAnswer(answerIndex);
-    };
-    
-    const handleSubmitAnswer = async (answerIndex) => {
-        try {
-            if (!gameCode || gameState?.status !== 'in_progress') return;
-            
-            // Calculate time taken to answer
-            const answerTime = totalTime - timeLeft;
-            
-            // Submit answer to server
-            const response = await GameService.submitAnswer(
-                gameCode, 
-                answerIndex, 
-                answerTime
-            );
-            
-            // Show animation for score
-            if (response.success) {
-                setScoreAnimation(true);
-                setTimeout(() => setScoreAnimation(false), 1500);
-                
-                // Check if answer was correct (this requires backend to return correct/incorrect)
-                if (response.correct === true) {
-                    setAnswerResult('correct');
-                } else if (response.correct === false) {
-                    setAnswerResult('incorrect');
-                }
-            }
-            
-        } catch (err) {
-            console.error("Failed to submit answer:", err);
-        }
-    };
-    
-    const handleNextQuestionClick = async () => {
-        try {
-            if (!gameCode || !isHost) return;
-            
-            await GameService.nextQuestion(gameCode);
-            
-        } catch (err) {
-            console.error("Failed to move to next question:", err);
-        }
-    };
-    
-    const fetchGameStatus = async () => {
-        try {
-            const response = await GameService.getGameStatus(gameCode);
-            if (response.success) {
-                setGameState(response.game);
-                if (response.game.status === 'in_progress' && response.game.current_question_data) {
-                    setCurrentQuestion(response.game.current_question_data);
-                    const timePerQuestion = response.game.quiz_data?.timePerQuestion || 30;
-                    setTotalTime(timePerQuestion);
-                    setTimeLeft(timePerQuestion);
-                }
-            }
-        } catch (err) {
-            console.error("Failed to fetch game status:", err);
-            setError('Failed to update game status');
-        }
-    };
+    initGame();
 
-    const handleStartGameClick = async () => {
-        try {
-            if (!gameCode || !isHost) return;
-            
-            setLoading(true);
-            const response = await GameService.startGame(gameCode);
-            
-            if (response && response.success) {
-                // The WebSocket will handle the game state update
-                console.log('Game start request successful');
-            } else {
-                // Handle specific error cases
-                const errorMsg = response?.error || 'Failed to start game';
-                console.error('Start game error:', errorMsg);
-                
-                if (errorMsg.includes('already started')) {
-                    // If game is already started, refresh the game state
-                    await fetchGameStatus();
-                } else {
-                    setError(errorMsg);
-                }
-            }
-            
-        } catch (err) {
-            console.error("Failed to start game:", err);
-            setError(err.response?.data?.error || 'Failed to start game. Please try again.');
-        } finally {
-            setLoading(false);
-        }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      WebSocketService.disconnect();
     };
-    
-    const handleLeaveGame = () => {
-        navigate('/');
-    };
+  }, [gameCode, user]);
+
+  const handleGameStateUpdate = (data) => {
+    const game = data && (data.game || data);
+    if (!game) return;
+
+    setGameState(game);
+    if (game.current_question_data) setCurrentQuestion(game.current_question_data);
+
+    const allAnswered = game.players && game.players.every((p) => p.has_answered);
+    setAllPlayersAnswered(allAnswered);
+    if (allAnswered) setShowResults(true);
+  };
+
+  const handleGameStarted = (data) => {
+    const game = data && (data.game || data);
+    if (!game) return;
+    setGameState(game);
+    setCurrentQuestion(game.current_question_data);
+    const timePerQuestion = game.quiz_data?.timePerQuestion || 30;
+    setTotalTime(timePerQuestion);
+    setTimeLeft(timePerQuestion);
+    startTimeRef.current = Date.now();
+    startTimer();
+  };
+
+  const handleNextQuestion = (data) => {
+    const game = data && (data.game || data);
+    if (!game) return;
+    setGameState(game);
+    setCurrentQuestion(game.current_question_data);
+    setSelectedAnswer(null);
+    setAnswerResult(null);
+    setShowResults(false);
+    const timePerQuestion = game.quiz_data?.timePerQuestion || 30;
+    setTotalTime(timePerQuestion);
+    setTimeLeft(timePerQuestion);
+    startTimeRef.current = Date.now();
+    startTimer();
+    setAllPlayersAnswered(false);
+  };
+
+  const handleAnswerSubmitted = (data) => {
+    console.log('Answer submitted by', data.player);
+  };
+
+  const handleStartGameClick = async () => {
+    try {
+      if (!gameCode || !isHost) return;
+      const response = await GameService.startGame(gameCode);
+      if (!response.success) {
+        setError(response.error || 'Failed to start game');
+      }
+    } catch (err) {
+      console.error('Start game error:', err);
+      setError(err.message || 'Failed to start game');
+    }
+  };
+
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    startTimeRef.current = Date.now();
+    timerRef.current = setInterval(() => {
+      const elapsed = (Date.now() - startTimeRef.current) / 1000;
+      const remaining = Math.max(0, totalTime - elapsed);
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(timerRef.current);
+        handleTimeUp();
+      }
+    }, 100);
+  };
+
+  const handleTimeUp = () => {
+    if (selectedAnswer === null && gameState?.status === 'in_progress') {
+      handleSubmitAnswer(-1);
+    }
+  };
+
+  const handleAnswerSelect = (index) => {
+    if (selectedAnswer !== null || gameState?.status !== 'in_progress') return;
+    setSelectedAnswer(index);
+    handleSubmitAnswer(index);
+  };
+
+  const handleSubmitAnswer = async (index) => {
+    try {
+      if (!gameCode || gameState?.status !== 'in_progress') return;
+      const answerTime = totalTime - timeLeft;
+      // Convert the index to a letter (0 -> 'A', 1 -> 'B', etc.)
+      const answerLetter = String.fromCharCode(65 + index); // 65 is ASCII for 'A'
+      const response = await GameService.submitAnswer(gameCode, answerLetter, answerTime);
+      if (response.success) {
+        setScoreAnimation(true);
+        setTimeout(() => setScoreAnimation(false), 1500);
+        if (response.correct === true) setAnswerResult('correct');
+        else if (response.correct === false) setAnswerResult('incorrect');
+      }
+    } catch (err) {
+      console.error("Failed to submit answer:", err);
+    }
+  };
+
+  const handleNextQuestionClick = async () => {
+    try {
+      if (!gameCode || !isHost) return;
+      await GameService.nextQuestion(gameCode);
+    } catch (err) {
+      console.error("Failed to move to next question:", err);
+    }
+  };
+
+  const handleLeaveGame = () => navigate('/');
 
     // Loading state
     if (loading) {

@@ -16,7 +16,7 @@ const GameService = {
                 quiz_data: quizData 
             });
             
-            console.log('Server response:', response.data);
+            // console.log('Server response:', response.data);
             return response.data;
             
         } catch (error) {
@@ -57,7 +57,7 @@ const GameService = {
                 game_code: gameCode 
             });
             
-            console.log('Join game response:', response.data);
+            // console.log('Join game response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to join game' };
@@ -72,7 +72,7 @@ const GameService = {
     getGameStatus: async (gameCode) => {
         try {
             const response = await api.get(`/api/game/${gameCode}/status/`);
-            console.log('Game status response:', response.data);
+            // console.log('Game status response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to get game status' };
@@ -87,7 +87,7 @@ const GameService = {
     startGame: async (gameCode) => {
         try {
             const response = await api.post(`/api/game/${gameCode}/start/`, {});
-            console.log('Start game response:', response.data);
+            // console.log('Start game response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to start game' };
@@ -108,7 +108,7 @@ const GameService = {
                 answer_time: answerTime 
             });
             
-            console.log('Submit answer response:', response.data);
+            // console.log('Submit answer response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to submit answer' };
@@ -123,7 +123,7 @@ const GameService = {
     nextQuestion: async (gameCode) => {
         try {
             const response = await api.post(`/api/game/${gameCode}/next/`, {});
-            console.log('Next question response:', response.data);
+            // console.log('Next question response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to move to next question' };

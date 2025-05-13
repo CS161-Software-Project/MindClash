@@ -215,22 +215,77 @@ def submit_answer(request, game_code):
         if player.current_answer is not None:
             return Response({'error': 'You have already answered this question'}, status=400)
         
-        # Update player answer
-        player.current_answer = answer
+        # Convert answer to number before saving to database
+        player_answer_num = None
+        if answer is not None:
+            if isinstance(answer, str):
+                if answer.isdigit():
+                    player_answer_num = int(answer)
+                elif answer.isalpha() and len(answer) == 1:
+                    # Convert letter to index (A=0, B=1, etc.)
+                    player_answer_num = ord(answer.upper()) - ord('A')
+            elif isinstance(answer, (int, float)):
+                player_answer_num = int(answer)
+        
+        # Update player answer with the numeric value
+        player.current_answer = player_answer_num
         player.answer_time = answer_time
         
         # Calculate score if correct
         current_q_index = game.current_question
-        if current_q_index < len(game.quiz_data.get('questions', [])):
-            current_question = game.quiz_data['questions'][current_q_index]
-            correct_answer = current_question.get('correct_answer')
+        print(f"\n--- SCORE DEBUG ---")
+        print(f"Player: {request.user.username}")
+        print(f"Current question index: {current_q_index}")
+        print(f"Player's answer: {answer}")
+        
+        questions = game.quiz_data.get('questions', [])
+        print(f"Total questions in quiz: {len(questions)}")
+        
+        if current_q_index < len(questions):
+            current_question = questions[current_q_index]
+            print(f"Current question data: {current_question}")
             
-            if answer == correct_answer:
+            # Handle both string and integer correct answers
+            correct_answer = current_question.get('correct_answer')
+            if correct_answer is None:
+                # Try alternative field names
+                correct_answer = current_question.get('correctAnswer')
+            
+            # Convert to int if it's a string number, or convert letter to index (A=0, B=1, etc.)
+            if isinstance(correct_answer, str):
+                if correct_answer.isdigit():
+                    correct_answer = int(correct_answer)
+                elif correct_answer.isalpha() and len(correct_answer) == 1:
+                    # Convert letter to index (A=0, B=1, etc.)
+                    correct_answer = ord(correct_answer.upper()) - ord('A')
+            
+            print(f"Correct answer: {correct_answer} (type: {type(correct_answer).__name__})")
+            
+            # Convert player's answer to int if it's a string number or letter
+            player_answer = None
+            if answer is not None:
+                if isinstance(answer, str):
+                    if answer.isdigit():
+                        player_answer = int(answer)
+                    elif answer.isalpha() and len(answer) == 1:
+                        # Convert letter to index (A=0, B=1, etc.)
+                        player_answer = ord(answer.upper()) - ord('A')
+                elif isinstance(answer, (int, float)):
+                    player_answer = int(answer)
+            
+            print(f"Player answer (converted): {player_answer} (type: {type(player_answer).__name__} if not None)")
+            
+            if correct_answer is not None and player_answer is not None and player_answer == correct_answer:
                 # Calculate score based on answer time (faster = more points)
                 max_time = game.quiz_data.get('timePerQuestion', 30)
                 time_factor = max(0, 1 - (float(answer_time) / max_time))
                 points = int(1000 * time_factor)
-                player.score += points
+                print(f"Points awarded: {points} (time factor: {time_factor:.2f}, answer time: {answer_time:.2f}s)")
+                print(f"Previous score: {player.score}")
+                player.score = (player.score or 0) + points
+                print(f"New score: {player.score}")
+            else:
+                print(f"No points awarded. Correct: {correct_answer}, Player: {player_answer}")
         
         player.save()
         

@@ -118,17 +118,28 @@ class GameConsumer(AsyncWebsocketConsumer):
             answer_time = text_data_json.get('answer_time')
             
             if username and answer is not None:
+                # Update the player's answer and calculate score
                 player = await self.update_player_answer_by_username(username, answer, answer_time)
                 
                 if player:
-                    # Send answer submitted message to group
+                    # Get the updated game state with scores
+                    game_state = await self.get_game_state()
+                    
+                    # Send both the answer submission and updated game state
                     await self.channel_layer.group_send(
                         self.game_group_name,
-                        {
-                            'type': 'answer_submitted',
-                            'player': player.user.username,
-                            'answer': answer
-                        }
+                        [
+                            {
+                                'type': 'answer_submitted',
+                                'player': player.user.username,
+                                'answer': answer,
+                                'is_correct': player.current_answer == answer  # Add this if needed
+                            },
+                            {
+                                'type': 'game_state_update',
+                                'game': game_state
+                            }
+                        ]
                     )
     
     # Handlers for different message types to send to WebSocket
@@ -151,11 +162,20 @@ class GameConsumer(AsyncWebsocketConsumer):
         }))
     
     async def answer_submitted(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'answer_submitted',
-            'player': event['player'],
-            'answer': event['answer']
-        }))
+        # If this is a game state update, send it directly
+        if 'game' in event:
+            await self.send(text_data=json.dumps({
+                'type': 'game_state_update',
+                'game': event['game']
+            }))
+        # Otherwise, send the answer submission
+        else:
+            await self.send(text_data=json.dumps({
+                'type': 'answer_submitted',
+                'player': event['player'],
+                'answer': event['answer'],
+                'is_correct': event.get('is_correct', False)
+            }))
     
     # Database access methods
     @database_sync_to_async
@@ -287,24 +307,62 @@ class GameConsumer(AsyncWebsocketConsumer):
                 player.answer_time = answer_time
                 
                 # Update score if correct
-                if game.status == 'in_progress':
+                print(f"\n--- WEBSOCKET SCORE DEBUG ---")
+                print(f"Player: {username}")
+                print(f"Game status: {game.status}")
+                print(f"Has quiz data: {bool(game.quiz_data)}")
+                
+                if game.status == 'in_progress' and game.quiz_data:
                     current_q_index = game.current_question
-                    if current_q_index < len(game.quiz_data.get('questions', [])):
-                        current_question = game.quiz_data['questions'][current_q_index]
-                        correct_answer = current_question.get('correct_answer')
+                    questions = game.quiz_data.get('questions', [])
+                    print(f"Current question index: {current_q_index}, Total questions: {len(questions)}")
+                    
+                    if current_q_index < len(questions):
+                        current_question = questions[current_q_index]
+                        print(f"Current question data: {current_question}")
                         
-                        if answer == correct_answer:
+                        # Handle both string and integer correct answers
+                        correct_answer = current_question.get('correct_answer')
+                        if correct_answer is None:
+                            # Try alternative field names
+                            correct_answer = current_question.get('correctAnswer')
+                        
+                        # Convert to int if it's a string number
+                        if isinstance(correct_answer, str) and correct_answer.isdigit():
+                            correct_answer = int(correct_answer)
+                        
+                        print(f"Correct answer: {correct_answer} (type: {type(correct_answer).__name__})")
+                        print(f"Player's answer: {answer} (type: {type(answer).__name__})")
+                        
+                        # Convert answer to int for comparison if needed
+                        try:
+                            player_answer = int(answer) if answer is not None else None
+                        except (ValueError, TypeError):
+                            player_answer = answer
+                            
+                        print(f"Player answer (converted): {player_answer} (type: {type(player_answer).__name__})")
+                        
+                        if correct_answer is not None and player_answer is not None and player_answer == correct_answer:
                             # Calculate score based on answer time (faster = more points)
-                            # For example, max 1000 points, decreasing with time
                             max_time = game.quiz_data.get('timePerQuestion', 30)
-                            time_factor = max(0, 1 - (answer_time / max_time))
+                            # Ensure answer_time is not None and is a number
+                            answer_time_float = float(answer_time) if answer_time is not None else max_time
+                            # Calculate time factor (1.0 for instant answer, decreasing to 0.1 for last second)
+                            time_factor = max(0.1, 1.0 - (answer_time_float / max_time) * 0.9)
+                            # Base points per question (1000) multiplied by time factor
                             points = int(1000 * time_factor)
-                            player.score += points
+                            print(f"Points calculation - time: {answer_time_float:.2f}s, factor: {time_factor:.2f}, points: {points}")
+                            print(f"Previous score: {player.score}")
+                            player.score = (player.score or 0) + points
+                            print(f"New score for {username}: {player.score}")
+                        else:
+                            print(f"No points awarded. Correct: {correct_answer}, Player: {player_answer}")
                 
                 player.save()
             
             return player
-        except (GameRoom.DoesNotExist, User.DoesNotExist, Player.DoesNotExist):
+        except Exception as e:
+            print(f"Error in update_player_answer_by_username: {str(e)}")
             return None
     
     @database_sync_to_async
@@ -316,23 +374,49 @@ class GameConsumer(AsyncWebsocketConsumer):
             
             # Only update if the player hasn't answered yet
             if player.current_answer is None:
-                player.current_answer = answer
+                # Convert answer to number before saving to database
+                player_answer_num = None
+                if answer is not None:
+                    if isinstance(answer, str):
+                        if answer.isdigit():
+                            player_answer_num = int(answer)
+                        elif answer.isalpha() and len(answer) == 1:
+                            # Convert letter to index (A=0, B=1, etc.)
+                            player_answer_num = ord(answer.upper()) - ord('A')
+                    elif isinstance(answer, (int, float)):
+                        player_answer_num = int(answer)
+                
+                player.current_answer = player_answer_num
                 player.answer_time = answer_time
                 
                 # Update score if correct
-                if game.status == 'in_progress':
+                if game.status == 'in_progress' and game.quiz_data:
                     current_q_index = game.current_question
-                    if current_q_index < len(game.quiz_data.get('questions', [])):
-                        current_question = game.quiz_data['questions'][current_q_index]
-                        correct_answer = current_question.get('correct_answer')
+                    questions = game.quiz_data.get('questions', [])
+                    
+                    if current_q_index < len(questions):
+                        current_question = questions[current_q_index]
                         
-                        if answer == correct_answer:
+                        # Handle both string and integer correct answers
+                        correct_answer = current_question.get('correct_answer')
+                        if correct_answer is None:
+                            # Try alternative field names
+                            correct_answer = current_question.get('correctAnswer')
+                        
+                        # Convert to int if it's a string number or letter
+                        if isinstance(correct_answer, str):
+                            if correct_answer.isdigit():
+                                correct_answer = int(correct_answer)
+                            elif correct_answer.isalpha() and len(correct_answer) == 1:
+                                correct_answer = ord(correct_answer.upper()) - ord('A')
+                        
+                        if player_answer_num is not None and correct_answer is not None and player_answer_num == correct_answer:
                             # Calculate score based on answer time (faster = more points)
-                            # For example, max 1000 points, decreasing with time
                             max_time = game.quiz_data.get('timePerQuestion', 30)
-                            time_factor = max(0, 1 - (answer_time / max_time))
+                            answer_time_float = float(answer_time) if answer_time is not None else max_time
+                            time_factor = max(0.1, 1.0 - (answer_time_float / max_time) * 0.9)
                             points = int(1000 * time_factor)
-                            player.score += points
+                            player.score = (player.score or 0) + points
                 
                 player.save()
             
