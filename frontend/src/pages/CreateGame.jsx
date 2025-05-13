@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/multiplayer.css';
 
 const CreateGame = () => {
   const [topic, setTopic] = useState('');
@@ -45,49 +46,68 @@ const CreateGame = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6">Create a Game</h2>
+    <div className="multiplayer-container">
+      <div className="multiplayer-card">
+        <h2 className="multiplayer-title">Create a Game</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Quiz Topic</label>
+            <input
+              type="text"
+              placeholder="Enter quiz topic"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              disabled={loading}
+              className="multiplayer-input"
+            />
+          </div>
 
-      <input
-        type="text"
-        placeholder="Enter quiz topic"
-        value={topic}
-        onChange={(e) => setTopic(e.target.value)}
-        disabled={loading}
-        className="w-full max-w-md p-2 mb-4 border border-gray-300 rounded"
-      />
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Difficulty</label>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
+              disabled={loading}
+              className="multiplayer-input"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
 
-      <select
-        value={difficulty}
-        onChange={(e) => setDifficulty(e.target.value)}
-        disabled={loading}
-        className="w-full max-w-md p-2 mb-4 border border-gray-300 rounded"
-      >
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard">Hard</option>
-      </select>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Number of Questions</label>
+            <select
+              value={count}
+              onChange={(e) => setCount(Number(e.target.value))}
+              disabled={loading}
+              className="multiplayer-input"
+            >
+              <option value={5}>5 Questions</option>
+              <option value={10}>10 Questions</option>
+              <option value={15}>15 Questions</option>
+            </select>
+          </div>
 
-      <select
-        value={count}
-        onChange={(e) => setCount(Number(e.target.value))}
-        disabled={loading}
-        className="w-full max-w-md p-2 mb-4 border border-gray-300 rounded"
-      >
-        <option value={5}>5 Questions</option>
-        <option value={10}>10 Questions</option>
-        <option value={15}>15 Questions</option>
-      </select>
-
-      <button
-        onClick={handleCreate}
-        disabled={loading}
-        className={`w-full max-w-md p-2 text-white rounded ${
-          loading ? 'bg-gray-400' : 'bg-indigo-500 hover:bg-indigo-600'
-        }`}
-      >
-        {loading ? 'Creating...' : 'Create Game'}
-      </button>
+          <button
+            onClick={handleCreate}
+            disabled={loading}
+            className={`multiplayer-button w-full ${
+              loading ? 'bg-gray-400' : 'bg-indigo-500 hover:bg-indigo-600'
+            }`}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-300"></div>
+                <span>Creating...</span>
+              </div>
+            ) : (
+              'Create Game'
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

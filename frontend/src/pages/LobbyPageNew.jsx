@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import "../styles/multiplayer.css";
+import './styles/multiplayer.css';
 
 const LobbyPage = () => {
   const { pin } = useParams();
@@ -155,13 +155,11 @@ const LobbyPage = () => {
           <div className="multiplayer-list">
             {players.map((player) => (
               <div key={player.id} className="multiplayer-list-item">
-                <div className="relative w-12 h-12">
-                  <img
-                    src={player.avatar_url}
-                    alt="Player avatar"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <img
+                  src={player.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=default"}
+                  alt="Player avatar"
+                  className="multiplayer-avatar"
+                />
                 <div>
                   <h3 className="font-semibold">{player.username}</h3>
                   <p className="text-sm text-gray-500">Score: {player.score}</p>

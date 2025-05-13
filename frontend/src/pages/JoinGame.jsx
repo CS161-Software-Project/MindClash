@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "../styles/multiplayer.css";
 
 const JoinGame = () => {
   const [pin, setPin] = useState('');
@@ -26,22 +27,24 @@ const JoinGame = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6">Join a Game</h2>
-      <input
-        type="text"
-        maxLength={6}
-        placeholder="Enter 6-digit PIN"
-        value={pin}
-        onChange={(e) => setPin(e.target.value)}
-        className="w-full max-w-md p-2 mb-4 border border-gray-300 rounded"
-      />
-      <button
-        onClick={handleJoin}
-        className="w-full max-w-md p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Join Game
-      </button>
+    <div className="multiplayer-container flex flex-col items-center justify-center">
+      <div className="multiplayer-card">
+        <h2 className="multiplayer-title">Join a Game</h2>
+        <input
+          type="text"
+          maxLength={6}
+          placeholder="Enter 6-digit PIN"
+          value={pin}
+          onChange={(e) => setPin(e.target.value)}
+          className="multiplayer-input"
+        />
+        <button
+          onClick={handleJoin}
+          className="multiplayer-button mt-4"
+        >
+          Join Game
+        </button>
+      </div>
     </div>
   );
 };
