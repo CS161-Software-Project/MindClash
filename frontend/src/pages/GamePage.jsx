@@ -671,10 +671,11 @@ export default function GamePage() {
       </div>
       
       {/* Chat Component */}
-      <div className="fixed bottom-6 right-6 z-10">
-        <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700 shadow-2xl">
-          <Chat pin={pin} currentUser={roomData?.current_user_id} />
-        </div>
+      <div className="fixed bottom-6 right-6 z-40">
+        <Chat 
+          pin={pin} 
+          currentUser={roomData?.current_user_id} 
+        />
       </div>
       
       {/* Game Pin Indicator */}
