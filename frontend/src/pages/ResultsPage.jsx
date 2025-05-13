@@ -111,11 +111,16 @@ const ResultsPage = () => {
   }, [pin, navigate]);
 
   const getTopPlayers = useCallback(() => {
-    if (!results) return [null, null, null];
+    if (!results || !results.leaderboard) return [null, null, null];
+    
+    // Sort the leaderboard by score in descending order
+    const sorted = [...results.leaderboard].sort((a, b) => b.score - a.score);
+    
+    // Return the top 3 players in the correct order for the podium
     return [
-      results.leaderboard[1] || null, // 2nd place
-      results.leaderboard[0] || null, // 1st place
-      results.leaderboard[2] || null, // 3rd place
+      sorted[0] || null, // 1st place
+      sorted[1] || null, // 2nd place
+      sorted[2] || null  // 3rd place
     ];
   }, [results]);
 

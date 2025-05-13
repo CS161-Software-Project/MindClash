@@ -6,44 +6,80 @@ import Confetti from 'react-confetti';
 const PodiumPage = () => {
   const { pin } = useParams();
   const navigate = useNavigate();
-  const [winners, setWinners] = useState([]);
+  const [winners, setWinners] = useState([null, null, null]);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
 
   useEffect(() => {
-    const fetchResults = async () => {
-      try {
-    const token = localStorage.getItem('token');
-        if (!token) {
-          navigate('/login');
-          return;
-        }
-
-        const res = await fetch(`http://localhost:8000/api/game-room/${pin}/results/`, {
-          headers: { Authorization: `Token ${token}` },
-        });
-        const data = await res.json();
-        setWinners(data.winners);
-      } catch (err) {
-        console.error('Error fetching results:', err);
-        toast.error('Failed to fetch game results');
-        navigate('/');
-      }
-    };
-
-    fetchResults();
-
+    console.log('PodiumPage mounted with pin:', pin);
+    
+    // Handle window resize
     const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
     };
-
+    
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    
+    // Fetch results
+    const fetchResults = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        const response = await fetch(`http://localhost:8000/api/game-room/${pin}/results/`, {
+          headers: { 
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+
+        const data = await response.json();
+        console.log('Raw API response:', data);
+        
+        // Handle the data structure from your logs
+        const leaderboard = data.leaderboard || data.winners || [];
+        console.log('Leaderboard data:', leaderboard);
+        
+        // Process and sort the leaderboard
+        const processedWinners = leaderboard
+          .map(player => ({
+            ...player,
+            score: Number(player.score) || 0
+          }))
+          .sort((a, b) => b.score - a.score);
+        
+        console.log('Processed and sorted winners:', processedWinners);
+        
+        // Take top 3 and fill with null if needed
+        const top3 = [...processedWinners.slice(0, 3)];
+        while (top3.length < 3) top3.push(null);
+        
+        setWinners(top3);
+        
+      } catch (error) {
+        console.error('Error fetching results:', error);
+        toast.error('Failed to load game results');
+      }
+    };
+
+    fetchResults();
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [pin, navigate]);
 
   const handleNewGame = () => {
@@ -53,6 +89,9 @@ const PodiumPage = () => {
   const handleHome = () => {
     navigate('/');
   };
+
+  // Debug info
+  console.log('Rendering with winners:', winners);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-purple-900 flex flex-col items-center justify-center p-8">
@@ -70,15 +109,7 @@ const PodiumPage = () => {
         {winners[1] && (
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-300 rounded-full flex items-center justify-center mb-4">
-              {winners[1].avatar_url ? (
-                <img
-                  src={winners[1].avatar_url}
-                  alt={winners[1].username}
-                  className="w-full h-full rounded-full"
-                />
-              ) : (
-                <span className="text-4xl">{winners[1].username[0].toUpperCase()}</span>
-              )}
+              <span className="text-4xl">{winners[1].username[0].toUpperCase()}</span>
             </div>
             <div className="bg-gray-200 p-4 rounded-lg text-center">
               <div className="text-2xl font-bold text-gray-800">2nd</div>
@@ -92,15 +123,7 @@ const PodiumPage = () => {
         {winners[0] && (
           <div className="flex flex-col items-center">
             <div className="w-40 h-40 bg-yellow-300 rounded-full flex items-center justify-center mb-4">
-              {winners[0].avatar_url ? (
-                <img
-                  src={winners[0].avatar_url}
-                  alt={winners[0].username}
-                  className="w-full h-full rounded-full"
-                />
-              ) : (
-                <span className="text-5xl">{winners[0].username[0].toUpperCase()}</span>
-              )}
+              <span className="text-5xl">{winners[0].username[0].toUpperCase()}</span>
             </div>
             <div className="bg-yellow-200 p-4 rounded-lg text-center">
               <div className="text-2xl font-bold text-yellow-800">1st</div>
@@ -114,19 +137,11 @@ const PodiumPage = () => {
         {winners[2] && (
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-orange-300 rounded-full flex items-center justify-center mb-4">
-              {winners[2].avatar_url ? (
-                <img
-                  src={winners[2].avatar_url}
-                  alt={winners[2].username}
-                  className="w-full h-full rounded-full"
-                />
-              ) : (
-                <span className="text-4xl">{winners[2].username[0].toUpperCase()}</span>
-              )}
+              <span className="text-4xl">{(winners[2].username || '?')[0].toUpperCase()}</span>
             </div>
             <div className="bg-orange-200 p-4 rounded-lg text-center">
               <div className="text-2xl font-bold text-orange-800">3rd</div>
-              <div className="text-xl font-semibold">{winners[2].username}</div>
+              <div className="text-xl font-semibold">{winners[2].username || 'N/A'}</div>
               <div className="text-lg text-orange-600">{winners[2].score} pts</div>
             </div>
           </div>
