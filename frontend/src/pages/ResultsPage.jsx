@@ -7,17 +7,27 @@ import Confetti from 'react-confetti';
 import useWindowSize from '../hooks/useWindowSize';
 
 const PodiumStep = ({ position, player, isActive, delay }) => {
-  const height = [200, 300, 250]; // Heights for 2nd, 1st, 3rd place
+  // Heights in pixels: [1st, 2nd, 3rd]
+  const heights = [300, 220, 180];
   const colors = [
-    'from-gray-400 to-gray-600', // 2nd place
     'from-yellow-300 to-yellow-500', // 1st place
-    'from-amber-600 to-amber-800', // 3rd place
+    'from-gray-400 to-gray-600',    // 2nd place
+    'from-amber-600 to-amber-800',  // 3rd place
   ];
-  const medals = ['🥈', '🥇', '🥉'];
+  const medals = ['🥇', '🥈', '🥉'];
+  const zIndexes = [30, 20, 10];
+
+  // Map position to array index (1st -> 0, 2nd -> 1, 3rd -> 2)
+  const index = position - 1;
+  const height = heights[index];
+  const color = colors[index];
+  const medal = medals[index];
+  const zIndex = zIndexes[index];
 
   return (
     <motion.div 
-      className={`flex flex-col items-center justify-end mx-1 ${position === 1 ? 'z-10' : 'z-0'}`}
+      className={`flex flex-col items-center justify-end mx-1`}
+      style={{ zIndex }}
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ 
@@ -29,14 +39,14 @@ const PodiumStep = ({ position, player, isActive, delay }) => {
       }}
     >
       <div className="text-center mb-2">
-        <div className="text-4xl">{medals[position - 1]}</div>
+        <div className="text-4xl">{medal}</div>
         <div className="text-2xl font-bold text-white">{player?.username || 'Player'}</div>
         <div className="text-xl font-semibold text-blue-300">{player?.score || 0} pts</div>
       </div>
       <motion.div
-        className={`w-24 md:w-32 h-${height[position - 1] / 10} rounded-t-lg bg-gradient-to-b ${colors[position - 1]} shadow-lg border-t border-opacity-30 border-white`}
-        initial={{ height: 0 }}
-        animate={{ height: height[position - 1] }}
+        className={`w-24 md:w-32 rounded-t-lg bg-gradient-to-b ${color} shadow-lg border-t border-opacity-30 border-white`}
+        style={{ height: 0 }}
+        animate={{ height: height }}
         transition={{ 
           duration: 0.8, 
           delay: delay + 0.3,
@@ -46,7 +56,7 @@ const PodiumStep = ({ position, player, isActive, delay }) => {
         }}
       >
         <div className="absolute bottom-0 left-0 right-0 text-center text-4xl font-bold text-white opacity-80">
-          {position}
+          {position === 1 ? '1st' : position === 2 ? '2nd' : '3rd'}
         </div>
       </motion.div>
     </motion.div>
@@ -63,7 +73,7 @@ const ResultsPage = () => {
   const { width, height } = useWindowSize();
   const [animationStage, setAnimationStage] = useState(0); // 0: initial, 1: show 3rd, 2: show 2nd, 3: show 1st
 
-  // Animate the podium steps one by one
+  // Animate the podium steps one by one: 3rd -> 2nd -> 1st
   useEffect(() => {
     if (animationStage < 3) {
       const timer = setTimeout(() => {
@@ -71,7 +81,7 @@ const ResultsPage = () => {
         if (animationStage === 2) {
           setShowConfetti(true);
         }
-      }, 800);
+      }, 600); // Slightly faster transition between animations
       return () => clearTimeout(timer);
     }
   }, [animationStage]);
@@ -174,19 +184,19 @@ const ResultsPage = () => {
         
         {/* Podium */}
         <div className="flex justify-center items-end h-96 mb-16">
-          {/* 2nd Place */}
-          {animationStage >= 1 && (
-            <PodiumStep position={2} player={secondPlace} isActive={true} delay={0} />
-          )}
-          
-          {/* 1st Place */}
+          {/* 2nd Place (Silver) - Left side */}
           {animationStage >= 2 && (
-            <PodiumStep position={1} player={firstPlace} isActive={true} delay={0.8} />
+            <PodiumStep position={2} player={secondPlace} isActive={true} delay={animationStage === 2 ? 0 : 0.3} />
           )}
           
-          {/* 3rd Place */}
+          {/* 1st Place (Gold) - Middle */}
           {animationStage >= 3 && (
-            <PodiumStep position={3} player={thirdPlace} isActive={true} delay={1.6} />
+            <PodiumStep position={1} player={firstPlace} isActive={true} delay={0} />
+          )}
+          
+          {/* 3rd Place (Bronze) - Right side */}
+          {animationStage >= 1 && (
+            <PodiumStep position={3} player={thirdPlace} isActive={true} delay={0} />
           )}
         </div>
         

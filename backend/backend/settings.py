@@ -11,9 +11,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()  # Looks for .env in the current directory
 
 
 # Quick-start development settings - unsuitable for production
@@ -185,6 +190,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GROQ_API_KEY = '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'
+# Load GROQ configuration from environment variables
+GROQ_API_KEY = "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"
 GROQ_API_URL = 'https://api.groq.com/v1'
 
