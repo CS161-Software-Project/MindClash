@@ -27,26 +27,74 @@ const GameRoom = () => {
 
     // Initialize user data from localStorage
     useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (userData) {
+        const loadUser = () => {
             try {
-                const parsedUser = JSON.parse(userData);
-                if (parsedUser && parsedUser.id) {
-                    setUser(parsedUser);
+                // Check for user data in multiple locations
+                let userData = 
+                    sessionStorage.getItem('user') ||
+                    localStorage.getItem('user') || 
+                    localStorage.getItem('userData');
+                console.log('Raw user data from localStorage:', userData);
+                
+                if (userData) {
+                    const parsedUser = JSON.parse(userData);
+                    console.log('Parsed user data:', parsedUser);
+                    
+                    // Make sure we have the required fields
+                    if (parsedUser && (parsedUser.id || parsedUser.username)) {
+                        // Ensure username is set and in the expected format
+                        if (!parsedUser.username && parsedUser.email) {
+                            parsedUser.username = parsedUser.email.split('@')[0];
+                        }
+                        
+                        console.log('Setting user:', parsedUser);
+                        setUser(parsedUser);
+                        return true;
+                    }
                 }
             } catch (error) {
-                console.error('Error parsing user data:', error);
+                console.error('Error loading user data:', error);
+            }
+            return false;
+        };
+
+        // Try to load user immediately
+        if (!loadUser()) {
+            console.warn('No valid user data found in localStorage. Available keys:', 
+                Object.keys(localStorage));
+            
+            // Try to get user from auth token if available
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                console.log('Found auth token, trying to fetch user data...');
+                // You might want to add a function to fetch user data using the token
+                // For now, we'll just log a message
+                console.log('Token found but no user data. You might need to implement a user profile fetch.');
             }
         }
     }, []);
 
     // Determine if current user is the host of the game
     useEffect(() => {
-        if (user && gameState && user.id && gameState.host_id) {
-            console.log('Checking host status:', user.id, gameState.host_id);
-            setIsHost(user.id === gameState.host_id);
+        if (user && gameState && user.username) {
+            // console.log('Checking host status:', {
+            //     currentUser: user.username,
+            //     gameHost: gameState.host,
+            //     userObject: user,
+            //     gameState: gameState
+            // });
+            // Case-insensitive comparison to handle any casing issues
+            const isUserHost = user.username.toLowerCase() === gameState.host?.toLowerCase();
+            console.log('Is user host?', isUserHost);
+            setIsHost(isUserHost);
         } else {
-            console.log('Missing data for host check:', { user, gameState });
+            console.log('Missing data for host check:', { 
+                hasUser: !!user, 
+                hasGameState: !!gameState, 
+                hasUsername: user?.username,
+                user: user,
+                gameState: gameState
+            });
             setIsHost(false);
         }
     }, [user, gameState]);
@@ -112,7 +160,7 @@ const GameRoom = () => {
             return;
         }
         
-        console.log('Game state update received:', game);
+        // console.log('Game state update received:', game);
         setGameState(game);
         
         // Check if all players have answered
@@ -264,25 +312,52 @@ const GameRoom = () => {
         }
     };
     
+    const fetchGameStatus = async () => {
+        try {
+            const response = await GameService.getGameStatus(gameCode);
+            if (response.success) {
+                setGameState(response.game);
+                if (response.game.status === 'in_progress' && response.game.current_question_data) {
+                    setCurrentQuestion(response.game.current_question_data);
+                    const timePerQuestion = response.game.quiz_data?.timePerQuestion || 30;
+                    setTotalTime(timePerQuestion);
+                    setTimeLeft(timePerQuestion);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to fetch game status:", err);
+            setError('Failed to update game status');
+        }
+    };
+
     const handleStartGameClick = async () => {
         try {
             if (!gameCode || !isHost) return;
             
+            setLoading(true);
             const response = await GameService.startGame(gameCode);
             
-            if (!response.success) {
+            if (response && response.success) {
+                // The WebSocket will handle the game state update
+                console.log('Game start request successful');
+            } else {
                 // Handle specific error cases
-                if (response.error === 'Game has already started or ended') {
-                    // If game is already started, just refresh the game state
+                const errorMsg = response?.error || 'Failed to start game';
+                console.error('Start game error:', errorMsg);
+                
+                if (errorMsg.includes('already started')) {
+                    // If game is already started, refresh the game state
                     await fetchGameStatus();
                 } else {
-                    setError(response.error || 'Failed to start game');
+                    setError(errorMsg);
                 }
             }
             
         } catch (err) {
             console.error("Failed to start game:", err);
-            setError(err.error || 'Failed to start game. Please try again.');
+            setError(err.response?.data?.error || 'Failed to start game. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
     

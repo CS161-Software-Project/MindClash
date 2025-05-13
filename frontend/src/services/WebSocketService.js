@@ -59,22 +59,36 @@ class WebSocketService {
                 }
                 
                 // Ensure we have basic game state
-                if (!gameData.status || !gameData.host_id) {
+                if (!gameData.status || !gameData.host) {
                     console.error('Missing required game state data:', gameData);
                     return;
                 }
                 
-                // Transform player data to use user IDs
+                // Transform player data to ensure consistent structure
                 if (gameData.players) {
-                    gameData.players = gameData.players.map(player => ({
-                        ...player,
-                        user_id: player.user_id || player.id // Use user_id if available, fallback to id
-                    }));
+                    gameData.players = gameData.players.map(player => {
+                        // Ensure player has required fields
+                        const normalizedPlayer = {
+                            ...player,
+                            username: player.username || 'Unknown Player',
+                            score: player.score || 0,
+                            has_answered: player.has_answered || false
+                        };
+                        
+                        // Add is_host flag if not present
+                        if (gameData.host === player.username) {
+                            normalizedPlayer.is_host = true;
+                        }
+                        
+                        return normalizedPlayer;
+                    });
                 }
                 
                 // Track previous game state for detecting changes
                 const prevStatus = this._prevGameState?.status;
-                this._prevGameState = gameData;
+                
+                // Deep clone the game data to avoid reference issues
+                this._prevGameState = JSON.parse(JSON.stringify(gameData));
                 
                 // Always notify about game state updates
                 this.notifyListeners('gameStateUpdate', gameData);

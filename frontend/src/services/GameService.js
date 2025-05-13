@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { api } from './AuthService';
 
 const API_URL = 'http://localhost:8000';
 
@@ -10,17 +10,39 @@ const GameService = {
      */
     createGame: async (quizData) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.post(`${API_URL}/api/game/create/`, 
-                { quiz_data: quizData },
-                { headers: { Authorization: `Token ${token}` } }
-            );
+            console.log('Sending quiz data to server:', JSON.stringify(quizData, null, 2));
             
+            const response = await api.post('/api/game/create/', { 
+                quiz_data: quizData 
+            });
+            
+            console.log('Server response:', response.data);
             return response.data;
+            
         } catch (error) {
-            throw error.response?.data || { error: 'Failed to create game' };
+            console.error('Error creating game:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                headers: error.response?.headers,
+                config: {
+                    url: error.config?.url,
+                    method: error.config?.method,
+                    data: error.config?.data,
+                    headers: error.config?.headers
+                }
+            });
+            
+            // Return a more detailed error object
+            return { 
+                error: error.response?.data?.error || 
+                      error.response?.data?.message || 
+                      error.message || 
+                      'Failed to create game',
+                status: error.response?.status,
+                details: error.response?.data
+            };
         }
     },
 
@@ -31,14 +53,11 @@ const GameService = {
      */
     joinGame: async (gameCode) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.post(`${API_URL}/api/game/join/`, 
-                { game_code: gameCode },
-                { headers: { Authorization: `Token ${token}` } }
-            );
+            const response = await api.post('/api/game/join/', { 
+                game_code: gameCode 
+            });
             
+            console.log('Join game response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to join game' };
@@ -52,13 +71,8 @@ const GameService = {
      */
     getGameStatus: async (gameCode) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.get(`${API_URL}/api/game/${gameCode}/status/`, 
-                { headers: { Authorization: `Token ${token}` } }
-            );
-            
+            const response = await api.get(`/api/game/${gameCode}/status/`);
+            console.log('Game status response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to get game status' };
@@ -72,14 +86,8 @@ const GameService = {
      */
     startGame: async (gameCode) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.post(`${API_URL}/api/game/${gameCode}/start/`, 
-                {},
-                { headers: { Authorization: `Token ${token}` } }
-            );
-            
+            const response = await api.post(`/api/game/${gameCode}/start/`, {});
+            console.log('Start game response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to start game' };
@@ -95,14 +103,12 @@ const GameService = {
      */
     submitAnswer: async (gameCode, answer, answerTime) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.post(`${API_URL}/api/game/${gameCode}/answer/`, 
-                { answer, answer_time: answerTime },
-                { headers: { Authorization: `Token ${token}` } }
-            );
+            const response = await api.post(`/api/game/${gameCode}/answer/`, { 
+                answer, 
+                answer_time: answerTime 
+            });
             
+            console.log('Submit answer response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to submit answer' };
@@ -116,14 +122,8 @@ const GameService = {
      */
     nextQuestion: async (gameCode) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.post(`${API_URL}/api/game/${gameCode}/next/`, 
-                {},
-                { headers: { Authorization: `Token ${token}` } }
-            );
-            
+            const response = await api.post(`/api/game/${gameCode}/next/`, {});
+            console.log('Next question response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to move to next question' };
@@ -137,13 +137,8 @@ const GameService = {
      */
     getLeaderboard: async (gameCode) => {
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) throw new Error('Authentication required');
-
-            const response = await axios.get(`${API_URL}/api/game/${gameCode}/leaderboard/`, 
-                { headers: { Authorization: `Token ${token}` } }
-            );
-            
+            const response = await api.get(`/api/game/${gameCode}/leaderboard/`);
+            console.log('Leaderboard response:', response.data);
             return response.data;
         } catch (error) {
             throw error.response?.data || { error: 'Failed to get leaderboard' };

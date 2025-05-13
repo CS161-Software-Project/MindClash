@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { api } from '../services/AuthService';
 import '../styles/QuizGenerator.css';
 
 const QuizGeneratorStandalone = ({ onQuizGenerated }) => {
@@ -26,29 +26,43 @@ const QuizGeneratorStandalone = ({ onQuizGenerated }) => {
 
     try {
       const { topic, count, difficulty } = formData;
-
-      const result = await axios.post('http://localhost:8000/api/generate-quiz/', {
+      
+      console.log('Sending quiz generation request with data:', { topic, count, difficulty });
+      
+      const result = await api.post('/api/generate-quiz/', {
         topic,
         count,
         difficulty
       });
 
-      if (result.data.success) {
+      console.log('Quiz generation response:', result);
+
+      if (result.data && result.data.success) {
         const quizData = result.data.quiz;
         if (onQuizGenerated) {
-          onQuizGenerated(quizData); // 🔥 Send quiz to parent
+          onQuizGenerated(quizData);
         }
       } else {
-        throw new Error(result.data.error || 'Failed to generate quiz');
+        throw new Error(result.data?.error || 'Failed to generate quiz');
       }
 
     } catch (err) {
       console.error('Quiz generation error:', err);
-      setError(err.message || 'Failed to generate quiz.');
+      setError(err.response?.data?.detail || err.message || 'Failed to generate quiz. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  
+  // Check if user is authenticated
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('You need to be logged in to generate quizzes');
+    } else {
+      setError('');
+    }
+  }, []);
 
   return (
     <div className="quiz-generator-container">

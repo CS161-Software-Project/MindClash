@@ -15,20 +15,40 @@
             try {
                 // Log the data directly instead of the state variable
                 console.log('Generated quiz data:', data);
-                setQuizData(data);
+                
+                // Ensure the quiz data is properly formatted
+                const formattedQuizData = {
+                    title: data.title || 'Quiz',
+                    questions: (data.questions || []).map(question => ({
+                        question: question.question || '',
+                        options: question.options || [],
+                        correctAnswer: question.correctAnswer || '',
+                        explanation: question.explanation || ''
+                    })),
+                    recommendedTimeInMinutes: data.recommendedTimeInMinutes || 10
+                };
+                
+                setQuizData(formattedQuizData);
                 setLoading(true);
                 setError('');
 
                 // Create a new game with the generated quiz
-                const response = await GameService.createGame(data);
+                const response = await GameService.createGame(formattedQuizData);
                 
-                if (response.success) {
+                console.log('Create game response:', response);
+                
+                if (response && response.game_code) {
                     setGameCode(response.game_code);
                 } else {
-                    setError(response.error || 'Failed to create game');
+                    setError(response?.error || 'Failed to create game. Please try again.');
                 }
             } catch (err) {
-                setError(err.error || 'Failed to create game. Please try again.');
+                console.error('Error in handleQuizGenerated:', err);
+                setError(
+                    err.error?.message || 
+                    err.error || 
+                    (typeof err === 'string' ? err : 'Failed to create game. Please try again.')
+                );
             } finally {
                 setLoading(false);
             }

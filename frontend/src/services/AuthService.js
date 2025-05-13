@@ -1,103 +1,146 @@
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8000';
+
+// Create and export the axios instance
+export const api = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    },
+});
+
+// Add a request interceptor to include the auth token
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            // Remove any existing Authorization header to avoid duplicates
+            delete config.headers.Authorization;
+            // Add the Bearer token
+            config.headers.Authorization = `Bearer ${token}`;
+            console.log('Adding Authorization header:', config.headers.Authorization);
+        } else {
+            console.warn('No auth token found in localStorage');
+        }
+        return config;
+    },
+    (error) => {
+        console.error('Request interceptor error:', error);
+        return Promise.reject(error);
+    }
+);
+
+// Add a response interceptor to handle errors
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('Response error:', error.response.data);
+            console.error('Status:', error.response.status);
+            console.error('Headers:', error.response.headers);
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.error('Request error:', error.request);
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error:', error.message);
+        }
+        return Promise.reject(error);
+    }
+);
+
 const AuthService = {
-  // Base fetch function with error handling
-  fetchWithAuth: async (url, options = {}) => {
-    const baseURL = 'http://127.0.0.1:8000/';
-    const token = localStorage.getItem('authToken');
-    console.log(token)
-  
-    const defaultHeaders = {
-      'Content-Type': 'application/json'
-    };
-    
-    if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
-    }
-    
-    const config = {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers
-      }
-    };
-    
-    try {
-      // Ensure URL ends with a slash if it doesn't already
-      const formattedUrl = url.endsWith('/') ? url : `${url}/`;
-      console.log(`Making request to ${baseURL}${formattedUrl}`);
-      const response = await fetch(`${baseURL}${formattedUrl}`, config);
-      
-      // Check if response is JSON
-      const contentType = response.headers.get("content-type");
-      let data;
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        data = await response.json();
-      } else {
-        data = await response.text();
-        console.log("Non-JSON response:", data);
-        throw new Error("Unexpected response format");
-      }
-      
-      if (!response.ok) {
-        // Pass the entire error object through
-        throw data;
-      }
-      
-      return data;
-    } catch (error) {
-      console.error("Request error:", error);
-      // Preserve the full error structure
-      if (error.response) {
-        throw error.response.data || error;
-      } else {
-        throw error;
-      }
-    }
-  },
-  
-  // Register a new user
-  register: async (userData) => {
-    try {
-      console.log("Sending registration data:", userData);
-      const data = await AuthService.fetchWithAuth('register/', {
-        method: 'POST',
-        body: JSON.stringify(userData)
-      });
-      
-      console.log("Registration response:", data);
-      
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
-      return data;
-    } catch (error) {
-      console.error("Registration error:", error);
-      // Pass the entire error object up
-      throw error;
-    }
-  },
-  // Login user
-  login: async (userData) => {
-    try {
-      console.log("Sending login data:", userData);
-      const data = await AuthService.fetchWithAuth('login/', {
-        method: 'POST',
-        body: JSON.stringify(userData)
-      });
+    // Login user
+    login: async (email, password) => {
+        try {
+            const response = await api.post('/api/auth/login/', { email, password });
+            
+            if (response.data && response.data.token) {
+                const token = response.data.token;
+                localStorage.setItem('authToken', token);
+                
+                // Get or create user data
+                let userData = {
+                    id: response.data.user?.id,
+                    email: email,
+                    username: response.data.user?.username || email.split('@')[0]
+                };
+                
+                console.log('Storing user data:', userData);
+                localStorage.setItem('user', JSON.stringify(userData));
+                
+                // Also store in session storage for immediate access
+                sessionStorage.setItem('user', JSON.stringify(userData));
+                
+                return { success: true, user: userData };
+            }
+            return { success: false, error: 'Invalid response from server' };
+        } catch (error) {
+            console.error('Login error:', error);
+            return { 
+                success: false, 
+                error: error.response?.data?.error || 'Login failed. Please try again.' 
+            };
+        }
+    },
 
-      console.log("Login response:", data);
+    // Register new user
+    register: async (userData) => {
+        try {
+            const response = await api.post('/api/auth/register/', userData);
+            return response.data;
+        } catch (error) {
+            console.error('Registration error:', error);
+            throw error.response?.data || { error: 'Registration failed' };
+        }
+    },
 
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
-      return data;
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+    // Logout user
+    logout: async () => {
+        try {
+            await api.post('/api/auth/logout/');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Even if logout fails, clear local storage
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            throw error.response?.data || { error: 'Logout failed' };
+        }
+    },
+
+    // Get current user
+    getCurrentUser: async () => {
+        try {
+            const response = await api.get('/api/auth/user/');
+            return response.data;
+        } catch (error) {
+            console.error('Get current user error:', error);
+            throw error.response?.data || { error: 'Failed to get user data' };
+        }
+    },
+
+    // Check if user is authenticated
+    isAuthenticated: () => {
+        return !!localStorage.getItem('authToken');
+    },
+
+    // Get auth token
+    getToken: () => {
+        return localStorage.getItem('authToken');
+    },
+
+    // Get user data from local storage
+    getUser: () => {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
     }
-  },
 };
 
 export default AuthService;

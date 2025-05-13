@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
+    'corsheaders',
     'base.apps.BaseConfig',
     'drf_yasg',
     'rest_framework',
@@ -69,18 +70,56 @@ SWAGGER_SETTINGS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your frontend React/Vue URL
+    "http://127.0.0.1:5173",  # Also allow 127.0.0.1 for consistency
 ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
+# Allow credentials (cookies, authorization headers) to be included in cross-site requests
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow all headers and methods
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Explicitly set allowed headers if needed
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    'rest_framework.authentication.SessionAuthentication',
+        'base.authentication.BearerTokenAuthentication',  # Our custom Bearer token auth
+        'rest_framework.authentication.TokenAuthentication',  # Fallback to standard token auth
+        'rest_framework.authentication.SessionAuthentication',
     ],
     
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Allow access to register/login without authentication
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
+    ],
+    
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+    
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
 
