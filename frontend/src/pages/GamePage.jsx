@@ -373,10 +373,10 @@ export default function GamePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading game...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          <p className="mt-4 text-gray-300">Loading game...</p>
         </div>
       </div>
     );
@@ -384,13 +384,13 @@ export default function GamePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-          <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
-          <p className="text-gray-600">{error}</p>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="bg-gray-800 p-8 rounded-xl shadow-2xl text-center border border-gray-700">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">Error</h2>
+          <p className="text-gray-300 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-lg font-medium transition-colors duration-200"
           >
             Try Again
           </button>
@@ -401,43 +401,43 @@ export default function GamePage() {
 
   if (!roomData) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading game data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          <p className="mt-4 text-gray-300">Loading game data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="container mx-auto p-4 max-w-4xl">
         {waitingForPlayers ? (
-          <div className="bg-white rounded-2xl shadow-xl p-8 text-center transform transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 text-center transform transition-all duration-300 hover:scale-[1.01] border border-gray-700">
             <div className="animate-bounce mb-6">
-              <svg className="w-16 h-16 text-blue-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-16 h-16 text-indigo-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-3 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold text-white mb-3 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               Waiting for Other Players
             </h2>
-            <p className="text-lg text-gray-600 mb-6">You've answered the question!</p>
+            <p className="text-lg text-gray-300 mb-6">You've answered the question!</p>
             <div className="relative pt-1">
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-700">
                 <div 
                   style={{ width: '100%' }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-blue-500 to-indigo-500 animate-pulse"
+                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-indigo-500 to-purple-500 animate-pulse"
                 ></div>
               </div>
             </div>
-            <p className="text-sm text-gray-500 mt-4">Please wait while other players finish answering...</p>
+            <p className="text-sm text-gray-400 mt-4">Please wait while other players finish answering...</p>
           </div>
         ) : showAnswerResults ? (
-          <div className="bg-white rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 transform transition-all duration-300 hover:scale-[1.01] border border-gray-700">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold text-white bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
                 Question Results
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 mx-auto mt-2 rounded-full"></div>
@@ -447,42 +447,42 @@ export default function GamePage() {
               {answerResults.distribution.map((option, index) => (
                 <div 
                   key={index}
-                  className={`p-5 rounded-xl transition-all duration-200 transform hover:scale-[1.01] ${
+                  className={`p-5 rounded-xl transition-all duration-200 transform hover:scale-[1.01] border-l-4 ${
                     option.answer === answerResults.correctAnswer 
-                      ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 shadow-md' 
+                      ? 'bg-gray-800 border-green-500 shadow-lg' 
                       : option.answer === answerResults.userAnswer
-                      ? 'bg-gradient-to-r from-blue-50 to-sky-50 border-l-4 border-blue-500 shadow-md'
-                      : 'bg-gray-50 border-l-4 border-gray-200 hover:border-gray-300'
+                      ? 'bg-gray-800 border-blue-500 shadow-lg'
+                      : 'bg-gray-800 border-gray-700 hover:border-gray-600'
                   }`}
                 >
                   <div className="flex justify-between items-center">
                     <span className={`text-lg font-medium ${
                       option.answer === answerResults.correctAnswer 
-                        ? 'text-green-700' 
+                        ? 'text-green-400' 
                         : option.answer === answerResults.userAnswer
-                        ? 'text-blue-700'
-                        : 'text-gray-700'
+                        ? 'text-blue-400'
+                        : 'text-gray-300'
                     }`}>
                       {option.answer}
                     </span>
-                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-700">
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-gray-700 text-gray-200">
                       {option.count} {option.count === 1 ? 'player' : 'players'}
                     </span>
                   </div>
-                  <div className="mt-3 w-full bg-gray-200 rounded-full h-2.5">
+                  <div className="mt-3 w-full bg-gray-700 rounded-full h-2.5">
                     <div 
                       className={`h-2.5 rounded-full ${
                         option.answer === answerResults.correctAnswer 
                           ? 'bg-green-500' 
                           : option.answer === answerResults.userAnswer
                           ? 'bg-blue-500'
-                          : 'bg-gray-400'
+                          : 'bg-gray-600'
                       }`} 
                       style={{ width: `${(option.count / Math.max(...answerResults.distribution.map(o => o.count))) * 100}%` }}
                     ></div>
                   </div>
                   {option.answer === answerResults.correctAnswer && (
-                    <div className="mt-2 flex items-center text-green-600 font-semibold">
+                    <div className="mt-2 flex items-center text-green-400 font-semibold">
                       <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
@@ -490,7 +490,7 @@ export default function GamePage() {
                     </div>
                   )}
                   {option.answer === answerResults.userAnswer && option.answer !== answerResults.correctAnswer && (
-                    <div className="mt-2 flex items-center text-blue-600 font-semibold">
+                    <div className="mt-2 flex items-center text-blue-400 font-semibold">
                       <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h2a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
@@ -501,65 +501,73 @@ export default function GamePage() {
               ))}
             </div>
             
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 text-center border border-indigo-100">
-              <p className="text-2xl font-bold text-gray-800 mb-2">
-                Your Score: <span className="text-indigo-600">{answerResults.score || 0}</span>
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 text-center border border-gray-700">
+              <p className="text-2xl font-bold text-white mb-2">
+                Your Score: <span className="text-indigo-400">{answerResults.score || 0}</span>
               </p>
-              <div className="flex items-center justify-center space-x-2 text-indigo-500">
+              <div className="flex items-center justify-center space-x-2 text-indigo-400">
                 <svg className="animate-pulse w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                 </svg>
-                <p className="text-indigo-600 font-medium">
+                <p className="font-medium">
                   Moving to leaderboard in a few seconds...
                 </p>
               </div>
             </div>
           </div>
         ) : showLeaderboard ? (
-          <div className="bg-white rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 transform transition-all duration-300 hover:scale-[1.01] border border-gray-700">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+              <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
                 Leaderboard
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-400 mx-auto mt-2 rounded-full"></div>
-              <p className="text-gray-500 mt-2">Current Standings</p>
+              <div className="w-32 h-1 bg-gradient-to-r from-amber-500 to-orange-500 mx-auto mt-3 rounded-full"></div>
+              <p className="text-gray-400 mt-3 text-lg">Current Standings</p>
             </div>
             
             <div className="space-y-4 mb-8">
               {leaderboardData.map((player, index) => (
                 <div 
                   key={player.id} 
-                  className={`flex items-center justify-between p-5 rounded-xl transition-all duration-200 transform hover:scale-[1.01] ${
+                  className={`flex items-center justify-between p-5 rounded-xl transition-all duration-200 transform hover:scale-[1.01] backdrop-blur-sm ${
                     index === 0 
-                      ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 shadow-md' 
-                      : 'bg-gray-50 border-l-4 border-gray-200 hover:border-gray-300'
+                      ? 'bg-gradient-to-r from-amber-900/30 to-amber-800/20 border border-amber-500/30 shadow-lg' 
+                      : 'bg-gray-800/50 border border-gray-700 hover:border-gray-600'
                   }`}
                 >
                   <div className="flex items-center space-x-4">
-                    <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
-                      index === 0 ? 'bg-gradient-to-br from-amber-400 to-amber-600' :
+                    <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${
+                      index === 0 ? 'bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg' :
                       index === 1 ? 'bg-gradient-to-br from-gray-400 to-gray-600' :
-                      index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800' :
-                      'bg-gradient-to-br from-gray-300 to-gray-500'
+                      index === 2 ? 'bg-gradient-to-br from-amber-700 to-amber-900' :
+                      'bg-gradient-to-br from-gray-600 to-gray-800'
                     }`}>
                       {index + 1}
                     </div>
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-4">
                       <img 
                         src={player.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(player.username)}&background=random`} 
                         alt={player.username} 
-                        className="w-10 h-10 rounded-full border-2 border-white shadow-sm" 
+                        className={`w-12 h-12 rounded-full border-2 ${
+                          index === 0 ? 'border-amber-400' : 'border-gray-600'
+                        } shadow-lg`} 
                       />
-                      <span className={`font-semibold ${
-                        index === 0 ? 'text-amber-800' : 'text-gray-700'
-                      }`}>
-                        {player.username}
-                      </span>
+                      <div className="text-left">
+                        <span className={`block text-lg font-semibold ${
+                          index === 0 ? 'text-amber-300' : 'text-white'
+                        }`}>
+                          {player.username}
+                        </span>
+                        <span className="text-sm text-gray-400">
+                          {player.score} points
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <span className={`text-lg font-bold px-4 py-1 rounded-full ${
-                      index === 0 ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800'
+                    <span className={`text-lg font-bold px-4 py-2 rounded-lg ${
+                      index === 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-400/30' : 
+                      'bg-gray-700/50 text-gray-300 border border-gray-600/30'
                     }`}>
                       {player.score} pts
                     </span>
@@ -571,22 +579,22 @@ export default function GamePage() {
             {isCreator && !roomData.finished && (
               <button
                 onClick={() => handleNextQuestion()}
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold text-lg shadow-lg hover:from-amber-600 hover:to-orange-600 transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:from-amber-600 hover:to-orange-600 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-3 group"
               >
                 <span>Next Question</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </button>
             )}
             
             {!isCreator && !roomData.finished && (
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 text-center border border-gray-200">
-                <div className="flex items-center justify-center space-x-2 text-gray-600">
-                  <svg className="animate-pulse w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <div className="bg-gray-800/50 rounded-xl p-5 text-center border border-gray-700 backdrop-blur-sm">
+                <div className="flex items-center justify-center space-x-3 text-gray-300">
+                  <svg className="animate-pulse w-6 h-6 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
-                  <p className="font-medium">
+                  <p className="text-lg font-medium">
                     Waiting for host to continue...
                   </p>
                 </div>
@@ -594,26 +602,23 @@ export default function GamePage() {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 transform transition-all duration-300 hover:scale-[1.01] border border-gray-700">
+            <div className="flex justify-between items-center mb-8">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg">
                 Question {roomData.current_question_index + 1} of {roomData.question_count}
               </div>
-              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-lg font-bold text-lg shadow-md flex items-center">
-                <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {roomData.score || 0} pts
+              <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                Score: {roomData.score || 0}
               </div>
             </div>
             
             {currentQuestion && (
               <>
                 <div className="mb-8">
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight mb-4">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight mb-4">
                     {currentQuestion.question}
                   </h3>
-                  <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
+                  <div className="w-16 h-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"></div>
                 </div>
                 
                 <div className="grid grid-cols-1 gap-4 mb-6">
@@ -624,21 +629,19 @@ export default function GamePage() {
                         key={index}
                         onClick={() => handleAnswer(option)}
                         disabled={selectedAnswer !== null}
-                        className={`p-5 text-left rounded-xl transition-all duration-200 transform hover:scale-[1.01] ${
+                        className={`p-5 text-left rounded-xl transition-all duration-200 transform hover:scale-[1.02] ${
                           isSelected
-                            ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg'
-                            : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-blue-200'
+                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg border border-blue-400/30'
+                            : 'bg-gray-700/50 text-gray-200 hover:bg-gray-700 border border-gray-600/50 hover:border-blue-500/50'
                         }`}
                       >
                         <div className="flex items-center">
-                          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
-                            isSelected 
-                              ? 'bg-white/20 text-white' 
-                              : 'bg-gray-200 text-gray-700'
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
+                            isSelected ? 'bg-white/20' : 'bg-gray-600/50'
                           }`}>
                             {String.fromCharCode(65 + index)}
                           </div>
-                          <span className={`text-lg ${isSelected ? 'text-white' : 'text-gray-800'}`}>
+                          <span className={`text-lg ${isSelected ? 'text-white' : 'text-gray-200'}`}>
                             {option}
                           </span>
                         </div>
@@ -650,16 +653,16 @@ export default function GamePage() {
             )}
             
             {selectedAnswer && !waitingForPlayers && (
-              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center">
-                <div className="flex items-center justify-center space-x-2 text-blue-600">
-                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4 text-center backdrop-blur-sm">
+                <div className="flex items-center justify-center space-x-2 text-blue-300">
+                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   <span className="font-medium">Waiting for other players to answer...</span>
                 </div>
-                <div className="mt-2 text-sm text-blue-500">
-                  You've selected: <span className="font-semibold">{selectedAnswer}</span>
+                <div className="mt-2 text-sm text-blue-300">
+                  You've selected: <span className="font-semibold text-white">{selectedAnswer}</span>
                 </div>
               </div>
             )}
@@ -669,20 +672,24 @@ export default function GamePage() {
       
       {/* Chat Component */}
       <div className="fixed bottom-6 right-6 z-10">
-        <Chat pin={pin} currentUser={roomData?.current_user_id} />
+        <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700 shadow-2xl">
+          <Chat pin={pin} currentUser={roomData?.current_user_id} />
+        </div>
       </div>
       
       {/* Game Pin Indicator */}
-      <div className="fixed top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-md border border-gray-200">
+      <div className="fixed top-4 right-4 bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-gray-700">
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-600">Game PIN:</span>
-          <span className="font-bold text-indigo-600 text-lg">{pin}</span>
+          <span className="text-sm font-medium text-gray-300">Game PIN:</span>
+          <span className="font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent text-lg">
+            {pin}
+          </span>
           <button 
             onClick={() => {
               navigator.clipboard.writeText(pin);
               toast.success('Game PIN copied to clipboard!');
             }}
-            className="text-indigo-400 hover:text-indigo-600 transition-colors"
+            className="text-gray-400 hover:text-blue-400 transition-colors"
             title="Copy PIN"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
