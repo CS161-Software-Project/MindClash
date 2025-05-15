@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-rfk-h3=)t*=5^p5242=&pkbg5d^wx13!f28*!3%we81lnc9$z9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -71,6 +71,7 @@ SWAGGER_SETTINGS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your frontend React/Vue URL
     "http://127.0.0.1:5173",  # Also allow 127.0.0.1 for consistency
+    "https://mind-clash.netlify.app/", # allow from netlify
 ]
 
 # Allow CSRF token to be read by the frontend
@@ -221,4 +222,3 @@ CHANNEL_LAYERS = {
 
 GROQ_API_KEY='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'
 GROQ_API_URL = 'https://api.groq.com/v1'
-
