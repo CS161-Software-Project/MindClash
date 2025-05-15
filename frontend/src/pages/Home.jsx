@@ -238,6 +238,13 @@
                 </Link>
               </li> */}
               <li>
+              <Link to="/stats" className={`hover:text-indigo-300 transition-colors text-lg ${
+                  isDarkMode ? 'text-indigo-200' : 'text-indigo-800'
+                }`}>
+                  Stats
+                </Link>
+              </li>
+              <li>
                 <button 
                   onClick={toggleTheme} 
                   className={`hover:text-indigo-300 transition-colors ${
