@@ -16,6 +16,7 @@ export const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('authToken');
+        console.log('Token from localStorage:', token);
         if (token) {
             // Remove any existing Authorization header to avoid duplicates
             delete config.headers.Authorization;
@@ -72,11 +73,9 @@ const AuthService = {
             // Create a new axios instance for login
             const loginApi = axios.create({
                 baseURL: API_URL,
-                withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRFToken': await AuthService.getCSRFToken()
                 }
             });
 
@@ -129,16 +128,19 @@ const AuthService = {
     // Register new user
     register: async (userData) => {
         try {
-            const csrfToken = await AuthService.getCSRFToken();
             const response = await axios.post(`${API_URL}/register/`, userData, {
-                withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
                 }
             });
+            const { token, user } = response.data;
+            localStorage.setItem('authToken', token);
+            localStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('user', JSON.stringify(user));
+
             return response.data;
         } catch (error) {
+            console.log(userData); 
             console.error('Registration error:', error);
             throw error.response?.data || { error: 'Registration failed' };
         }

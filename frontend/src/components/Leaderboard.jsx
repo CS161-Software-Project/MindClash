@@ -5,7 +5,7 @@ import { Star } from 'lucide-react';
 
 const LeaderboardItem = ({ player, index }) => {
   const isTopPlayer = index < 3;
-  console.log(player)
+  // console.log(player)
 
   return (
     <motion.div
