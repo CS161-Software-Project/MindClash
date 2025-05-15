@@ -73,6 +73,17 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",  # Also allow 127.0.0.1 for consistency
 ]
 
+# Allow CSRF token to be read by the frontend
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+# Allow CSRF cookie to be read by JavaScript
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_USE_SESSIONS = False
+
 # Allow credentials (cookies, authorization headers) to be included in cross-site requests
 CORS_ALLOW_CREDENTIALS = True
 
@@ -207,7 +218,6 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
-
 
 GROQ_API_KEY = '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'
 GROQ_API_URL = 'https://api.groq.com/v1'

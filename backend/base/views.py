@@ -8,7 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 import json
 import os
-from .models import UserProfile, GameRoom, Player
+from .models import UserProfile, GameRoom, Player,ChatMessage
 from .serializers import GameRoomSerializer
 
 # Initialize GROQ client with API key from settings
@@ -445,3 +445,82 @@ def get_profile(request):
             'success': False,
             'message': str(e)
         }, status=400)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def send_chat_message(request):
+    pin = request.data.get("pin")
+    message = request.data.get("message")
+
+    try:
+        room = GameRoom.objects.get(code=pin)
+        chat = ChatMessage.objects.create(
+            game_room=room,
+            sender=request.user,
+            message=message
+        )
+        return Response({"message": "Sent"})
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Room not found"}, status=404)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_chat_messages(request, pin):
+    try:
+        room = GameRoom.objects.get(code=pin)
+        
+        # Check if user is a player in this game
+        if not room.players.filter(user=request.user).exists():
+            return Response({"error": "You are not a player in this game"}, status=403)
+            
+        messages = ChatMessage.objects.filter(game_room=room).order_by("timestamp")
+        return Response({
+            "success": True,
+            "messages": [{
+                "id": m.id,
+                "sender": m.sender.username,
+                "message": m.message,
+                "timestamp": m.timestamp
+            } for m in messages]
+        })
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Game room not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_leaderboard(request, game_code):
+    try:
+        # Get the game room
+        game_room = GameRoom.objects.get(pin=game_code)
+        
+        # Check if user is a player in this game
+        if not game_room.players.filter(user=request.user).exists():
+            return Response({"error": "You are not a player in this game"}, status=403)
+        
+        # Get all players in the game with their stats
+        players = []
+        for player in game_room.players.all():
+            players.append({
+                'user_id': player.user.id,
+                'username': player.user.username,
+                'score': player.score,
+                'best_streak': player.best_streak,
+                'correct_answers': player.correct_answers,
+                'average_time': player.average_time
+            })
+        
+        # Sort by score descending
+        players = sorted(players, key=lambda x: x['score'], reverse=True)
+        
+        return Response({
+            'success': True,
+            'players': players,
+            'game_title': game_room.quiz_data.get('title', 'Quiz Game') if game_room.quiz_data else 'Quiz Game'
+        })
+        
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Game room not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

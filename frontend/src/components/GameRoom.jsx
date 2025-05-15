@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import GameService from '../services/GameService';
 import WebSocketService from '../services/WebSocketService';
+import Leaderboard from './Leaderboard';
+import Chat from "./Chat"
+import ResultsPage from "./ResultsPage"
 
 const GameRoom = () => {
     const { gameCode } = useParams();
@@ -102,7 +105,7 @@ const GameRoom = () => {
     setGameState(game);
     if (game.current_question_data) setCurrentQuestion(game.current_question_data);
 
-    const allAnswered = game.players && game.players.every((p) => p.has_answered);
+    const allAnswered = game.players.every((p) => p.has_answered);
     setAllPlayersAnswered(allAnswered);
     if (allAnswered) setShowResults(true);
   };
@@ -182,9 +185,7 @@ const GameRoom = () => {
     try {
       if (!gameCode || gameState?.status !== 'in_progress') return;
       const answerTime = totalTime - timeLeft;
-      // Convert the index to a letter (0 -> 'A', 1 -> 'B', etc.)
-      const answerLetter = String.fromCharCode(65 + index); // 65 is ASCII for 'A'
-      const response = await GameService.submitAnswer(gameCode, answerLetter, answerTime);
+      const response = await GameService.submitAnswer(gameCode, index, answerTime);
       if (response.success) {
         setScoreAnimation(true);
         setTimeout(() => setScoreAnimation(false), 1500);
@@ -374,164 +375,147 @@ const GameRoom = () => {
                     )}
                     
                     {/* Game in Progress */}
-                    {gameState.status === 'in_progress' && currentQuestion && (
+                      {gameState.status === 'in_progress' && currentQuestion && (
                         <div className="max-w-3xl mx-auto">
-                            {/* Question Card */}
+                          {/* Question Card or Leaderboard View */}
+                          {!showResults ? (
                             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-indigo-500/20 mb-8">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-xl font-semibold text-indigo-200">
-                                        Question {gameState.current_question + 1}
-                                    </h3>
-                                    {timeLeft > 0 && (
-                                        <div className={`text-2xl font-bold ${
-                                            timeLeft < 5 ? 'text-red-400' : timeLeft < 10 ? 'text-yellow-400' : 'text-green-400'
-                                        }`}>
-                                            {Math.ceil(timeLeft)}
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                <h2 className="text-2xl font-bold text-indigo-200 mb-8">
-                                    {currentQuestion.question}
-                                </h2>
-                                
-                                <div className="grid grid-cols-1 gap-4">
-                                    {currentQuestion.options.map((option, index) => (
-                                        <motion.button
-                                            key={index}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={() => handleAnswerSelect(index)}
-                                            disabled={selectedAnswer !== null || timeLeft <= 0}
-                                            className={`w-full p-4 rounded-lg text-left transition-all ${
-                                                selectedAnswer === index
-                                                    ? 'bg-indigo-600 text-white'
-                                                    : 'bg-white/5 text-indigo-200 hover:bg-white/10'
-                                            } ${
-                                                selectedAnswer !== null || timeLeft <= 0
-                                                    ? 'opacity-80 cursor-not-allowed'
-                                                    : 'cursor-pointer'
-                                            }`}
-                                        >
-                                            <span className="font-bold mr-2">{String.fromCharCode(65 + index)}.</span>
-                                            {option}
-                                        </motion.button>
-                                    ))}
-                                </div>
-                                
-                                {/* Answer result feedback */}
-                                {answerResult && (
-                                    <div className={`mt-6 p-4 rounded-lg text-center ${
-                                        answerResult === 'correct' 
-                                            ? 'bg-green-500/20 border border-green-500/30 text-green-300' 
-                                            : 'bg-red-500/20 border border-red-500/30 text-red-300'
-                                    }`}>
-                                        {answerResult === 'correct' 
-                                            ? 'Correct answer! Good job!' 
-                                            : 'Incorrect answer!'}
-                                    </div>
-                                )}
-                                
-                                {/* Next question button for host */}
-                                {isHost && allPlayersAnswered && (
-                                    <motion.button
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={handleNextQuestionClick}
-                                        className="w-full mt-8 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200"
-                                    >
-                                        Next Question
-                                    </motion.button>
-                                )}
-                            </div>
-                            
-                            {/* Players Status */}
-                            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-indigo-500/20">
-                                <h3 className="text-xl font-semibold text-indigo-200 mb-4">
-                                    Players
+                              <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xl font-semibold text-indigo-200">
+                                  Question {gameState.current_question + 1}
                                 </h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {gameState.players.map((player, index) => (
-                                        <div
-                                            key={index}
-                                            className={`flex items-center justify-between p-3 rounded-lg ${
-                                                player.has_answered 
-                                                    ? 'bg-green-500/10 border border-green-500/20' 
-                                                    : 'bg-white/5'
-                                            }`}
-                                        >
-                                            <span className="text-indigo-200">
-                                                {player.username}
-                                                {player.username === gameState.host && ' (Host)'}
-                                            </span>
-                                            <div className="flex items-center">
-                                                <span className={`text-sm ${
-                                                    player.has_answered ? 'text-green-400' : 'text-indigo-400'
-                                                }`}>
-                                                    {player.has_answered ? 'Answered' : 'Waiting'}
-                                                </span>
-                                                <div className="ml-2 text-indigo-200 font-semibold">
-                                                    {player.score || 0}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                {timeLeft > 0 && (
+                                  <div className={`text-2xl font-bold ${
+                                    timeLeft < 5 ? 'text-red-400' : timeLeft < 10 ? 'text-yellow-400' : 'text-green-400'
+                                  }`}>
+                                    {Math.ceil(timeLeft)}
+                                  </div>
+                                )}
+                              </div>
+
+                              <h2 className="text-2xl font-bold text-indigo-200 mb-8">
+                                {currentQuestion.question}
+                              </h2>
+
+                              <div className="grid grid-cols-1 gap-4">
+                                {currentQuestion.options.map((option, index) => (
+                                  <motion.button
+                                    key={index}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => handleAnswerSelect(index)}
+                                    disabled={selectedAnswer !== null || timeLeft <= 0}
+                                    className={`w-full p-4 rounded-lg text-left transition-all ${
+                                      selectedAnswer === index
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white/5 text-indigo-200 hover:bg-white/10'
+                                    } ${
+                                      selectedAnswer !== null || timeLeft <= 0
+                                        ? 'opacity-80 cursor-not-allowed'
+                                        : 'cursor-pointer'
+                                    }`}
+                                  >
+                                    <span className="font-bold mr-2">{String.fromCharCode(65 + index)}.</span>
+                                    {option}
+                                  </motion.button>
+                                ))}
+                              </div>
+
+                              {/* Answer result feedback */}
+                              {answerResult && (
+                                <div className={`mt-6 p-4 rounded-lg text-center ${
+                                  answerResult === 'correct'
+                                    ? 'bg-green-500/20 border border-green-500/30 text-green-300'
+                                    : 'bg-red-500/20 border border-red-500/30 text-red-300'
+                                }`}>
+                                  {answerResult === 'correct'
+                                    ? 'Correct answer! Good job!'
+                                    : 'Incorrect answer!'}
                                 </div>
+                              )}
+
+                              {/* Next question button for host */}
+                              {isHost && allPlayersAnswered && (
+                                <motion.button
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={handleNextQuestionClick}
+                                  className="w-full mt-8 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200"
+                                >
+                                  Next Question
+                                </motion.button>
+                              )}
                             </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center space-y-8">
+                              <Leaderboard players={gameState.players} title="Question Results" />
+                              {isHost && allPlayersAnswered && (
+                                <motion.button
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={handleNextQuestionClick}
+                                  className="mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-lg font-semibold"
+                                >
+                                  Next Question
+                                </motion.button>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Players Status */}
+                          {!showResults && (
+                            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-indigo-500/20">
+                              <h3 className="text-xl font-semibold text-indigo-200 mb-4">
+                                Players
+                              </h3>
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {gameState.players.map((player, index) => (
+                                  <div
+                                    key={index}
+                                    className={`flex items-center justify-between p-3 rounded-lg ${
+                                      player.has_answered
+                                        ? 'bg-green-500/10 border border-green-500/20'
+                                        : 'bg-white/5'
+                                    }`}
+                                  >
+                                    <span className="text-indigo-200">
+                                      {player.username}
+                                      {player.username === gameState.host && ' (Host)'}
+                                    </span>
+                                    <div className="flex items-center">
+                                      <span className={`text-sm ${
+                                        player.has_answered ? 'text-green-400' : 'text-indigo-400'
+                                      }`}>
+                                        {player.has_answered ? 'Answered' : 'Waiting'}
+                                      </span>
+                                      <div className="ml-2 text-indigo-200 font-semibold">
+                                        {player.score || 0}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                    )}
+                      )}
+                     {/* Chat Component */}
+                     <div className="fixed bottom-6 right-6 z-40">
+                    <Chat 
+                        pin={gameCode} 
+                        currentUser={user?.id} 
+                    />
+                    </div>
+                    
                     
                     {/* Game Completed - Show Leaderboard */}
                     {gameState.status === 'completed' && (
-                        <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-indigo-500/20">
-                            <h2 className="text-3xl font-bold text-indigo-200 mb-6 text-center">
-                                Game Over!
-                            </h2>
-                            
-                            <div className="mb-8">
-                                <h3 className="text-xl font-semibold text-indigo-200 mb-4 text-center">
-                                    Final Scores
-                                </h3>
-                                
-                                <div className="space-y-3 max-w-md mx-auto">
-                                    {/* Sort players by score */}
-                                    {[...gameState.players]
-                                        .sort((a, b) => b.score - a.score)
-                                        .map((player, index) => (
-                                            <div
-                                                key={index}
-                                                className={`flex items-center justify-between p-4 bg-white/5 rounded-lg ${
-                                                    index === 0 ? 'border border-yellow-500/50 bg-yellow-500/10' : ''
-                                                }`}
-                                            >
-                                                <div className="flex items-center">
-                                                    <div className="w-8 h-8 flex items-center justify-center font-bold mr-3 rounded-full bg-indigo-500/20 text-indigo-300">
-                                                        {index + 1}
-                                                    </div>
-                                                    <span className="text-indigo-200 font-medium">
-                                                        {player.username}
-                                                        {player.username === gameState.host && ' (Host)'}
-                                                    </span>
-                                                </div>
-                                                <span className="text-indigo-200 font-bold">
-                                                    {player.score || 0} pts
-                                                </span>
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
-                            
-                            <div className="flex justify-center">
-                                <motion.button
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    onClick={handleLeaveGame}
-                                    className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200"
-                                >
-                                    Back to Home
-                                </motion.button>
-                            </div>
-                        </div>
+
+                            <ResultsPage
+                                players={gameState.players}
+                                title="Final Scores"
+                                onBack={handleLeaveGame}
+                            />
                     )}
                 </main>
             </div>
@@ -540,3 +524,9 @@ const GameRoom = () => {
 };
 
 export default GameRoom; 
+
+
+
+
+
+

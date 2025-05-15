@@ -16,7 +16,6 @@ def create_game(request):
     try:
         # Check if quiz data is provided
         quiz_data = request.data.get('quiz_data')
-        print(quiz_data)
         if not quiz_data:
             return Response({'error': 'Quiz data is required'}, status=400)
         
@@ -192,110 +191,117 @@ def submit_answer(request, game_code):
         answer = request.data.get('answer')
         answer_time = request.data.get('answer_time')
         
+        print(f"[BACKEND] Received answer submission: answer={answer}, answer_time={answer_time}")
+        
         if answer is None or answer_time is None:
-            return Response({'error': 'Answer and answer time are required'}, status=400)
+            error_msg = 'Answer and answer time are required'
+            print(f"[BACKEND] {error_msg}")
+            return Response({'error': error_msg}, status=400)
         
         # Find the game
         try:
             game = GameRoom.objects.get(code=game_code)
+            print(f"[BACKEND] Found game: {game_code}, status={game.status}, current_question={game.current_question}")
         except GameRoom.DoesNotExist:
-            return Response({'error': 'Game not found'}, status=404)
+            error_msg = f'Game not found: {game_code}'
+            print(f"[BACKEND] {error_msg}")
+            return Response({'error': error_msg}, status=404)
         
-        # Check if game is in progress
+        # Check if the game is in progress
         if game.status != 'in_progress':
-            return Response({'error': 'Game is not in progress'}, status=400)
+            error_msg = f'Game is not in progress. Current status: {game.status}'
+            print(f"[BACKEND] {error_msg}")
+            return Response({'error': error_msg}, status=400)
         
-        # Find the player
-        try:
-            player = Player.objects.get(user=request.user, game=game)
-        except Player.DoesNotExist:
-            return Response({'error': 'Player not found in this game'}, status=404)
+        # Get or create player
+        player, created = Player.objects.get_or_create(
+            user=request.user,
+            game=game,
+            defaults={'score': 0}
+        )
+        
+        print(f"[BACKEND] Player {request.user.username} (existing: {not created}) - current score: {player.score}")
         
         # Check if player has already answered
         if player.current_answer is not None:
-            return Response({'error': 'You have already answered this question'}, status=400)
+            print(f"[BACKEND] Player {request.user.username} has already answered: {player.current_answer}")
+            return Response({
+                'success': True,
+                'message': 'You have already submitted an answer',
+                'score': player.score,
+                'correct': player.current_answer == answer
+            })
         
-        # Convert answer to number before saving to database
-        player_answer_num = None
-        if answer is not None:
-            if isinstance(answer, str):
-                if answer.isdigit():
-                    player_answer_num = int(answer)
-                elif answer.isalpha() and len(answer) == 1:
-                    # Convert letter to index (A=0, B=1, etc.)
-                    player_answer_num = ord(answer.upper()) - ord('A')
-            elif isinstance(answer, (int, float)):
-                player_answer_num = int(answer)
+        # Record the answer
+        player.current_answer = answer
         
-        # Update player answer with the numeric value
-        player.current_answer = player_answer_num
-        player.answer_time = answer_time
-        
-        # Calculate score if correct
-        current_q_index = game.current_question
-        print(f"\n--- SCORE DEBUG ---")
-        print(f"Player: {request.user.username}")
-        print(f"Current question index: {current_q_index}")
-        print(f"Player's answer: {answer}")
-        
-        questions = game.quiz_data.get('questions', [])
-        print(f"Total questions in quiz: {len(questions)}")
-        
-        if current_q_index < len(questions):
-            current_question = questions[current_q_index]
-            print(f"Current question data: {current_question}")
+        try:
+            # Get current question data with error handling
+            questions = game.quiz_data.get('questions', [])
+            if not questions:
+                raise IndexError("No questions in quiz data")
             
-            # Handle both string and integer correct answers
-            correct_answer = current_question.get('correct_answer')
-            if correct_answer is None:
-                # Try alternative field names
-                correct_answer = current_question.get('correctAnswer')
+            if game.current_question >= len(questions):
+                raise IndexError("Current question index out of range")
+                
+            current_question = questions[game.current_question]
             
-            # Convert to int if it's a string number, or convert letter to index (A=0, B=1, etc.)
-            if isinstance(correct_answer, str):
-                if correct_answer.isdigit():
-                    correct_answer = int(correct_answer)
-                elif correct_answer.isalpha() and len(correct_answer) == 1:
-                    # Convert letter to index (A=0, B=1, etc.)
-                    correct_answer = ord(correct_answer.upper()) - ord('A')
+            # Check for both 'correct_answer' and 'correctAnswer' (case-sensitive)
+            if 'correct_answer' not in current_question:
+                # Check for 'correctAnswer' (capital A) which comes from the AI generator
+                if 'correctAnswer' in current_question:
+                    # Convert letter answer (A, B, C, D) to index (0, 1, 2, 3)
+                    correct_letter = current_question['correctAnswer'].upper()
+                    if correct_letter in ['A', 'B', 'C', 'D']:
+                        current_question['correct_answer'] = ord(correct_letter) - ord('A')
+                # Check for 'correct' (alternative format)
+                elif 'correct' in current_question:
+                    current_question['correct_answer'] = current_question['correct']
+                # Try to find correct answer in options if not directly available
+                elif 'options' in current_question and isinstance(current_question['options'], list):
+                    for i, option in enumerate(current_question['options']):
+                        if isinstance(option, dict) and option.get('isCorrect', False):
+                            current_question['correct_answer'] = i
+                            break
             
-            print(f"Correct answer: {correct_answer} (type: {type(correct_answer).__name__})")
+            # If still no correct_answer, default to 0 (first option)
+            if 'correct_answer' not in current_question:
+                current_question['correct_answer'] = 0
             
-            # Convert player's answer to int if it's a string number or letter
-            player_answer = None
-            if answer is not None:
-                if isinstance(answer, str):
-                    if answer.isdigit():
-                        player_answer = int(answer)
-                    elif answer.isalpha() and len(answer) == 1:
-                        # Convert letter to index (A=0, B=1, etc.)
-                        player_answer = ord(answer.upper()) - ord('A')
-                elif isinstance(answer, (int, float)):
-                    player_answer = int(answer)
+            correct_answer = current_question['correct_answer']
+            is_correct = answer == correct_answer
             
-            print(f"Player answer (converted): {player_answer} (type: {type(player_answer).__name__} if not None)")
-            
-            if correct_answer is not None and player_answer is not None and player_answer == correct_answer:
-                # Calculate score based on answer time (faster = more points)
+            # Update score if correct
+            if is_correct:
                 max_time = game.quiz_data.get('timePerQuestion', 30)
                 time_factor = max(0, 1 - (float(answer_time) / max_time))
                 points = int(1000 * time_factor)
-                print(f"Points awarded: {points} (time factor: {time_factor:.2f}, answer time: {answer_time:.2f}s)")
-                print(f"Previous score: {player.score}")
-                player.score = (player.score or 0) + points
-                print(f"New score: {player.score}")
-            else:
-                print(f"No points awarded. Correct: {correct_answer}, Player: {player_answer}")
+                player.score += points
         
+        except (IndexError, KeyError) as e:
+            return Response({
+                'success': False,
+                'error': 'Error processing question data',
+                'details': str(e)
+            }, status=500)
+            
+        # Save player and game states
         player.save()
+        game.save()
         
         return Response({
             'success': True,
             'message': 'Answer submitted successfully',
-            'score': player.score
+            'is_correct': is_correct,
+            'score': player.score,
+            'correct_answer': correct_answer
         }, status=200)
-        
+            
     except Exception as e:
+        error_msg = f'Error in submit_answer: {str(e)}'
+        print(f"[BACKEND] {error_msg}")
+        import traceback
+        traceback.print_exc()
         return Response({
             'error': str(e)
         }, status=500)

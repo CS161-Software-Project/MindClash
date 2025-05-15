@@ -55,10 +55,36 @@ api.interceptors.response.use(
 );
 
 const AuthService = {
+    // Helper function to get CSRF token
+    getCSRFToken: async () => {
+        try {
+            const response = await axios.get(`${API_URL}/csrftoken/`, { withCredentials: true });
+            return response.data.csrfToken;
+        } catch (error) {
+            console.error('Error getting CSRF token:', error);
+            return null;
+        }
+    },
+
     // Login user
     login: async (email, password) => {
         try {
-            const response = await api.post('/api/auth/login/', { email, password });
+            // Create a new axios instance for login
+            const loginApi = axios.create({
+                baseURL: API_URL,
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': await AuthService.getCSRFToken()
+                }
+            });
+
+            // Make login request
+            const response = await loginApi.post('/login/', { 
+                email, 
+                password 
+            });
             
             if (response.data && response.data.token) {
                 const token = response.data.token;
@@ -77,14 +103,25 @@ const AuthService = {
                 // Also store in session storage for immediate access
                 sessionStorage.setItem('user', JSON.stringify(userData));
                 
-                return { success: true, user: userData };
+                return { 
+                    success: true, 
+                    user: userData,
+                    token: token
+                };
             }
-            return { success: false, error: 'Invalid response from server' };
-        } catch (error) {
-            console.error('Login error:', error);
             return { 
                 success: false, 
-                error: error.response?.data?.error || 'Login failed. Please try again.' 
+                error: response.data?.error || 'Invalid credentials or server error' 
+            };
+        } catch (error) {
+            console.error('Login error:', error);
+            const errorMessage = error.response?.data?.error || 
+                               error.response?.data?.detail || 
+                               error.message || 
+                               'Login failed. Please try again.';
+            return { 
+                success: false, 
+                error: errorMessage 
             };
         }
     },
@@ -92,7 +129,14 @@ const AuthService = {
     // Register new user
     register: async (userData) => {
         try {
-            const response = await api.post('/api/auth/register/', userData);
+            const csrfToken = await AuthService.getCSRFToken();
+            const response = await axios.post(`${API_URL}/register/`, userData, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            });
             return response.data;
         } catch (error) {
             console.error('Registration error:', error);

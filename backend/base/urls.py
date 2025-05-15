@@ -26,4 +26,11 @@ urlpatterns = [
     path('api/game/<str:game_code>/answer/', gameService.submit_answer, name='submit-answer'),
     path('api/game/<str:game_code>/next/', gameService.next_question, name='next-question'),
     path('api/game/<str:game_code>/leaderboard/', gameService.get_leaderboard, name='leaderboard'),
+
+    # Chat endpoints
+    path('api/chat/send/', views.send_chat_message, name='send-chat-message'),
+    path('api/chat/<str:pin>/', views.get_chat_messages, name='get-chat-messages'),
+    
+    # Leaderboard endpoint
+    path('api/game/<str:game_code>/leaderboard/', views.get_leaderboard, name='get-leaderboard'),
 ]

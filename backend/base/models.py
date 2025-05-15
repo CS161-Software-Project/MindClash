@@ -101,3 +101,14 @@ class Player(models.Model):
             self.average_time = ((self.average_time * (self.total_questions - 1)) + answer_time) / self.total_questions
         
         self.save()
+class ChatMessage(models.Model):
+    game_room = models.ForeignKey(GameRoom, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['timestamp']
+
+    def __str__(self):
+        return f"{self.sender.username}: {self.message[:50]}"
