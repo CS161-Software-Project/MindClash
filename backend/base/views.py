@@ -130,15 +130,52 @@ def groq_chat(request):
 @permission_classes([IsAuthenticated])
 def get_game_status(request, game_code):
     """
-    Get the current status of a game room.
+    Get the current status of a game room, including player stats.
     """
     try:
         game = GameRoom.objects.get(code=game_code)
-        serializer = GameRoomSerializer(game)
+        players = Player.objects.filter(game=game).select_related('user')
+
+        # Format player data with stats
+        player_data = []
+        for player in players:
+            player_data.append({
+                'username': player.user.username,
+                'score': player.score,
+                'is_ready': player.is_ready,
+                'has_answered': player.current_answer is not None,
+                'correct_answers': player.correct_answers,
+                'current_streak': player.current_streak,
+                'best_streak': player.best_streak,
+                'average_time': round(player.average_time, 2),
+                'total_questions': player.total_questions,
+            })
+
+        # Current question data
+        current_question_data = None
+        questions = game.quiz_data.get("questions", [])
+        if game.status == 'in_progress' and game.current_question < len(questions):
+            q = questions[game.current_question]
+            current_question_data = {
+                'question': q.get('question'),
+                'options': q.get('options'),
+            }
+
         return Response({
             'success': True,
-            'game': serializer.data
+            'game': {
+                'code': game.code,
+                'status': game.status,
+                'host': game.host.username,
+                'current_question': game.current_question,
+                'current_question_data': current_question_data,
+                'players': player_data,
+                'created_at': game.created_at,
+                'started_at': game.started_at,
+                'ended_at': game.ended_at
+            }
         })
+
     except GameRoom.DoesNotExist:
         return Response({
             'success': False,
@@ -438,6 +475,16 @@ def get_profile(request):
     try:
         user = request.user
         profile = UserProfile.objects.get(user=user)
+
+        # Fetch stats across all games
+        player_entries = Player.objects.filter(user=user)
+        total_correct = sum(p.correct_answers for p in player_entries)
+        total_questions = sum(p.total_questions for p in player_entries)
+        best_streak = max((p.best_streak for p in player_entries), default=0)
+
+        # Compute global average time
+        total_time = sum(p.average_time * p.total_questions for p in player_entries)
+        average_time = (total_time / total_questions) if total_questions else 0.0
         
         return Response({
             'success': True,
@@ -446,7 +493,11 @@ def get_profile(request):
                 'last_name': profile.last_name,
                 'bio': profile.bio,
                 'avatar_url': profile.avatar_url,
-                'username': user.username
+                'username': user.username,
+                'correct_answers': total_correct,
+                'total_questions': total_questions,
+                'best_streak': best_streak,
+                'average_time': round(average_time, 2),
             }
         })
         
