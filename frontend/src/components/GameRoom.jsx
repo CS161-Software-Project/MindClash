@@ -49,7 +49,7 @@ const GameRoom = () => {
   const fetchAnswerDistribution = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.get(`http://localhost:8000/api/answer_distribution/${gameCode}/`, {
+      const response = await axios.get(`https://mindclash-bi6z.onrender.com/api/answer_distribution/${gameCode}/`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
