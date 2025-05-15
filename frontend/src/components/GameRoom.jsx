@@ -6,6 +6,8 @@ import WebSocketService from '../services/WebSocketService';
 import Leaderboard from './Leaderboard';
 import Chat from "./Chat"
 import ResultsPage from "./ResultsPage"
+import CorrectAnswer from './CorrectAnswer';
+import axios from 'axios';
 
 const GameRoom = () => {
     const { gameCode } = useParams();
@@ -24,9 +26,40 @@ const GameRoom = () => {
   const [scoreAnimation, setScoreAnimation] = useState(false);
   const [answerResult, setAnswerResult] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [answerDistribution, setAnswerDistribution] = useState([]);
+  const [correctAnswer, setCorrectAnswer] = useState('');
 
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
+
+  useEffect(() => {
+    if (showResults && gameState?.status === 'in_progress') {
+      fetchAnswerDistribution();
+      setShowCorrectAnswer(true);
+
+      const timer = setTimeout(() => {
+        setShowCorrectAnswer(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showResults, gameState?.status]);
+
+  const fetchAnswerDistribution = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.get(`http://localhost:8000/api/answer_distribution/${gameCode}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setAnswerDistribution(response.data.distribution || []);
+      setCorrectAnswer(response.data.correct_answer);
+    } catch (error) {
+      console.error('Failed to fetch answer distribution:', error);
+    }
+  };
 
   useEffect(() => {
     const loadUser = () => {
@@ -421,19 +454,6 @@ const GameRoom = () => {
                                 ))}
                               </div>
 
-                              {/* Answer result feedback */}
-                              {answerResult && (
-                                <div className={`mt-6 p-4 rounded-lg text-center ${
-                                  answerResult === 'correct'
-                                    ? 'bg-green-500/20 border border-green-500/30 text-green-300'
-                                    : 'bg-red-500/20 border border-red-500/30 text-red-300'
-                                }`}>
-                                  {answerResult === 'correct'
-                                    ? 'Correct answer! Good job!'
-                                    : 'Incorrect answer!'}
-                                </div>
-                              )}
-
                               {/* Next question button for host */}
                               {isHost && allPlayersAnswered && (
                                 <motion.button
@@ -446,6 +466,12 @@ const GameRoom = () => {
                                 </motion.button>
                               )}
                             </div>
+                          )  :showCorrectAnswer ? (
+                            <CorrectAnswer
+                              distribution={answerDistribution}
+                              correctAnswer={correctAnswer}
+                              userAnswer={currentQuestion?.options[selectedAnswer] || null}
+                            />
                           ) : (
                             <div className="flex flex-col items-center justify-center space-y-8">
                               <Leaderboard players={gameState.players} title="Question Results" />
@@ -491,7 +517,7 @@ const GameRoom = () => {
                                       <div className="ml-2 text-indigo-200 font-semibold">
                                         {player.score || 0}
                                       </div>
-                                    </div>
+                                    </div>  
                                   </div>
                                 ))}
                               </div>
@@ -524,9 +550,3 @@ const GameRoom = () => {
 };
 
 export default GameRoom; 
-
-
-
-
-
-

@@ -539,3 +539,45 @@ def get_leaderboard(request, game_code):
         return Response({"error": "Game room not found"}, status=404)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def answer_distribution(request, pin):
+    try:
+        room = GameRoom.objects.get(code=pin)
+        players = Player.objects.filter(game=room)
+
+        # ✅ FIXED: Use the correct field name
+        current_question_index = room.current_question
+
+        # Safely extract question from quiz_data
+        questions = room.quiz_data.get("questions", [])
+        if current_question_index >= len(questions):
+            return Response({"error": "Invalid question index"}, status=400)
+
+        current_question = questions[current_question_index]
+        options = current_question.get("options", [])
+        correct_index = current_question.get("correct_answer")
+
+        # Build distribution
+        distribution = []
+        for idx, option_text in enumerate(options):
+            count = players.filter(current_answer=idx).count()
+            distribution.append({
+                "answer": option_text,
+                "count": count
+            })
+
+        all_answered = all(p.current_answer is not None for p in players)
+        correct_answer_text = options[correct_index] if all_answered else None
+
+        return Response({
+            "distribution": distribution,
+            "correct_answer": correct_answer_text,
+            "all_answered": all_answered
+        })
+
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Room not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
