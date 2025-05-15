@@ -1,0 +1,63 @@
+.leaderboard-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.leaderboard-title {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.leaderboard-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.leaderboard-rank {
+    width: 30px;
+    text-align: center;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.leaderboard-player {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-name {
+    color: white;
+    font-weight: 500;
+}
+
+.player-score {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.player-stats {
+    display: flex;
+    gap: 15px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}

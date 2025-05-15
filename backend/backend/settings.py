@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
+    'corsheaders',
     'base.apps.BaseConfig',
     'drf_yasg',
     'rest_framework',
@@ -68,18 +70,67 @@ SWAGGER_SETTINGS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your frontend React/Vue URL
+    "http://127.0.0.1:5173",  # Also allow 127.0.0.1 for consistency
 ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
+# Allow CSRF token to be read by the frontend
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+# Allow CSRF cookie to be read by JavaScript
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_USE_SESSIONS = False
+
+# Allow credentials (cookies, authorization headers) to be included in cross-site requests
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow all headers and methods
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Explicitly set allowed headers if needed
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    'rest_framework.authentication.SessionAuthentication',
+        'base.authentication.BearerTokenAuthentication',  # Our custom Bearer token auth
+        'rest_framework.authentication.TokenAuthentication',  # Fallback to standard token auth
+        'rest_framework.authentication.SessionAuthentication',
     ],
     
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Allow access to register/login without authentication
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
+    ],
+    
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+    
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
 
@@ -159,6 +210,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GROQ_API_KEY = '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'
+# Channels configuration
+ASGI_APPLICATION = 'backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
+GROQ_API_KEY = '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'
 GROQ_API_URL = 'https://api.groq.com/v1'
 

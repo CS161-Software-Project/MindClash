@@ -165,6 +165,14 @@
       fetchProfile();
     }, []);
 
+    const handleCreateGameClick = () => {
+      navigate('/create-game');
+    };
+
+    const handleJoinGameClick = () => {
+      navigate('/join-game');
+    };
+
     return (
       <div className={`min-h-screen transition-colors duration-500 ${isDarkMode ? 'bg-[#0B1026]' : 'bg-[#f0f4ff]'} relative overflow-hidden`}>
 
@@ -330,6 +338,7 @@
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={handleJoinGameClick}
                     className={`px-8 py-3 text-white rounded-lg font-medium transition-all duration-300 ${
                       isDarkMode 
                       ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30' 
@@ -341,6 +350,7 @@
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={handleCreateGameClick}
                     className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 ${
                       isDarkMode 
                       ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20' 

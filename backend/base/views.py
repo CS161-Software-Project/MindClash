@@ -8,7 +8,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 import json
 import os
-from .models import UserProfile
+from .models import UserProfile, GameRoom, Player,ChatMessage
+from .serializers import GameRoomSerializer
 
 # Initialize GROQ client with API key from settings
 client = Groq(
@@ -104,6 +105,114 @@ def groq_chat(request):
         
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+
+# API - http://127.0.0.1:8000/api/generate-quiz/ (POST request)
+
+# API - http://127.0.0.1:8000/api/game/{game_code}/status/ (GET request)
+@swagger_auto_schema(
+    method='get',
+    responses={200: GameRoomSerializer}
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_game_status(request, game_code):
+    """
+    Get the current status of a game room.
+    """
+    try:
+        game = GameRoom.objects.get(code=game_code)
+        serializer = GameRoomSerializer(game)
+        return Response({
+            'success': True,
+            'game': serializer.data
+        })
+    except GameRoom.DoesNotExist:
+        return Response({
+            'success': False,
+            'error': 'Game not found'
+        }, status=404)
+
+# API - http://127.0.0.1:8000/api/game/{game_code}/player/ready/ (POST request)
+@swagger_auto_schema(
+    method='post',
+    responses={200: "Player ready status updated successfully"}
+)
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def set_player_ready(request, game_code):
+    """
+    Set player's ready status in a game room.
+    """
+    try:
+        game = GameRoom.objects.get(code=game_code)
+        player = Player.objects.get(game=game, user=request.user)
+        player.is_ready = request.data.get('is_ready', True)
+        player.save()
+        
+        # Update game status if all players are ready
+        if game.status == 'waiting':
+            players = Player.objects.filter(game=game)
+            if all(p.is_ready for p in players):
+                game.status = 'ready_to_start'
+                game.save()
+        
+        return Response({
+            'success': True,
+            'message': 'Ready status updated'
+        })
+    except GameRoom.DoesNotExist:
+        return Response({
+            'success': False,
+            'error': 'Game not found'
+        }, status=404)
+    except Player.DoesNotExist:
+        return Response({
+            'success': False,
+            'error': 'Player not found in game'
+        }, status=404)
+
+# API - http://127.0.0.1:8000/api/game/{game_code}/start/ (POST request)
+@swagger_auto_schema(
+    method='post',
+    responses={200: "Game started successfully"}
+)
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def start_game(request, game_code):
+    """
+    Start the game (only host can do this).
+    """
+    try:
+        game = GameRoom.objects.get(code=game_code)
+        if game.host != request.user:
+            return Response({
+                'success': False,
+                'error': 'Only host can start the game'
+            }, status=403)
+            
+        if game.status != 'ready_to_start':
+            return Response({
+                'success': False,
+                'error': 'Game is not ready to start'
+            }, status=400)
+            
+        game.status = 'in_progress'
+        game.started_at = timezone.now()
+        game.current_question = 0
+        game.save()
+        
+        return Response({
+            'success': True,
+            'message': 'Game started'
+        })
+    except GameRoom.DoesNotExist:
+        return Response({
+            'success': False,
+            'error': 'Game not found'
+        }, status=404)
 
 # API - http://127.0.0.1:8000/api/generate-quiz/ (POST request)
 @swagger_auto_schema(
@@ -336,3 +445,82 @@ def get_profile(request):
             'success': False,
             'message': str(e)
         }, status=400)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def send_chat_message(request):
+    pin = request.data.get("pin")
+    message = request.data.get("message")
+
+    try:
+        room = GameRoom.objects.get(code=pin)
+        chat = ChatMessage.objects.create(
+            game_room=room,
+            sender=request.user,
+            message=message
+        )
+        return Response({"message": "Sent"})
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Room not found"}, status=404)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_chat_messages(request, pin):
+    try:
+        room = GameRoom.objects.get(code=pin)
+        
+        # Check if user is a player in this game
+        if not room.players.filter(user=request.user).exists():
+            return Response({"error": "You are not a player in this game"}, status=403)
+            
+        messages = ChatMessage.objects.filter(game_room=room).order_by("timestamp")
+        return Response({
+            "success": True,
+            "messages": [{
+                "id": m.id,
+                "sender": m.sender.username,
+                "message": m.message,
+                "timestamp": m.timestamp
+            } for m in messages]
+        })
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Game room not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_leaderboard(request, game_code):
+    try:
+        # Get the game room
+        game_room = GameRoom.objects.get(pin=game_code)
+        
+        # Check if user is a player in this game
+        if not game_room.players.filter(user=request.user).exists():
+            return Response({"error": "You are not a player in this game"}, status=403)
+        
+        # Get all players in the game with their stats
+        players = []
+        for player in game_room.players.all():
+            players.append({
+                'user_id': player.user.id,
+                'username': player.user.username,
+                'score': player.score,
+                'best_streak': player.best_streak,
+                'correct_answers': player.correct_answers,
+                'average_time': player.average_time
+            })
+        
+        # Sort by score descending
+        players = sorted(players, key=lambda x: x['score'], reverse=True)
+        
+        return Response({
+            'success': True,
+            'players': players,
+            'game_title': game_room.quiz_data.get('title', 'Quiz Game') if game_room.quiz_data else 'Quiz Game'
+        })
+        
+    except GameRoom.DoesNotExist:
+        return Response({"error": "Game room not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

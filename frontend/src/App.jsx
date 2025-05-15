@@ -10,6 +10,9 @@ import AIQuiz from './pages/AIQuiz'
 import GroqChat from './components/GroqChat'
 import QuizGenerator from './components/QuizGenerator'
 import GroqTester from './components/GroqTester'
+import CreateGame from './components/CreateGame'
+import JoinGame from './components/JoinGame'
+import GameRoom from './components/GameRoom'
 
 function App() {
   const [loading,setLoading] = useState(true);
@@ -39,6 +42,11 @@ function App() {
         <Route path="/groq-chat" element={<GroqChat />} />
         <Route path="/quiz-generator" element={<QuizGenerator />} />
         <Route path="/test-groq" element={<GroqTester />} />
+        
+        {/* Game related routes */}
+        <Route path="/create-game" element={<CreateGame />} />
+        <Route path="/join-game" element={<JoinGame />} />
+        <Route path="/game/:gameCode" element={<GameRoom />} />
       </Routes>
     </Router>
   )
