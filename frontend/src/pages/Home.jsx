@@ -359,7 +359,7 @@
                   >
                     Create Game
                   </motion.button>
-                  <motion.button 
+                  {/* <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleAIQuizNavigation}
@@ -371,7 +371,7 @@
                   >
                     <FaRobot className="mr-2" />
                     AI Quiz
-                  </motion.button>
+                  </motion.button> */}
                 </div>
               </div>
 
