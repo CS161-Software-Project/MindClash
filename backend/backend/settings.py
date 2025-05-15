@@ -71,6 +71,7 @@ SWAGGER_SETTINGS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your frontend React/Vue URL
     "http://127.0.0.1:5173",  # Also allow 127.0.0.1 for consistency
+    "https://mind-clash.netlify.app/", # allow from netlify
 ]
 
 # Allow CSRF token to be read by the frontend
