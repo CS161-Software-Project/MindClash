@@ -21,7 +21,7 @@ const AvatarPage = () => {
       if (!token) throw new Error('Authentication token not found');
   
       const response = await axios.post(
-        'http://localhost:8000/api/profile/update/',
+        'https://mindclash-bi6z.onrender.com/api/profile/update/',
         { avatar_url: url },
         {
           headers: {

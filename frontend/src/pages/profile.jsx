@@ -51,7 +51,7 @@ const Profile = () => {
         return;
       }
       try {
-        const res = await axios.get('http://localhost:8000/api/profile/', {
+        const res = await axios.get('https://mindclash-bi6z.onrender.com/api/profile/', {
           headers: { Authorization: `Token ${token}` }
         });
         
@@ -122,7 +122,7 @@ const Profile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await axios.post('http://localhost:8000/api/profile/update/', 
+      const response = await axios.post('https://mindclash-bi6z.onrender.com/api/profile/update/', 
         updateData,
         { headers: { Authorization: `Token ${token}` } }
       );
