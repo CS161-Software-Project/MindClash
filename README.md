@@ -179,6 +179,7 @@ For more detailed troubleshooting, refer to the `TROUBLESHOOTING.md` file.
 ## 🤝 Contributing
 
 We welcome contributions to MindClash! Please follow these steps:
+Developed by Members - Himavanth, Pranay, Prudhvi Under Supervision By Dominic Abucejo
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
