@@ -3,7 +3,7 @@ import { FaGoogle } from 'react-icons/fa';
 import { Brain, Sparkles, Gamepad2 } from 'lucide-react';
 import '../styles/Auth.css';
 import { Link, useNavigate } from 'react-router-dom';
-import Test from './test';
+import Test from './Test';
 import AuthService from '../services/AuthService';
 
 const Login = () => {

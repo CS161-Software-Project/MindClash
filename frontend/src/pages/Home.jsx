@@ -3,7 +3,7 @@
   import { FaMoon, FaSun, FaMusic, FaUser, FaSignOutAlt, FaRobot } from 'react-icons/fa';
   import { Brain, Sparkles, Gamepad2, Trophy, Users, Clock } from 'lucide-react';
   import '../styles/Home.css';
-  import Test from '../components/test';
+  import Test from '../components/Test';
   import { motion } from 'framer-motion';
   import "@google/model-viewer";
   import axios from 'axios';

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import { Brain, Sparkles, Gamepad2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import Test from './test';
+import Test from './Test';
 import Loader from '../pages/Loader';
 import AuthService from '../services/AuthService';
 
