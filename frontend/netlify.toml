@@ -1,0 +1,17 @@
+[build]
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "build"
+
+[dev]
+  command = "npm start"
+  port = 3000
+  targetPort = 3000
+  framework = "#custom"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
