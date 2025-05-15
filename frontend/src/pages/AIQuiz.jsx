@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Test from '../components/test';
+import Test from '../components/Test';
 import QuizGenerator from '../components/QuizGenerator';
 import { FaArrowLeft } from 'react-icons/fa';
 
