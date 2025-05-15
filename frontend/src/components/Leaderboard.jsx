@@ -5,7 +5,7 @@ import { Star } from 'lucide-react';
 
 const LeaderboardItem = ({ player, index }) => {
   const isTopPlayer = index < 3;
-  // console.log(player)
+  console.log(player)
 
   return (
     <motion.div
@@ -41,10 +41,15 @@ const LeaderboardItem = ({ player, index }) => {
             {player.score.toLocaleString()}
           </span>
         </div>
+
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
           <div className="flex items-center gap-1 text-yellow-300">
             <Star size={14} />
-            <span>Streak: {player.best_streak || 0}</span>
+            <span>Best: {player.best_streak || 0}</span>
+          </div>
+          <div className="flex items-center gap-1 text-orange-300">
+            <Star size={14} />
+            <span>Streak: {player.current_streak || 0}</span>
           </div>
           <div className="flex items-center gap-1 text-green-300">
             <Star size={14} />

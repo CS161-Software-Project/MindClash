@@ -103,14 +103,17 @@ const GameService = {
      */
     submitAnswer: async (gameCode, answer, answerTime) => {
         try {
+            console.log(`[GameService] Submitting answer: ${answer} (time: ${answerTime})`);
             const response = await api.post(`/api/game/${gameCode}/answer/`, { 
                 answer, 
                 answer_time: answerTime 
             });
+            console.log('[GameService] Success response:', response.data);
             
             // console.log('Submit answer response:', response.data);
             return response.data;
         } catch (error) {
+            console.error('[GameService] Submit failed:', error.response?.data || error.message);
             throw error.response?.data || { error: 'Failed to submit answer' };
         }
     },

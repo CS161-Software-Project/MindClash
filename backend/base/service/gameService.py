@@ -89,41 +89,103 @@ def join_game(request):
             'error': str(e)
         }, status=500)
 
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def get_game_status(request, game_code):
+#     """
+#     Get the current status of a game
+#     """
+#     try:
+#         # Find the game
+#         try:
+#             game = GameRoom.objects.get(code=game_code)
+#         except GameRoom.DoesNotExist:
+#             return Response({'error': 'Game not found'}, status=404)
+        
+#         players = Player.objects.filter(game=game).select_related('user')
+        
+#         # Format player data
+#         player_data = []
+#         for player in players:
+#             player_data.append({
+#                 'username': player.user.username,
+#                 'score': player.score,
+#                 'is_ready': player.is_ready,
+#                 'has_answered': player.current_answer is not None,
+#                 'is_host': player.user == game.host,
+#                 'correct_answers': player.correct_answers,
+#                 'current_streak': player.current_streak,
+#                 'best_streak': player.best_streak,
+#                 'average_time': round(player.average_time, 2),
+#                 'total_questions': player.total_questions,
+#             })
+        
+#         # Current question data
+#         current_question = None
+#         if game.status == 'in_progress' and game.current_question < len(game.quiz_data.get('questions', [])):
+#             question_data = game.quiz_data['questions'][game.current_question]
+#             current_question = {
+#                 'question': question_data['question'],
+#                 'options': question_data['options'],
+#                 # Don't send correct_answer to client!
+#             }
+        
+#         return Response({
+#             'success': True,
+#             'game': {
+#                 'code': game.code,
+#                 'status': game.status,
+#                 'host': game.host.username,
+#                 'current_question': game.current_question,
+#                 'current_question_data': current_question,
+#                 'players': player_data,
+#                 'created_at': game.created_at,
+#                 'started_at': game.started_at,
+#                 'ended_at': game.ended_at
+#             }
+#         }, status=200)
+        
+#     except Exception as e:
+#         return Response({
+#             'error': str(e)
+#         }, status=500)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_game_status(request, game_code):
     """
-    Get the current status of a game
+    Get the current status of a game room, including player stats.
     """
     try:
-        # Find the game
-        try:
-            game = GameRoom.objects.get(code=game_code)
-        except GameRoom.DoesNotExist:
-            return Response({'error': 'Game not found'}, status=404)
-        
+        game = GameRoom.objects.get(code=game_code)
         players = Player.objects.filter(game=game).select_related('user')
-        
-        # Format player data
+
+        # Format player data with full stats
         player_data = []
         for player in players:
             player_data.append({
                 'username': player.user.username,
                 'score': player.score,
                 'is_ready': player.is_ready,
-                'has_answered': player.current_answer is not None
+                'has_answered': player.current_answer is not None,
+                'is_host': player.user == game.host,
+                'correct_answers': player.correct_answers,
+                'current_streak': player.current_streak,
+                'best_streak': player.best_streak,
+                'average_time': round(player.average_time, 2),
+                'total_questions': player.total_questions,
             })
-        
-        # Current question data
-        current_question = None
-        if game.status == 'in_progress' and game.current_question < len(game.quiz_data.get('questions', [])):
-            question_data = game.quiz_data['questions'][game.current_question]
-            current_question = {
-                'question': question_data['question'],
-                'options': question_data['options'],
-                # Don't send correct_answer to client!
+
+        # Extract current question if valid
+        current_question_data = None
+        questions = game.quiz_data.get("questions", [])
+        if game.status == 'in_progress' and game.current_question < len(questions):
+            q = questions[game.current_question]
+            current_question_data = {
+                'question': q.get('question'),
+                'options': q.get('options')
             }
-        
+
         return Response({
             'success': True,
             'game': {
@@ -131,18 +193,20 @@ def get_game_status(request, game_code):
                 'status': game.status,
                 'host': game.host.username,
                 'current_question': game.current_question,
-                'current_question_data': current_question,
+                'current_question_data': current_question_data,
                 'players': player_data,
                 'created_at': game.created_at,
                 'started_at': game.started_at,
                 'ended_at': game.ended_at
             }
-        }, status=200)
-        
-    except Exception as e:
+        })
+
+    except GameRoom.DoesNotExist:
         return Response({
-            'error': str(e)
-        }, status=500)
+            'success': False,
+            'error': 'Game not found'
+        }, status=404)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -284,10 +348,16 @@ def submit_answer(request, game_code):
                 'error': 'Error processing question data',
                 'details': str(e)
             }, status=500)
+        print(f"[BACKEND] Stats updated: correct={player.correct_answers}, streak={player.current_streak}")
+
+        player.update_stats(is_correct, float(answer_time))
+        print(f"[BACKEND] Stats updated: correct={player.correct_answers}, streak={player.current_streak}")
+
             
         # Save player and game states
         player.save()
         game.save()
+        print(player)
         
         return Response({
             'success': True,

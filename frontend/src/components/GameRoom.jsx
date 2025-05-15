@@ -514,8 +514,8 @@ const GameRoom = () => {
                                       }`}>
                                         {player.has_answered ? 'Answered' : 'Waiting'}
                                       </span>
-                                      <div className="ml-2 text-indigo-200 font-semibold">
-                                        {player.score || 0}
+                                      <div className="ml-2 text-yellow-400 text-sm font-semibold">
+                                        🔥 Streak: {player.current_streak || 0}
                                       </div>
                                     </div>  
                                   </div>
