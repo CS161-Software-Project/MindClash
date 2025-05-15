@@ -78,6 +78,7 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://mind-clash.netlify.app/", # allow from netlify
 ]
 
 # Allow CSRF cookie to be read by JavaScript
