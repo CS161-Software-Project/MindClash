@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token  # Import Token model
 from drf_yasg.utils import swagger_auto_schema
@@ -7,6 +7,7 @@ from django.contrib.auth import login
 from django.views.decorators.csrf import csrf_exempt
 from ..forms import CustomUserCreationForm
 from ..models import UserProfile
+from rest_framework.permissions import AllowAny
 
 # Define request body schema for registration
 register_schema = openapi.Schema(
@@ -27,6 +28,8 @@ register_schema = openapi.Schema(
     responses={201: "Registration successful", 400: "Registration failed"}
 )
 @api_view(['POST'])
+@authentication_classes([])  # No auth required
+@permission_classes([AllowAny])  # Public access
 def registerPage(request):
     """
     User registration API with Token Authentication.

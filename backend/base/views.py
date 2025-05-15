@@ -1,8 +1,20 @@
+import json
+import os
 from django.conf import settings
 from groq import Groq
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg.utils import swagger_auto_schema
+
+# Initialize GROQ client
+try:
+    client = Groq(
+        api_key=os.environ.get("GROQ_API_KEY") or settings.GROQ_API_KEY
+    )
+except Exception as e:
+    print(f"Error initializing GROQ client: {e}")
+    client = None
 from rest_framework.authentication import TokenAuthentication
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -225,6 +237,9 @@ def generate_quiz(request):
     """
     Endpoint to generate a quiz using GROQ AI.
     """
+    if client is None:
+        return Response({"error": "GROQ client is not properly configured"}, status=500)
+        
     try:
         data = request.data
         topic = data.get('topic')

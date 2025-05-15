@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token  
 from drf_yasg.utils import swagger_auto_schema
@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from ..models import UserProfile
+from rest_framework.permissions import AllowAny
 
 # Define the request body schema for login
 login_schema = openapi.Schema(
@@ -22,8 +23,10 @@ login_schema = openapi.Schema(
 @csrf_exempt
 @swagger_auto_schema(method='post', request_body=login_schema, responses={200: "Login successful", 400: "Invalid credentials"})
 @api_view(['POST'])
+@authentication_classes([])  # No auth required
+@permission_classes([AllowAny])  # Public access
 def loginPage(request):
-    """
+    """ 
     User login API using Email instead of Username.
     """
     data = request.data
