@@ -13,6 +13,7 @@ import GroqTester from './components/GroqTester'
 import CreateGame from './components/CreateGame'
 import JoinGame from './components/JoinGame'
 import GameRoom from './components/GameRoom'
+import Stats from './components/Stats'
 
 function App() {
   const [loading,setLoading] = useState(true);
@@ -47,6 +48,7 @@ function App() {
         <Route path="/create-game" element={<CreateGame />} />
         <Route path="/join-game" element={<JoinGame />} />
         <Route path="/game/:gameCode" element={<GameRoom />} />
+        <Route path="/stats" element={<Stats />} />
       </Routes>
     </Router>
   )

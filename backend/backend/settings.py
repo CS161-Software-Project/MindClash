@@ -222,4 +222,3 @@ CHANNEL_LAYERS = {
 
 GROQ_API_KEY='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'
 GROQ_API_URL = 'https://api.groq.com/v1'
-

@@ -230,13 +230,13 @@
             </div>
             
             <ul className="flex items-center space-x-8">
-              <li>
+              {/* <li>
                 <Link to="/leaderboard" className={`hover:text-indigo-300 transition-colors text-lg ${
                   isDarkMode ? 'text-indigo-200' : 'text-indigo-800'
                 }`}>
                   Leaderboard
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <button 
                   onClick={toggleTheme} 
@@ -359,7 +359,7 @@
                   >
                     Create Game
                   </motion.button>
-                  <motion.button 
+                  {/* <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleAIQuizNavigation}
@@ -371,7 +371,7 @@
                   >
                     <FaRobot className="mr-2" />
                     AI Quiz
-                  </motion.button>
+                  </motion.button> */}
                 </div>
               </div>
 
