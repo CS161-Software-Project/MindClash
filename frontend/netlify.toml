@@ -1,0 +1,19 @@
+[build]
+  command = "npm install && npm run build"
+  publish = "dist"
+
+[dev]
+  command = "npm start"
+  port = 3000
+  targetPort = 3000
+  framework = "#custom"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+
