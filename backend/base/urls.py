@@ -33,4 +33,7 @@ urlpatterns = [
     
     # Leaderboard endpoint
     path('api/game/<str:game_code>/leaderboard/', views.get_leaderboard, name='get-leaderboard'),
+
+    # Answer distribution endpoint
+    path('api/answer_distribution/<str:pin>/', views.answer_distribution, name='answer_distribution'),
 ]
