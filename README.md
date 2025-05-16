@@ -2,7 +2,8 @@
 
 MindClash is an interactive multiplayer quiz game platform where players can compete in real-time trivia battles, create custom quizzes using AI, and track their performance on leaderboards.
 
-![MindClash Logo](frontend/src/assets/mindclash-logo.png)
+
+<img width="1390" alt="Screenshot 2025-05-15 at 7 40 56 PM" src="https://github.com/user-attachments/assets/e330902d-d2a5-483b-ac6a-8697a4ae352a" />
 
 ## 📋 Table of Contents
 
