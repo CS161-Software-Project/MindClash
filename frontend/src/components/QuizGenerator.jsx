@@ -52,7 +52,7 @@ const QuizGenerator = () => {
       const { topic, count, difficulty } = formData;
       
       // Use the dedicated backend endpoint for quiz generation
-      const result = await axios.post('https://mindclash-bi6z.onrender.com/api/generate-quiz/', { 
+      const result = await axios.post('https://mindclash-mm6g.onrender.com/api/generate-quiz/', { 
         topic,
         count,
         difficulty

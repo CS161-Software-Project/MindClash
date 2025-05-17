@@ -16,7 +16,7 @@ const Stats = () => {
           return;
         }
 
-        const res = await fetch('https://mindclash-bi6z.onrender.com/api/profile/', {
+        const res = await fetch('https://mindclash-mm6g.onrender.com/api/profile/', {
           headers: {
             Authorization: `Token ${token}`
           }
