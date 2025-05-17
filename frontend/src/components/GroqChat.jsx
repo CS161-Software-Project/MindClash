@@ -14,7 +14,7 @@ const GroqChat = () => {
     setError('');
     
     try {
-      const result = await axios.post('https://mindclash-bi6z.onrender.com/api/groq-chat/', { prompt });
+      const result = await axios.post('https://mindclash-mm6g.onrender.com/api/groq-chat/', { prompt });
       setResponse(result.data.response);
     } catch (err) {
       console.error('Error with GROQ API:', err);

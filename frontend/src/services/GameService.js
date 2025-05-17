@@ -1,6 +1,6 @@
 import { api } from './AuthService';
 
-const API_URL = 'https://mindclash-bi6z.onrender.com';
+const API_URL = 'https://mindclash-mm6g.onrender.com';
 
 const GameService = {
     /**

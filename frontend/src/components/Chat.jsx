@@ -17,7 +17,7 @@ const Chat = ({ pin, currentUser }) => {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const lastMessageCount = useRef(0);
 
-  const API_URL = 'https://mindclash-bi6z.onrender.com/api';
+  const API_URL = 'https://mindclash-mm6g.onrender.com/api';
 
   const commonEmojis = [
     '😊', '😂', '❤️', '👍', '🎮', '🎯', '🎲', '🎪', '🎨', '🎭',

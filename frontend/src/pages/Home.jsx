@@ -154,7 +154,7 @@
         const token = localStorage.getItem('authToken');
         if (!token) return;
         try {
-          const res = await axios.get('https://mindclash-bi6z.onrender.com/api/profile/', {
+          const res = await axios.get('https://mindclash-mm6g.onrender.com/api/profile/', {
             headers: { Authorization: `Token ${token}` }
           });
           const userData = JSON.parse(localStorage.getItem('user')) || {};

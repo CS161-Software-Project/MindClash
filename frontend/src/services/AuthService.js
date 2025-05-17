@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://mindclash-bi6z.onrender.com';
+const API_URL = 'https://mindclash-mm6g.onrender.com';
 
 // Create and export the axios instance
 export const api = axios.create({

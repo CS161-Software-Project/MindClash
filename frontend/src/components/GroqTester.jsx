@@ -12,7 +12,7 @@ const GroqTester = () => {
     setResponse('');
     
     try {
-      const result = await axios.post('https://mindclash-bi6z.onrender.com/api/groq-chat/', { 
+      const result = await axios.post('https://mindclash-mm6g.onrender.com/api/groq-chat/', { 
         prompt: 'Say hello in 5 different languages'
       });
       setResponse(result.data.response);
